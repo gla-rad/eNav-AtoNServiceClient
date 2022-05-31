@@ -5,36 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="34584ddf-76be-4317-9dde-b982b51fb749" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/AtonServiceClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/config/WebConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/config/WebSecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/controllers/DtoObjectController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/controllers/HTMLViewerController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/models/dto/DtoObject.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/application-dev.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/bootstrap.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/css/common.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/images/company-logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/images/favicon.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/images/sky-bg.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/lib/dataTables.altEditor.free.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/src/common.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/about.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/fragments/general.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/grad/eNav/atonServiceClient/AtonServiceClientTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/grad/eNav/atonServiceClient/TestConfiguration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/grad/eNav/atonServiceClient/controllers/HTMLViewerControllerTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/components/PubSubErrorHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/config/PubSubChannelConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/config/WebSocketConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/controllers/secom/SecomSubscriptionNotificationController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/controllers/secom/SecomUploadController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/controllers/DtoObjectController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +24,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JUnit5 Test Class" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -84,11 +64,13 @@
       <recent name="org.grad.eNav.atonServiceClient" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.grad.eNav.atonServiceClient.components" />
+      <recent name="org.grad.eNav.atonServiceClient.config" />
       <recent name="org.grad.eNav.atonServiceClient.controllers" />
       <recent name="org.grad.eNav.atonServiceClient" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Run">
+  <component name="RunManager" selected="Maven.Clean &amp; Build">
     <configuration name="Run" type="Application" factoryName="Application">
       <envs>
         <env name="spring.profiles.active" value="dev" />
