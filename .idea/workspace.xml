@@ -5,15 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="34584ddf-76be-4317-9dde-b982b51fb749" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/components/PubSubErrorHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/config/PubSubChannelConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/config/WebSocketConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/controllers/secom/SecomSubscriptionNotificationController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/controllers/secom/SecomUploadController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/controllers/SubscriptionController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/css/resultmark.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/src/api.subscription.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/static/src/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/controllers/DtoObjectController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/config/WebConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/config/WebConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/css/common.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/css/common.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/static/src/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/src/common.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/about.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/fragments/general.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/fragments/general.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,11 +50,12 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "last_opened_file_path": "/home/nva/git/eNav/atonServiceClient"
+    "last_opened_file_path": "/home/nva/git/eNav/atonServiceClient/src/main/resources/static/css"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources/static/css" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src/test/java" />
       <recent name="$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient" />
@@ -70,7 +74,7 @@
       <recent name="org.grad.eNav.atonServiceClient" />
     </key>
   </component>
-  <component name="RunManager" selected="Maven.Clean &amp; Build">
+  <component name="RunManager" selected="Application.Run">
     <configuration name="Run" type="Application" factoryName="Application">
       <envs>
         <env name="spring.profiles.active" value="dev" />
@@ -121,6 +125,32 @@
       <option name="presentableId" value="Default" />
       <updated>1654008653488</updated>
     </task>
+    <task id="LOCAL-00001" summary="Adding integration and web sockets">
+      <created>1654010468281</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1654010468281</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Adding integration and web sockets" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding integration and web sockets" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/grad/eNav/atonServiceClient/controllers/SubscriptionController.java</url>
+          <line>28</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/atonServiceClient$Run.ic" NAME="Run Coverage Results" MODIFIED="1654096596249" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

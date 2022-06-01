@@ -80,7 +80,22 @@
  *           Maps            *
  *****************************/
 .map {
-    height: 500px;
+    height: 650px;
+}
+
+.map-container {
+    width: 100%;
+    height: calc(100vh - 150px);
+    min-height: 680px;
+    z-index: 1;
+    position: relative;
+}
+
+@media (max-width: 768px) {
+    .map-container {
+        max-height: 400px;
+        margin-bottom: 10px;
+    }
 }
 
 /*****************************
@@ -92,4 +107,16 @@ table.dataTable tbody tr.odd.selected {
 
 table.dataTable tbody tr.even.selected {
     background-color:#acbad5
+}
+
+/*****************************
+ *        ANIMATIONS         *
+ *****************************/
+.animation-container-sm {
+    height: 3rem;
+}
+
+.animation-sm {
+    height: 3rem;
+    width: 3rem;
 }
