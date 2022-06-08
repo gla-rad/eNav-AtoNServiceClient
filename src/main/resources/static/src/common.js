@@ -9,12 +9,13 @@ $(() => {
     console.log("Content Loaded");
 
     //Load the security parameters
-    mrn = $("meta[name='_csrf']").attr("content");
-//    token = $("meta[name='_csrf']").attr("content");
-//    header = $("meta[name='_csrf_header']").attr("content");
-//    $(document).ajaxSend(function(e, xhr, options) {
-//        xhr.setRequestHeader(header, token);
-//    });
+    mrn = $("meta[name='mrn']").attr("content");
+    //token = $("meta[name='_csrf']").attr("content");
+    //header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader("MRN", mrn);
+        //xhr.setRequestHeader(header, token);
+    });
 });
 
 /**
