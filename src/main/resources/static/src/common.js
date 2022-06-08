@@ -4,15 +4,17 @@
  */
 var token=undefined;
 var header=undefined;
+var mrn=undefined;
 $(() => {
     console.log("Content Loaded");
 
     //Load the security parameters
-    token = $("meta[name='_csrf']").attr("content");
-    header = $("meta[name='_csrf_header']").attr("content");
-    $(document).ajaxSend(function(e, xhr, options) {
-        xhr.setRequestHeader(header, token);
-    });
+    mrn = $("meta[name='_csrf']").attr("content");
+//    token = $("meta[name='_csrf']").attr("content");
+//    header = $("meta[name='_csrf_header']").attr("content");
+//    $(document).ajaxSend(function(e, xhr, options) {
+//        xhr.setRequestHeader(header, token);
+//    });
 });
 
 /**

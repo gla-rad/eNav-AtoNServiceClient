@@ -17,9 +17,9 @@ class SubscriptionApi {
      * @param  {Function} callback          The callback to be used after the AJAX call
      * @param  {Function} errorCallback     The error callback to be used if the AJAX call fails
      */
-    subscribe(subscriptionRequest, callback, errorCallback) {
+    subscribe(url, subscriptionRequest, callback, errorCallback) {
         $.ajax({
-            url: `./api/subscription`,
+            url: `${url}/v1/subscription`,
             type: 'POST',
             contentType: 'application/json',
             crossDomain: true,
@@ -42,6 +42,7 @@ class SubscriptionApi {
             url: `./api/subscription`,
             type: 'DELETE',
             contentType: 'application/json',
+            crossDomain: true,
             success: callback,
             error: (response, status, more) => handleAjaxError(response, status, more, errorCallback)
         });

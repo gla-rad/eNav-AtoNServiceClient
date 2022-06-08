@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 GLA Research and Development Directorate
+ * Copyright (c) 2022 GLA Research and Development Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,38 +16,24 @@
 
 package org.grad.eNav.atonServiceClient.config;
 
-import org.keycloak.KeycloakPrincipal;
-import org.keycloak.KeycloakSecurityContext;
-import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
-import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
-import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
-import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
-import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
-import org.springframework.boot.actuate.health.HealthEndpoint;
-import org.springframework.boot.actuate.info.InfoEndpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.*;
-import org.springframework.core.Ordered;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
-import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.security.web.firewall.HttpFirewall;
-import org.springframework.security.web.firewall.StrictHttpFirewall;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.filter.ForwardedHeaderFilter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.DispatcherType;
-import java.security.Principal;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * The Web Security Configuration.
@@ -56,107 +42,7 @@ import java.security.Principal;
  */
 @Configuration
 @EnableWebSecurity
-@ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
-@ConditionalOnProperty(value = "keycloak.enabled", matchIfMissing = true)
-class WebSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
-
-    /**
-     * Define a slightly more flexible HTTP Firewall configuration that allows
-     * characters like semicolons, slashes and percentages.
-     */
-    @Bean
-    protected HttpFirewall securityHttpFirewall() {
-        StrictHttpFirewall firewall = new StrictHttpFirewall();
-        firewall.setAllowSemicolon(true);
-        firewall.setAllowUrlEncodedSlash(true);
-        firewall.setAllowUrlEncodedPercent(true);
-        return firewall;
-    }
-
-    /**
-     * Forwarded header filter filter registration bean.
-     * <p>
-     * This corrects the urls produced by the microservice when accessed from a proxy server.
-     * E.g. Api gateway:
-     * my-service.com/style.css -> api-gateway.com/my-service/style.css
-     * <p>
-     * The proxy server should be sending the forwarded header address as a header
-     * which this filter will pick up and resolve for us.
-     *
-     * @return the filter registration bean
-     */
-    @Bean
-    protected FilterRegistrationBean<ForwardedHeaderFilter> forwardedHeaderFilter() {
-        final FilterRegistrationBean<ForwardedHeaderFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new ForwardedHeaderFilter());
-        filterRegistrationBean.setDispatcherTypes(DispatcherType.REQUEST, DispatcherType.ASYNC, DispatcherType.ERROR);
-        filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        return filterRegistrationBean;
-    }
-
-    /**
-     * On multi-tenant scenarios, Keycloak will defer the resolution of a
-     * KeycloakDeployment to the target application at the request-phase.
-     *
-     * A Request object is passed to the resolver and callers expect a complete
-     * KeycloakDeployment. Based on this KeycloakDeployment, Keycloak will
-     * resume authenticating and authorizing the request.
-     */
-    @Bean
-    public KeycloakSpringBootConfigResolver KeycloakConfigResolver() {
-        return new KeycloakSpringBootConfigResolver();
-    }
-
-    /**
-     * Defines the session authentication strategy.
-     */
-    @Bean
-    @Override
-    protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-        return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
-    }
-
-    /**
-     * Rewiring the security adapter to use the KeycloakAuthenticationProvider
-     * in order to perform the authentication.
-     *
-     * @param auth The authentication manager builder
-     */
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) {
-        SimpleAuthorityMapper grantedAuthorityMapper = new SimpleAuthorityMapper();
-        grantedAuthorityMapper.setPrefix("ROLE_");
-        grantedAuthorityMapper.setConvertToUpperCase(true);
-
-        KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
-        keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(grantedAuthorityMapper);
-        auth.authenticationProvider(keycloakAuthenticationProvider);
-    }
-
-    /**
-     * Override this method to configure {@link WebSecurity} so that we ignore
-     * certain requests like swagger, css etc.
-     *
-     * @param webSecurity The web security
-     * @throws Exception Exception thrown while configuring the security
-     */
-    @Override
-    public void configure(WebSecurity webSecurity) throws Exception {
-        super.configure(webSecurity);
-        webSecurity
-                // Set some alternative firewall rules to allow extra characters
-                .httpFirewall(securityHttpFirewall())
-                //This will not attempt to authenticate these end points.
-                //Saves on validation requests.
-                .ignoring()
-                .antMatchers(
-                        "/webjars/**",  //bootstrap
-                        "/css/**",          //css files
-                        "/lib/**",          //js files
-                        "/images/**",       //the images
-                        "/src/**"           //the javascript sources
-                );
-    }
+class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * The HTTP security configuration.
@@ -169,59 +55,62 @@ class WebSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
-        super.configure(httpSecurity);
         httpSecurity
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers(
-                        "/webjars/**",   //bootstrap
-                        "/css/**",          //css files
-                        "/lib/**",          //js files
-                        "/images/**",       //the images
-                        "/src/**"           //the javascript sources
-                ).permitAll()
-                .requestMatchers(EndpointRequest.to( //
-                        InfoEndpoint.class,         //info endpoints
-                        HealthEndpoint.class        //health endpoints
-                )).permitAll()
-                .requestMatchers(EndpointRequest.toAnyEndpoint()) //
-                .hasRole("ACTUATOR")
-                .anyRequest()
-                .authenticated();
+                    .antMatchers(
+                            "/webjars/**",   //bootstrap
+                            "/css/**",          //css files
+                            "/lib/**",          //js files
+                            "/images/**",       //the images
+                            "/src/**",          //the javascript sources
+                            "/api/secom/**",    //the SECOM interfaces
+                            "/", "/index.html"  // The main index page
+                    ).permitAll()
+                    .antMatchers(HttpMethod.POST, "/api/secom/v1/upload").permitAll()
+                    .anyRequest().permitAll()
+                    .and()
+                .formLogin()
+                    .permitAll()
+                    .and()
+                .logout()
+                    .permitAll()
+                    .and()
+                .httpBasic();
     }
 
-    /**
-     * Allows to inject requests scoped wrapper for {@link KeycloakSecurityContext}.
-     *
-     * Returns the {@link KeycloakSecurityContext} from the Spring
-     * {@link ServletRequestAttributes}'s {@link Principal}.
-     * <p>
-     * The principal must support retrieval of the KeycloakSecurityContext, so at
-     * this point, only {@link KeycloakPrincipal} values and
-     * {@link KeycloakAuthenticationToken} are supported.
-     *
-     * @return the current <code>KeycloakSecurityContext</code>
-     */
-    @Bean
-    @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
-    public KeycloakSecurityContext provideKeycloakSecurityContext() {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        Principal principal = attributes.getRequest().getUserPrincipal();
-        if (principal == null) {
-            return null;
-        }
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.inMemoryAuthentication()
+//                .withUser("user")
+//                .password(encoder().encode("password"))
+//                .roles("USER");
+//    }
+//
+//    @Bean
+//    public PasswordEncoder encoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 
-        // Check for authenticated users
-        if (principal instanceof KeycloakAuthenticationToken) {
-            principal = Principal.class.cast(KeycloakAuthenticationToken.class.cast(principal).getPrincipal());
-        }
-
-        // Check for tokens based on context - i.e. other services
-        if (principal instanceof KeycloakPrincipal) {
-            return KeycloakPrincipal.class.cast(principal).getKeycloakSecurityContext();
-        }
-
-        return null;
-    }
-
+//    public class CsrfTokenResponseHeaderBindingFilter extends OncePerRequestFilter {
+//        protected static final String REQUEST_ATTRIBUTE_NAME = "_csrf";
+//        protected static final String RESPONSE_HEADER_NAME = "X-CSRF-HEADER";
+//        protected static final String RESPONSE_PARAM_NAME = "X-CSRF-PARAM";
+//        protected static final String RESPONSE_TOKEN_NAME = "X-CSRF-TOKEN";
+//
+//        @Override
+//        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, javax.servlet.FilterChain filterChain) throws ServletException, IOException, ServletException, IOException {
+//            CsrfToken token = (CsrfToken) request.getAttribute(REQUEST_ATTRIBUTE_NAME);
+//
+//            if (token != null) {
+//                response.setHeader(RESPONSE_HEADER_NAME, token.getHeaderName());
+//                response.setHeader(RESPONSE_PARAM_NAME, token.getParameterName());
+//                response.setHeader(RESPONSE_TOKEN_NAME, token.getToken());
+//            }
+//
+//            filterChain.doFilter(request, response);
+//
+//
+//        }
+//    }
 }

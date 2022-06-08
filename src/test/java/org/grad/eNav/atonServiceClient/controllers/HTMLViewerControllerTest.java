@@ -25,6 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -54,6 +55,9 @@ class HTMLViewerControllerTest {
 
         // Perform the MVC request
         this.mockMvc.perform(get("/index.html")
+                        .param("username", "user")
+                        .param("password", "password")
+                        .with(csrf())
                         .contentType(MediaType.TEXT_HTML))
                 .andExpect(status().isOk());
     }
@@ -65,6 +69,9 @@ class HTMLViewerControllerTest {
     void testGetAbout() throws Exception {
         // Perform the MVC request
         this.mockMvc.perform(get("/about")
+                        .param("username", "user")
+                        .param("password", "password")
+                        .with(csrf())
                         .contentType(MediaType.TEXT_HTML))
                 .andExpect(status().isOk());
     }

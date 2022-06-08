@@ -81,7 +81,10 @@ function clearForm() {
  */
 function subscribe() {
 
-    // Create the raim request
+    // Get the AtoN Service URL to subscribe to
+    var atonServiceUrl = trimToNull($("#atonServiceUrlInput").val());
+
+    // Create the subscription request
     var subscriptionRequest = {
         containerType: trimToNull($("#containerTypeInput").val()),
         dataProductType: trimToNull($("#dataProductTypeInput").val()),
@@ -94,7 +97,7 @@ function subscribe() {
     };
 
     // Perform the Subscription API request
-    subscriptionApi.subscribe(subscriptionRequest, (subscriptionResponse) => {
+    subscriptionApi.subscribe(atonServiceUrl, subscriptionRequest, (subscriptionResponse) => {
        console.log(subscriptionResponse);
     }, (response, status, more, errorCallback) => {
         console.error(response);

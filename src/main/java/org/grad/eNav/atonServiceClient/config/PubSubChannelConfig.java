@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 GLA Research and Development Directorate
+ * Copyright (c) 2022 GLA Research and Development Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.grad.eNav.atonServiceClient.config;
 
 import org.grad.eNav.atonServiceClient.components.PubSubErrorHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.channel.PublishSubscribeChannel;
@@ -36,6 +37,12 @@ import org.springframework.integration.config.EnableIntegration;
 public class PubSubChannelConfig {
 
     /**
+     * The Pub-Sub Error Handler.
+     */
+    @Autowired
+    PubSubErrorHandler pubSubErrorHandler;
+
+    /**
      * Defining a publication publish-subscribe Spring Integration channel to
      * exchange the incoming S-125 and data between the application components.
      *
@@ -44,7 +51,7 @@ public class PubSubChannelConfig {
     @Bean
     public PublishSubscribeChannel publishSubscribeChannel() {
         PublishSubscribeChannel pubsubChannel = new PublishSubscribeChannel();
-        pubsubChannel.setErrorHandler(new PubSubErrorHandler());
+        pubsubChannel.setErrorHandler(this.pubSubErrorHandler);
         return pubsubChannel;
     }
 

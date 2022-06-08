@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 GLA Research and Development Directorate
+ * Copyright (c) 2022 GLA Research and Development Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,31 +38,31 @@ public class HTMLViewerController {
     /**
      * The Application Name Information.
      */
-    @Value("${gla.rad.msTemplate.info.name:Microservice Template}")
+    @Value("${gla.rad.aton-service-client.info.name:AtoN Service Client}")
     private String appName;
 
     /**
      * The Application Version Information.
      */
-    @Value("${gla.rad.msTemplate.info.version:0.0.0}")
+    @Value("${gla.rad.aton-service-client.info.version:0.0.0}")
     private String appVersion;
 
     /**
      * The Application Operator Name Information.
      */
-    @Value("${gla.rad.msTemplate.info.operatorName:Unknown}")
+    @Value("${gla.rad.aton-service-client.info.operatorName:Unknown}")
     private String appOperatorName;
 
     /**
      * The Application Operator Contact Information.
      */
-    @Value("${gla.rad.msTemplate.info.operatorContact:Unknown}")
+    @Value("${gla.rad.aton-service-client.info.operatorContact:Unknown}")
     private String appOperatorContact;
 
     /**
      * The Application Operator URL Information.
      */
-    @Value("${gla.rad.msTemplate.info.operatorUrl:}")
+    @Value("${gla.rad.aton-service-client.info.operatorUrl:}")
     private String appOperatorUrl;
 
     /**
@@ -71,6 +71,11 @@ public class HTMLViewerController {
     @Value("${gla.rad.msTemplate.info.copyright:}")
     private String appCopyright;
 
+    /**
+     * The Application MRN Information.
+     */
+    @Value("${gla.rad.aton-service-client.info.mrn:}")
+    private String appMrn;
 
     /**
      * The home page of the VDES Controller Application.
@@ -83,6 +88,7 @@ public class HTMLViewerController {
         model.addAttribute("appName", this.appName);
         model.addAttribute("appOperatorUrl", this.appOperatorUrl);
         model.addAttribute("appCopyright", this.appCopyright);
+        model.addAttribute("appMrn", this.appMrn);
         // Return the rendered index
         return "index";
     }
@@ -101,31 +107,8 @@ public class HTMLViewerController {
         model.addAttribute("appOperatorContact", this.appOperatorContact);
         model.addAttribute("appOperatorUrl", this.appOperatorUrl);
         model.addAttribute("appCopyright", this.appCopyright);
+        model.addAttribute("appMrn", this.appMrn);
         return "about";
-    }
-
-    /**
-     * Logs the user in an authenticated session and redirect to the home page.
-     *
-     * @param request The logout request
-     * @return The home page
-     */
-    @GetMapping(path = "/login")
-    public ModelAndView login(HttpServletRequest request) {
-        return new ModelAndView("redirect:" + "/");
-    }
-
-    /**
-     * Logs the user out of the authenticated session.
-     *
-     * @param request The logout request
-     * @return The home page
-     * @throws ServletException Servlet Exception during the logout
-     */
-    @GetMapping(path = "/logout")
-    public ModelAndView logout(HttpServletRequest request) throws ServletException {
-        request.logout();
-        return new ModelAndView("redirect:" + "/");
     }
 
 }
