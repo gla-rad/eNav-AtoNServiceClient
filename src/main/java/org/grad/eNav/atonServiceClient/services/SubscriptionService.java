@@ -26,7 +26,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Optional;
 
-import static org.grad.secom.interfaces.SubscriptionInterface.SUBSCRIPTION_INTERFACE_PATH;
+import static org.grad.secom.interfaces.jaxrs.SubscriptionSecomInterface.SUBSCRIPTION_INTERFACE_PATH;
 
 /**
  * The SECOM Subscription Service Class.
