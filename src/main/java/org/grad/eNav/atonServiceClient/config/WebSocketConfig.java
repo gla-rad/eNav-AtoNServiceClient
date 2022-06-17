@@ -37,20 +37,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     /**
      * The WebSocket Name
      */
-    @Value("${gla.rad.aton-service.web-socket.name:aton-service-websocket}")
+    @Value("${gla.rad.aton-service-client.web-socket.name:aton-service-client-websocket}")
     private String webSocketName;
 
     /**
      * The General Destination Prefix
      */
-    @Value("${gla.rad.aton-service.web-socket.prefix:topic}")
+    @Value("${gla.rad.aton-service-client.web-socket.prefix:topic}")
     private String prefix;
-
-    /**
-     * The VDES Controller Data Endpoint of the WebSocket
-     */
-    @Value("${gla.rad.aton-service.web-socket.aton-data-endpoint:atons}")
-    private String atonDataEndpoint;
 
     /**
      * This function implements the basic registration for our WebSocket message
@@ -61,7 +55,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/"+ this.prefix);
-        config.setApplicationDestinationPrefixes("/"+ this.atonDataEndpoint);
+        config.setApplicationDestinationPrefixes("/secom/subscription");
     }
 
     /**

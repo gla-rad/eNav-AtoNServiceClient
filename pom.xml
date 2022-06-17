@@ -92,6 +92,12 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.locationtech.jts.io</groupId>
+            <artifactId>jts-io-common</artifactId>
+            <version>1.18.1</version>
+        </dependency>
+
         <!-- S-125 -->
         <dependency>
             <groupId>org.grad.eNav</groupId>
@@ -101,19 +107,14 @@
 
         <!-- SECOM -->
         <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-spring-boot-starter</artifactId>
-            <version>5.0.0.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-jaxrs2</artifactId>
-            <version>${swagger.version}</version>
+            <groupId>org.grad.secom</groupId>
+            <artifactId>secom-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.grad.secom</groupId>
-            <artifactId>SECOMLib</artifactId>
-            <version>0.1.1</version>
+            <artifactId>secom-springboot</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <!-- Swagger -->
@@ -142,6 +143,16 @@
             <groupId>org.webjars</groupId>
             <artifactId>font-awesome</artifactId>
             <version>${fa.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>sockjs-client</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>stomp-websocket</artifactId>
+            <version>2.3.3</version>
         </dependency>
         <dependency>
             <groupId>org.webjars.bowergithub.leaflet</groupId>

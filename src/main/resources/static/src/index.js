@@ -1,10 +1,14 @@
 /**
  * Global Variables
  */
+var drawnItems = undefined;
+var stompClient = null;
 var subscriptionMap = undefined;
 var southWest = L.latLng(-89.98155760646617, -180);
 var northEast = L.latLng(89.99346179538875, 180);
 var bounds = L.latLngBounds(southWest, northEast);
+var atonMarkers = [];
+var subscriptionIdentifier;
 
 // Define an icon for the satellite markers
 var satelliteIcon = L.icon({
@@ -33,12 +37,12 @@ subscriptionApi = new SubscriptionApi();
  * The jquery document ready function.
  */
 $(() => {
-    // Connect the RAIM Availability Clear button
-    $("#unsubscribeButton").click(function() {
+    // Connect the clear button
+    $("#clearButton").click(function() {
         clearForm();
     });
 
-    // Connect the RAIM Availability Check button
+    // Connect the subscribe button
     $("#subscribeButton").click(function() {
         // Check the form configuration
         if (!$('#subscriptionForm')[0].checkValidity()) {
@@ -50,9 +54,21 @@ $(() => {
         subscribe();
     });
 
+    // Connect the unsubscribe button
+    $("#unsubscribeButton").hide();
+    $("#unsubscribeButton").click(function() {
+        // Check the form configuration
+        if (!$('#subscriptionForm')[0].checkValidity()) {
+            $('#subscriptionForm')[0].reportValidity();
+            return;
+        }
+
+        unsubscribe();
+    });
+
     // Finally also initialise the search map before we need it
     if($('#subscriptionMap').length) {
-        raimMap = L.map('subscriptionMap', {
+        subscriptionMap = L.map('subscriptionMap', {
             //noWrap: true,
             center: bounds.getCenter(),
             zoom: 2,
@@ -61,18 +77,63 @@ $(() => {
         })
         L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(raimMap);
+        }).addTo(subscriptionMap);
+
+        // FeatureGroup is to store editable layers
+        drawnItems = new L.FeatureGroup();
+        subscriptionMap.addLayer(drawnItems);
     }
+
+    // Connect the web-socket
+    connect();
 
     // Hide the spinner
     $("#subscriptionInProcessSpinner").hide();
 });
 
 /**
- * Clear out the RAIM availability form.
+ * This function handles the connection to the web-socket served by our
+ * web-app. Basically, it connects and starts printing out the messages.
+ */
+function connect() {
+    var endpoint = $( "#endpoint option:selected" ).text();
+    if(stompClient == null) {
+        var socket = new SockJS('/aton-service-client-websocket');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            stompClient.subscribe('/topic/secom/subscription/created', function (msg) {
+                //showMessage(JSON.parse(msg.body));
+                console.log(msg);
+            });
+            stompClient.subscribe('/topic/secom/subscription/removed', function (msg) {
+                //showMessage(JSON.parse(msg.body));
+                console.warn(msg);
+            });
+            stompClient.subscribe('/topic/secom/subscription/update', function (msg) {
+                loadAtoNGeometry(JSON.parse(msg.body));
+            });
+        });
+    } else {
+        stompClient.subscribe('/topic/secom/subscription/created', function (msg) {
+            //showMessage(JSON.parse(msg.body));
+            console.log(msg);
+        });
+        stompClient.subscribe('/topic/secom/subscription/removed', function (msg) {
+            //showMessage(JSON.parse(msg.body));
+            console.warn(msg);
+        });
+        stompClient.subscribe('/topic/secom/subscription/update', function (msg) {
+            loadAtoNGeometry(JSON.parse(aton));
+        });
+    }
+}
+
+/**
+ * Clear out the Subscription form.
  */
 function clearForm() {
     $('#subscriptionForm')[0].reset();
+    clearAtonMarkers();
 }
 
 /**
@@ -80,12 +141,11 @@ function clearForm() {
  * web form.
  */
 function subscribe() {
-
     // Get the AtoN Service URL to subscribe to
     var atonServiceUrl = trimToNull($("#atonServiceUrlInput").val());
 
     // Create the subscription request
-    var subscriptionRequest = {
+    var subscriptionRequestObject = {
         containerType: trimToNull($("#containerTypeInput").val()),
         dataProductType: trimToNull($("#dataProductTypeInput").val()),
         dataReference: trimToNull($("#dataReferenceInput").val()),
@@ -97,10 +157,74 @@ function subscribe() {
     };
 
     // Perform the Subscription API request
-    subscriptionApi.subscribe(atonServiceUrl, subscriptionRequest, (subscriptionResponse) => {
-       console.log(subscriptionResponse);
+    subscriptionApi.subscribe(atonServiceUrl, subscriptionRequestObject, (subscriptionResponse) => {
+        subscriptionIdentifier = subscriptionResponse.subscriptionIdentifier;
+        // Hide the subscribe button
+        $("#subscribeButton").hide();
+        $("#unsubscribeButton").show();
     }, (response, status, more, errorCallback) => {
         console.error(response);
         showError(response.statusText);
     });
+}
+
+/**
+ * Removes an existing subscription based on the populated information in the
+ * web form.
+ */
+function unsubscribe() {
+    // Get the AtoN Service URL to subscribe to
+    var atonServiceUrl = trimToNull($("#atonServiceUrlInput").val());
+
+    // Create the remove subscription request
+    var removeSubscriptionObject = {
+        subscriptionIdentifier: trimToNull(subscriptionIdentifier)
+    };
+
+    // Perform the Subscription API request
+    subscriptionApi.unsubscribe(atonServiceUrl, removeSubscriptionObject, (subscriptionResponse) => {
+       subscriptionIdentifier = undefined;
+       // Hide the unsubscribe button
+       $("#unsubscribeButton").hide();
+       $("#subscribeButton").show();
+    }, (response, status, more, errorCallback) => {
+        console.error(response);
+        showError(response.statusText);
+    });
+}
+
+/**
+ * This function will load the AtoN geometry onto the drawnItems variable
+ * so that it is shown in the station maps layers.
+ *
+ * @param {Object}        aton          The AtoN object to be drawn on the map
+ */
+function loadAtoNGeometry(aton) {
+    atonMarker = L.marker([
+                aton.geometry.pointProperty.point.pos.values[1],
+                aton.geometry.pointProperty.point.pos.values[0]
+            ])
+            .addTo(subscriptionMap)
+            .bindPopup(aton.atonNumber + ' - ' + aton.textualDescription);
+
+    // And add the new marker in the satellite position markers
+    atonMarkers.push(atonMarker);
+}
+
+/**
+ * Clears all the satellite map positions from the RAIM Availability map.
+ */
+function clearAtonMarkers() {
+    // First check that we have a map
+    if(subscriptionMap == undefined) {
+        return;
+    }
+
+    // Clear the markers that have already been added
+    if (atonMarkers != undefined) {
+        for(var i=atonMarkers.length-1; i >= 0; i--) {
+            subscriptionMap.removeLayer(atonMarkers[i]);
+            atonMarkers.splice(i, 1);
+        }
+    };
 }

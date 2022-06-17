@@ -13,36 +13,39 @@ class SubscriptionApi {
     /**
      * API Generate Subscription function.
      *
-     * @param  {any} subscriptionRequest    The subscription request object
-     * @param  {Function} callback          The callback to be used after the AJAX call
-     * @param  {Function} errorCallback     The error callback to be used if the AJAX call fails
+     * @param  {string} url                     The SECOM service URL
+     * @param  {any} subscriptionRequestObject  The subscription request object
+     * @param  {Function} callback              The callback to be used after the AJAX call
+     * @param  {Function} errorCallback         The error callback to be used if the AJAX call fails
      */
-    subscribe(url, subscriptionRequest, callback, errorCallback) {
+    subscribe(url, subscriptionRequestObject, callback, errorCallback) {
         $.ajax({
             url: `${url}/v1/subscription`,
             type: 'POST',
             contentType: 'application/json',
             crossDomain: true,
-            dataType: 'json',
-            data: JSON.stringify(subscriptionRequest),
+            data: JSON.stringify(subscriptionRequestObject),
             success: callback,
             error: (response, status, more) => handleAjaxError(response, status, more, errorCallback)
         });
     }
 
     /**
-     * API Generate Subscription function.
+     * API Remove Subscription function.
      *
-     * @param  {any} subscriptionRequest    The subscription request object
-     * @param  {Function} callback          The callback to be used after the AJAX call
-     * @param  {Function} errorCallback     The error callback to be used if the AJAX call fails
+     * @param  {string} url                     The SECOM service URL
+     * @param  {any} removeSubscriptionObject   The remove subscription request object
+     * @param  {Function} callback              The callback to be used after the AJAX call
+     * @param  {Function} errorCallback         The error callback to be used if the AJAX call fails
      */
-    unsubscribe(callback, errorCallback) {
+    unsubscribe(url, removeSubscriptionObject, callback, errorCallback) {
         $.ajax({
-            url: `./api/subscription`,
+            url: `${url}/v1/subscription`,
             type: 'DELETE',
             contentType: 'application/json',
+
             crossDomain: true,
+            data: JSON.stringify(removeSubscriptionObject),
             success: callback,
             error: (response, status, more) => handleAjaxError(response, status, more, errorCallback)
         });

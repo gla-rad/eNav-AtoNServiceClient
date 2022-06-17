@@ -17,21 +17,29 @@
 package org.grad.eNav.atonServiceClient.controllers.secom;
 
 import lombok.extern.slf4j.Slf4j;
-import org.grad.secom.interfaces.jaxrs.SubscriptionNotificationSecomInterface;
-import org.grad.secom.models.SubscriptionNotificationObject;
-import org.grad.secom.models.SubscriptionNotificationResponseObject;
+import org.grad.secom.core.interfaces.SubscriptionNotificationSecomInterface;
+import org.grad.secom.core.models.SubscriptionNotificationObject;
+import org.grad.secom.core.models.SubscriptionNotificationResponseObject;
+import org.grad.secom.core.models.enums.SubscriptionEventEnum;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.Path;
 
 @Component
 @Path("/")
 @Validated
 @Slf4j
 public class SubscriptionNotificationSecomController implements SubscriptionNotificationSecomInterface {
+
+    /**
+     * Attach the web-socket as a simple messaging template
+     */
+    @Autowired
+    SimpMessagingTemplate webSocket;
 
     /**
      * POST /v1/subscription/notification : The interface receives notifications
@@ -41,14 +49,14 @@ public class SubscriptionNotificationSecomController implements SubscriptionNoti
      * @return the subscription notification response object
      */
     public SubscriptionNotificationResponseObject subscriptionNotification(@Valid SubscriptionNotificationObject subscriptionNotificationObject) {
-        return null;
-    }
+        // Send the subscription notification to the web-socket
+        this.webSocket.convertAndSend(
+                "/topic/secom/subscription/" + (subscriptionNotificationObject.getEventEnum() == SubscriptionEventEnum.SUBSCRIPTION_CREATED ? "created" : "removed"),
+                subscriptionNotificationObject.getSubscriptionIdentifier()
+        );
 
-    @Path(SUBSCRIPTION_NOTIFICATION_INTERFACE_PATH)
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String subscriptionNotificationGet() {
-        return "test";
+        // Return the response
+        return new SubscriptionNotificationResponseObject();
     }
 
 }
