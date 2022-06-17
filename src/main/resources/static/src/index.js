@@ -102,12 +102,12 @@ function connect() {
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             stompClient.subscribe('/topic/secom/subscription/created', function (msg) {
-                //showMessage(JSON.parse(msg.body));
-                console.log(msg);
+                $("#subscriptionFail").hide();
+                $("#subscriptionSuccess").show();
             });
             stompClient.subscribe('/topic/secom/subscription/removed', function (msg) {
-                //showMessage(JSON.parse(msg.body));
-                console.warn(msg);
+                $("#subscriptionSuccess").hide();
+                $("#subscriptionFail").show();
             });
             stompClient.subscribe('/topic/secom/subscription/update', function (msg) {
                 loadAtoNGeometry(JSON.parse(msg.body));
@@ -115,15 +115,15 @@ function connect() {
         });
     } else {
         stompClient.subscribe('/topic/secom/subscription/created', function (msg) {
-            //showMessage(JSON.parse(msg.body));
-            console.log(msg);
+            $("#subscriptionFail").hide();
+            $("#subscriptionSuccess").show();
         });
         stompClient.subscribe('/topic/secom/subscription/removed', function (msg) {
-            //showMessage(JSON.parse(msg.body));
-            console.warn(msg);
+            $("#subscriptionSuccess").hide();
+            $("#subscriptionFail").show();
         });
         stompClient.subscribe('/topic/secom/subscription/update', function (msg) {
-            loadAtoNGeometry(JSON.parse(aton));
+            loadAtoNGeometry(JSON.parse(msg.body));
         });
     }
 }
