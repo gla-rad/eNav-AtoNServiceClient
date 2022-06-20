@@ -16,6 +16,7 @@
 
 package org.grad.eNav.atonServiceClient.controllers.secom;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.grad.secom.core.interfaces.SubscriptionNotificationSecomInterface;
 import org.grad.secom.core.models.SubscriptionNotificationObject;
@@ -48,6 +49,7 @@ public class SubscriptionNotificationSecomController implements SubscriptionNoti
      * @param subscriptionNotificationObject the subscription notification request object
      * @return the subscription notification response object
      */
+    @Tag(name = "SECOM")
     public SubscriptionNotificationResponseObject subscriptionNotification(@Valid SubscriptionNotificationObject subscriptionNotificationObject) {
         // Send the subscription notification to the web-socket
         this.webSocket.convertAndSend(

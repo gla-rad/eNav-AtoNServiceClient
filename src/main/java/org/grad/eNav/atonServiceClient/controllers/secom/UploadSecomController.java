@@ -23,6 +23,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.util.encoders.Base64;
 import org.grad.eNav.atonServiceClient.utils.GeometryJSONDeserializer;
@@ -72,6 +73,7 @@ public class UploadSecomController implements UploadSecomInterface {
      * @param uploadObject the upload object
      * @return the upload response object
      */
+    @Tag(name = "SECOM")
     public UploadResponseObject upload(@Valid UploadObject uploadObject) {
         // Initialise the response
         UploadResponseObject uploadResponseObject = new UploadResponseObject();
