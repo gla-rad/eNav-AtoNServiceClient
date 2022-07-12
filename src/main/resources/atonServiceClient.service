@@ -1,0 +1,9 @@
+[Unit]
+Description=GRAD e-Nav AtoN Service Client
+After=syslog.target
+
+[Service]
+ExecStart=/opt/e-nav/atonServiceClient/atonServiceClient.jar
+
+[Install]
+WantedBy=multi-user.target
