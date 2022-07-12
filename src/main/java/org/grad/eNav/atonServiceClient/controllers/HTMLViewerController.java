@@ -94,7 +94,7 @@ public class HTMLViewerController {
     }
 
     /**
-     * The about page of the VDES Controller Application.
+     * The about page of the AtoN Service Client Application.
      *
      * @param model The application UI model
      * @return The index page
