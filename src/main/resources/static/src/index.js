@@ -98,7 +98,7 @@ $(() => {
 function connect() {
     var endpoint = $( "#endpoint option:selected" ).text();
     if(stompClient == null) {
-        var socket = new SockJS('/aton-service-client-websocket');
+        var socket = new SockJS(location.href.substring(0, location.href.lastIndexOf('/')) + '/aton-service-client-websocket');
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function (frame) {
             stompClient.subscribe('/topic/secom/subscription/created', function (msg) {
