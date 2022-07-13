@@ -18,23 +18,15 @@ package org.grad.eNav.atonServiceClient.controllers.secom;
 
 import _int.iala_aism.s125.gml._0_0.MemberType;
 import _int.iala_aism.s125.gml._0_0.S125AidsToNavigationType;
-import _net.opengis.gml.profiles.AbstractFeatureMemberType;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.util.encoders.Base64;
-import org.grad.eNav.atonServiceClient.utils.GeometryJSONDeserializer;
-import org.grad.eNav.atonServiceClient.utils.GeometryJSONSerializer;
-import org.grad.eNav.atonServiceClient.utils.GeometryS125Converter;
 import org.grad.eNav.s125.utils.S125Utils;
 import org.grad.secom.core.interfaces.UploadSecomInterface;
 import org.grad.secom.core.models.UploadObject;
 import org.grad.secom.core.models.UploadResponseObject;
 import org.grad.secom.core.models.enums.SECOM_ResponseCodeEnum;
-import org.locationtech.jts.geom.Geometry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
@@ -44,9 +36,6 @@ import javax.validation.Valid;
 import javax.ws.rs.Path;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Predicate;
 
 @Component
 @Path("/")
@@ -67,7 +56,7 @@ public class UploadSecomController implements UploadSecomInterface {
     SimpMessagingTemplate webSocket;
 
     /**
-     * POST /api/secom/v1/dataset : Accepts the incoming AtoN Service data in
+     * POST /api/secom/v1/object : Accepts the incoming AtoN Service data in
      * a SECOM-compliant S-125 format.
      *
      * @param uploadObject the upload object
