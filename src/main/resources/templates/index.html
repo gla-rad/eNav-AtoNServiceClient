@@ -18,8 +18,8 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <th:block th:include="fragments/general.html :: headerfiles"></th:block>
-    <link rel="stylesheet" th:href="@{/webjars/leaflet/dist/leaflet.css}" />
-    <link rel="stylesheet" th:href="@{/css/resultmark.css}"/>
+    <link rel="stylesheet" th:href="@{webjars/leaflet/dist/leaflet.css}" />
+    <link rel="stylesheet" th:href="@{css/resultmark.css}"/>
 </head>
 <body>
     <noscript>
@@ -166,13 +166,13 @@
         <div th:replace="fragments/general.html :: footer"></div>
     </div>
     <div th:replace="fragments/general.html :: error-dialog"></div>
-    <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
-    <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
-    <script th:src="@{/webjars/sockjs-client/sockjs.min.js}"></script>
-    <script th:src="@{/webjars/stomp-websocket/stomp.min.js}"></script>
-    <script th:src="@{/webjars/leaflet/dist/leaflet.js}"></script>
-    <script th:src="@{/src/common.js}"></script>
-    <script th:src="@{/src/api.subscription.js}"></script>
-    <script th:src="@{/src/index.js}"></script>
+    <script th:src="@{webjars/jquery/jquery.min.js}"></script>
+    <script th:src="@{webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <script th:src="@{webjars/sockjs-client/sockjs.min.js}"></script>
+    <script th:src="@{webjars/stomp-websocket/stomp.min.js}"></script>
+    <script th:src="@{webjars/leaflet/dist/leaflet.js}"></script>
+    <script th:src="@{src/common.js}"></script>
+    <script th:src="@{src/api.subscription.js}"></script>
+    <script th:src="@{src/index.js}"></script>
 </body>
 </html>
