@@ -12,7 +12,16 @@
         "name": "Apache 2.0",
         "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
       }
-    }
+    },
+    "servers": [
+      {
+        "url": "https://rnavlab.gla-rad.org/aton-client"
+      }, {
+        "url": "https://palatia:8768"
+      }, {
+        "url": "https://localhost:8768"
+      }
+    ]
   },
   "resourcePackages": [
     "org.grad.eNav.atonServiceClient.controllers.secom"
