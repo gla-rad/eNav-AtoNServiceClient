@@ -16,24 +16,14 @@
 
 package org.grad.eNav.atonServiceClient.config;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.security.web.SecurityFilterChain;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import static org.springframework.security.config.Customizer.withDefaults;
 
 /**
  * The Web Security Configuration.
@@ -42,7 +32,7 @@ import java.io.IOException;
  */
 @Configuration
 @EnableWebSecurity
-class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+class WebSecurityConfig {
 
     /**
      * The HTTP security configuration.
@@ -53,31 +43,35 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @param httpSecurity The HTTP security
      * @throws Exception Exception thrown while configuring the security
      */
-    @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers(HttpMethod.GET,
-                            "/webjars/**",  //bootstrap
-                            "/css/**",          //css files
-                            "/lib/**",          //js files
-                            "/images/**",       //the images
-                            "/src/**",          //the javascript sources
-                            "/", "/index.html"  // The main index page
-                    ).permitAll()
-                    .antMatchers(
-                            "/api/secom/**" //the SECOM interfaces
-                    ).permitAll()
-                    .anyRequest().authenticated()
-                    .and()
+                .antMatchers(HttpMethod.GET,
+                        "/webjars/**",  //bootstrap
+                        "/css/**",          //css files
+                        "/lib/**",          //js files
+                        "/images/**",       //the images
+                        "/src/**",          //the javascript sources
+                        "/", "/index.html"  // The main index page
+                ).permitAll()
+                .antMatchers(
+                        "/api/secom/**",        //the SECOM interfaces
+                        "/aton-service-client-websocket/**" //the web-socket
+                ).permitAll()
+                .anyRequest().authenticated()
+                .and()
                 .formLogin()
-                    .permitAll()
-                    .and()
+                .permitAll()
+                .and()
                 .logout()
-                    .permitAll()
-                    .and()
-                .httpBasic();
+                .permitAll()
+                .and()
+                .httpBasic(withDefaults());
+
+        // Return the filter chain
+        return httpSecurity.build();
     }
 
 //    @Override
