@@ -58,17 +58,18 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers(
-                            "/webjars/**",   //bootstrap
+                    .antMatchers(HttpMethod.GET,
+                            "/webjars/**",  //bootstrap
                             "/css/**",          //css files
                             "/lib/**",          //js files
                             "/images/**",       //the images
                             "/src/**",          //the javascript sources
-                            "/api/secom/**",    //the SECOM interfaces
                             "/", "/index.html"  // The main index page
                     ).permitAll()
-                    .antMatchers(HttpMethod.POST, "/api/secom/v1/upload").permitAll()
-                    .anyRequest().permitAll()
+                    .antMatchers(
+                            "/api/secom/**" //the SECOM interfaces
+                    ).permitAll()
+                    .anyRequest().authenticated()
                     .and()
                 .formLogin()
                     .permitAll()
