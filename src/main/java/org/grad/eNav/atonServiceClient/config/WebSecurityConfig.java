@@ -165,14 +165,16 @@ class WebSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                         "/css/**",          //css files
                         "/lib/**",          //js files
                         "/images/**",       //the images
-                        "/src/**"          //the javascript sources
+                        "/src/**",          //the javascript sources
+                        "/api/secom/**",    //the SECOM interfaces
+                        "/" , "index.html"  //the home page
                 ).permitAll()
                 .requestMatchers(EndpointRequest.to(
                         InfoEndpoint.class,         //info endpoints
                         HealthEndpoint.class        //health endpoints
                 )).permitAll()
                 .requestMatchers(EndpointRequest.toAnyEndpoint())
-                .permitAll()
+                .hasRole("ACTUATOR")
                 .anyRequest()
                 .authenticated();
     }
