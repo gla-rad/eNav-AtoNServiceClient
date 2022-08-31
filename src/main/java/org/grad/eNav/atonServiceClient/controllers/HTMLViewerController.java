@@ -111,4 +111,17 @@ public class HTMLViewerController {
         return "about";
     }
 
+    /**
+     * Logs the user out of the authenticated session.
+     *
+     * @param request The logout request
+     * @return The home  redirection
+     * @throws ServletException Servlet Exception during the logout
+     */
+    @GetMapping(path = "/logout")
+    public ModelAndView logout(HttpServletRequest request) throws ServletException {
+        request.logout();
+        return new ModelAndView("redirect:" + "/");
+    }
+
 }
