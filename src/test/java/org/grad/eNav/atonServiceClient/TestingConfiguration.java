@@ -22,6 +22,6 @@ import org.springframework.context.annotation.Configuration;
  * The Test Configuration.
  */
 @Configuration
-public class TestConfiguration {
+public class TestingConfiguration {
 
 }
