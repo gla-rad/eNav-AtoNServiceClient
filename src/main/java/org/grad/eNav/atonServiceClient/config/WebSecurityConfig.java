@@ -141,7 +141,8 @@ class WebSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                         "/lib/**",          //js files
                         "/images/**",       //the images
                         "/src/**",          //the javascript sources
-                        "/api/secom/**"     //the SECOM interfaces
+                        "/api/secom/**",    //the SECOM interfaces
+                        "/aton-service-client-websocket/**" //the web-socket
                 );
     }
 
@@ -166,8 +167,11 @@ class WebSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                         "/lib/**",          //js files
                         "/images/**",       //the images
                         "/src/**",          //the javascript sources
-                        "/api/secom/**",    //the SECOM interfaces
                         "/" , "index.html"  //the home page
+                ).permitAll()
+                .antMatchers(
+                        "/api/secom/**",        //the SECOM interfaces
+                        "/aton-service-client-websocket/**" //the web-socket
                 ).permitAll()
                 .requestMatchers(EndpointRequest.to(
                         InfoEndpoint.class,         //info endpoints
