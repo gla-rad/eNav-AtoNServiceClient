@@ -17,10 +17,17 @@
 package org.grad.eNav.atonServiceClient.components;
 
 import lombok.extern.slf4j.Slf4j;
-import org.grad.secom.core.base.DigitalSignatureCertificate;
 import org.grad.secom.core.base.SecomSignatureValidator;
+import org.grad.secom.core.models.enums.DigitalSignatureAlgorithmEnum;
+import org.grad.secom.core.utils.SecomPemUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.security.cert.CertificateException;
 
 /**
  * The SECOM Signature Validator Implementation.
@@ -38,33 +45,44 @@ public class SecomSignatureValidatorImpl implements SecomSignatureValidator {
     /**
      * The Application Name.
      */
-    @Value("${spring.application.name:aton-service}")
-    String appName;
+    @Value("${gla.rad.aton-service-client.secom.signing-algorithm:SHA256withECDSA}")
+    String defaultSigningAlgorithm;
 
     /**
-     * This function overrides the interface definition to link the SECOM
-     * signature verification with the cKeeper operation. A service can request
-     * cKeeper to verify a content, using a valid certificate and the signature
-     * provided.
+     * Returns the digital signature algorithm for the signature validator.
+     * In SECOM, by default this should be DSA, also ECDSA could be used
+     * to generate smaller signatures.
+     *
+     * @return the digital signature algorithm for the signature provider
+     */
+    public DigitalSignatureAlgorithmEnum getSignatureAlgorithm() {
+        return DigitalSignatureAlgorithmEnum.fromValue(this.defaultSigningAlgorithm);
+    }
+
+    /**
+     * The signature validation operation. This should support the provision
+     * of the message content (preferably in a Base64 format) and the signature
+     * to validate the content against.
      *
      * @param signatureCertificate  The digital signature certificate to be used for the signature generation
+     * @param algorithm             The algorithm used for the signature generation
      * @param content               The context (in Base64 format) to be validated
      * @param signature             The signature to validate the context against
-     * @return
+     * @return whether the signature validation was successful or not
      */
     @Override
-    public boolean validateSignature(DigitalSignatureCertificate signatureCertificate, String content, String signature) {
-        log.info(content);
-        // Construct the signature verification object
-//        final SignatureVerificationRequestDto verificationRequest = new SignatureVerificationRequestDto();
-//        verificationRequest.setContent(content);
-//        verificationRequest.setSignature(signature);
-//
-//        // Ask cKeeper to verify the signature
-//        final Response response = this.cKeeperClient.verifyEntitySignature(this.appName, verificationRequest);
-//
-//        // If everything went OK, return a positive response
-//        return response.status() < 300;
-        return true;
+    public boolean validateSignature(String signatureCertificate, DigitalSignatureAlgorithmEnum algorithm, String content, byte[] signature) {
+        // Create a new signature to sign the provided content
+        try {
+            Signature sign = Signature.getInstance(algorithm.getValue());
+            sign.initVerify(SecomPemUtils.getCertFromPem(signatureCertificate));
+            sign.update(content.getBytes());
+
+            // Sign and return the signature
+            return sign.verify(signature);
+        } catch (NoSuchAlgorithmException | CertificateException | SignatureException | InvalidKeyException ex) {
+            log.error(ex.getMessage());
+            return false;
+        }
     }
 }
