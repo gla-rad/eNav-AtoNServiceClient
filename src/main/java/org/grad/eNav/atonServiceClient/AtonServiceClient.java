@@ -16,8 +16,11 @@
 
 package org.grad.eNav.atonServiceClient;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.security.Security;
 
 /**
  * The Ato Application Micro-Service.
@@ -33,6 +36,7 @@ public class AtonServiceClient {
 	 * @param args 		The application arguments
 	 */
 	public static void main(String[] args) {
+		Security.addProvider(new BouncyCastleProvider());
 		SpringApplication.run(AtonServiceClient.class, args);
 	}
 
