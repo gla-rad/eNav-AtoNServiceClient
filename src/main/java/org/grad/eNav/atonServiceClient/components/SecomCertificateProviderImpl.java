@@ -143,6 +143,15 @@ public class SecomCertificateProviderImpl implements SecomCertificateProvider {
         return digitalSignatureCertificate;
     }
 
+    @Override
+    public KeyStore getTrustStore() {
+        try {
+            return KeyStoreUtils.getKeyStore(this.trustStore, this.trustStorePassword, this.trustStoreType);
+        } catch (KeyStoreException | NoSuchAlgorithmException | IOException | CertificateException ex) {
+            return null;
+        }
+    }
+
     /**
      * Returns a list of trusted certificates for the signature validation.
      * This is only required for SECOM consumers so the default operation does
