@@ -17,7 +17,9 @@
 package org.grad.eNav.atonServiceClient.components;
 
 import lombok.extern.slf4j.Slf4j;
-import org.grad.secom.core.base.SecomSignatureValidator;
+import org.apache.commons.lang.NotImplementedException;
+import org.grad.secom.core.base.DigitalSignatureCertificate;
+import org.grad.secom.core.base.SecomSignatureProvider;
 import org.grad.secom.core.models.enums.DigitalSignatureAlgorithmEnum;
 import org.grad.secom.core.utils.SecomPemUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +42,7 @@ import java.security.cert.CertificateException;
  */
 @Component
 @Slf4j
-public class SecomSignatureValidatorImpl implements SecomSignatureValidator {
+public class SecomSignatureValidatorImpl implements SecomSignatureProvider {
 
     /**
      * The Application Name.
@@ -60,23 +62,39 @@ public class SecomSignatureValidatorImpl implements SecomSignatureValidator {
     }
 
     /**
+     * This function overrides the interface definition to link the SECOM
+     * signature provision with the cKeeper operation. A service can request
+     * cKeeper to sign a payload, using a valid certificate based on the
+     * provided digital signature certificate information.
+     *
+     * @param signatureCertificate  The digital signature certificate to be used for the signature generation
+     * @param algorithm             The algorithm to be used for the signature generation
+     * @param payload               The payload to be signed, (preferably Base64 encoded)
+     * @return The signature generated
+     */
+    @Override
+    public byte[] generateSignature(DigitalSignatureCertificate signatureCertificate, DigitalSignatureAlgorithmEnum algorithm, byte[] payload) {
+        throw new NotImplementedException("The AtoN Client does not have the capability of generating signatures");
+    }
+
+    /**
      * The signature validation operation. This should support the provision
      * of the message content (preferably in a Base64 format) and the signature
      * to validate the content against.
      *
      * @param signatureCertificate  The digital signature certificate to be used for the signature generation
      * @param algorithm             The algorithm used for the signature generation
-     * @param content               The context (in Base64 format) to be validated
      * @param signature             The signature to validate the context against
+     * @param content               The context (in Base64 format) to be validated
      * @return whether the signature validation was successful or not
      */
     @Override
-    public boolean validateSignature(String signatureCertificate, DigitalSignatureAlgorithmEnum algorithm, String content, byte[] signature) {
+    public boolean validateSignature(String signatureCertificate, DigitalSignatureAlgorithmEnum algorithm, byte[] signature, byte[] content) {
         // Create a new signature to sign the provided content
         try {
             Signature sign = Signature.getInstance(algorithm.getValue());
             sign.initVerify(SecomPemUtils.getCertFromPem(signatureCertificate));
-            sign.update(content.getBytes());
+            sign.update(content);
 
             // Sign and return the signature
             return sign.verify(signature);

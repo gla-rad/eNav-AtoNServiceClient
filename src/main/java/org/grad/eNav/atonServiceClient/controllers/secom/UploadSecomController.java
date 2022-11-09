@@ -21,7 +21,6 @@ import _int.iala_aism.s125.gml._0_0.S125AidsToNavigationType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.util.encoders.Base64;
 import org.grad.eNav.s125.utils.S125Utils;
 import org.grad.secom.core.interfaces.UploadSecomInterface;
 import org.grad.secom.core.models.UploadObject;
@@ -36,6 +35,7 @@ import javax.validation.Valid;
 import javax.ws.rs.Path;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import java.nio.charset.StandardCharsets;
 
 @Component
 @Path("/")
@@ -68,12 +68,11 @@ public class UploadSecomController implements UploadSecomInterface {
         UploadResponseObject uploadResponseObject = new UploadResponseObject();
 
         // Get the upload object data
-        String encoded =  uploadObject.getEnvelope().getData();
-        String decoded = new String(Base64.decode(encoded));
+        String data = new String(uploadObject.getEnvelope().getData(), StandardCharsets.UTF_8);
         
         // Decode the and down the web-socket
         try {
-            S125Utils.unmarshallS125(decoded)
+            S125Utils.unmarshallS125(data)
                     .getImembersAndMembers()
                     .stream()
                     .filter(MemberType.class::isInstance)
