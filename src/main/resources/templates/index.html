@@ -17,7 +17,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <th:block th:include="fragments/general.html :: headerfiles"></th:block>
+    <th:block th:insert="~{fragments/general.html :: headerfiles}"></th:block>
     <link rel="stylesheet" th:href="@{webjars/leaflet/dist/leaflet.css}" />
     <link rel="stylesheet" th:href="@{css/resultmark.css}"/>
 </head>
@@ -30,7 +30,7 @@
         </h2>
     </noscript>
     <div class="d-flex flex-column vh-100 sky-bg">
-        <div th:replace="fragments/general.html :: navbar"></div>
+        <div th:replace="~{fragments/general.html :: navbar}"></div>
         <div class="flex-fill">
             <div class="container-fluid">
                 <div class="row">
@@ -161,9 +161,9 @@
 
             </div>
         </div>
-        <div th:replace="fragments/general.html :: footer"></div>
+        <div th:replace="~{fragments/general.html :: footer}"></div>
     </div>
-    <div th:replace="fragments/general.html :: error-dialog"></div>
+    <div th:replace="~{fragments/general.html :: error-dialog}"></div>
     <script th:src="@{webjars/jquery/jquery.min.js}"></script>
     <script th:src="@{webjars/bootstrap/js/bootstrap.min.js}"></script>
     <script th:src="@{webjars/sockjs-client/sockjs.min.js}"></script>

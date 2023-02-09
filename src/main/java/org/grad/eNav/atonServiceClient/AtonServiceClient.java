@@ -27,7 +27,11 @@ import java.security.Security;
  *
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {
+		"org.grad.eNav.atonServiceClient",
+		"org.grad.secom",
+		"org.jboss.resteasy.springboot",
+})
 public class AtonServiceClient {
 
 	/**

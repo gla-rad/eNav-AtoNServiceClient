@@ -25,7 +25,7 @@ import _net.opengis.gml.profiles.*;
 import org.grad.eNav.s125.utils.S125Utils;
 import org.locationtech.jts.geom.*;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import java.util.*;
 
 /**

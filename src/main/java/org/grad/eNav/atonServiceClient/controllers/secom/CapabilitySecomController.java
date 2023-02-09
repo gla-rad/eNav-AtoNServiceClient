@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.ws.rs.Path;
+import jakarta.ws.rs.Path;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;

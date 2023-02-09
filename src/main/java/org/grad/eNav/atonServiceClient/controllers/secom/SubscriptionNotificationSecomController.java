@@ -27,8 +27,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
-import javax.ws.rs.Path;
+import jakarta.validation.Valid;
+import jakarta.ws.rs.Path;
 
 @Component
 @Path("/")
