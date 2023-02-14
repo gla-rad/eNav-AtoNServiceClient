@@ -50,30 +50,30 @@ class HTMLViewerControllerTest {
     /**
      * Test that we can access the main index HTML page.
      */
-//    @Test
-//    void testGetIndex() throws Exception {
-//
-//        // Perform the MVC request
-//        this.mockMvc.perform(get("/index.html")
-//                        .param("username", "user")
-//                        .param("password", "password")
-//                        .with(csrf())
-//                        .contentType(MediaType.TEXT_HTML))
-//                .andExpect(status().isOk());
-//    }
-//
-//    /**
-//     * Test that we can access the about HTML page.
-//     */
-//    @Test
-//    void testGetAbout() throws Exception {
-//        // Perform the MVC request
-//        this.mockMvc.perform(get("/about")
-//                        .param("username", "user")
-//                        .param("password", "password")
-//                        .with(csrf())
-//                        .contentType(MediaType.TEXT_HTML))
-//                .andExpect(status().isOk());
-//    }
+    @Test
+    void testGetIndex() throws Exception {
+
+        // Perform the MVC request
+        this.mockMvc.perform(get("/index")
+                        .param("username", "user")
+                        .param("password", "password")
+                        .with(csrf())
+                        .contentType(MediaType.TEXT_HTML))
+                .andExpect(status().isOk());
+    }
+
+    /**
+     * Test that we can access the about HTML page.
+     */
+    @Test
+    void testGetAbout() throws Exception {
+        // Perform the MVC request
+        this.mockMvc.perform(get("/about")
+                        .param("username", "user")
+                        .param("password", "password")
+                        .with(csrf())
+                        .contentType(MediaType.TEXT_HTML))
+                .andExpect(status().isOk());
+    }
 
 }

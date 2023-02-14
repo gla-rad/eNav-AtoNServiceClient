@@ -64,7 +64,7 @@
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item" sec:authorize="isAuthenticated()">
-                            <a class="nav-link" href="index.html">
+                            <a class="nav-link" href="index">
                                 Home
                             </a>
                         </li>
@@ -76,12 +76,12 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li class="nav-item" sec:authorize="!isAuthenticated()">
-                            <a class="nav-link" href="login" th:href="@{/sso/login}">
+                            <a class="nav-link" href="login" th:href="@{login}">
                                 <i class="fas fa-sign-in-alt"></i>&nbsp;Sign in
                             </a>
                         </li>
                         <li sec:authorize="isAuthenticated()">
-                            <a class="nav-link" href="logout" th:href="@{/sso/logout}">
+                            <a class="nav-link" href="logout" th:href="@{logout}">
                                 <i class="fas fa-sign-out-alt"></i> Logout
                             </a>
                         </li>
@@ -101,7 +101,7 @@
             </div>
             <div class="row">
                 <div class="d-flex justify-content-center">
-                    <button type="button" class="btn btn-primary" title="Sign In" onclick="window.location.href='/sso/login'">
+                    <button type="button" class="btn btn-primary" title="Sign In" onclick="window.location.href='login'">
                         <i class="fas fa-sign-in-alt"></i>&nbsp;
                         <span class="btn-label">Sign In</span>
                     </button>

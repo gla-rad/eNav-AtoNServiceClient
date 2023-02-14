@@ -83,7 +83,7 @@ public class HTMLViewerController {
      * @param model The application UI model
      * @return The index page
      */
-    @GetMapping("/index.html")
+    @GetMapping("/index")
     public String index(Model model) {
         model.addAttribute("appName", this.appName);
         model.addAttribute("appOperatorUrl", this.appOperatorUrl);
@@ -112,10 +112,21 @@ public class HTMLViewerController {
     }
 
     /**
+     * Logs the user in an authenticated session and redirect to the home page.
+     *
+     * @param request The logout request
+     * @return The home page
+     */
+    @GetMapping(path = "/login")
+    public ModelAndView login(HttpServletRequest request) {
+        return new ModelAndView("redirect:" + "/");
+    }
+
+    /**
      * Logs the user out of the authenticated session.
      *
      * @param request The logout request
-     * @return The home  redirection
+     * @return The home page
      * @throws ServletException Servlet Exception during the logout
      */
     @GetMapping(path = "/logout")
