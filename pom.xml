@@ -144,6 +144,11 @@
             <version>0.5.16</version>
             <classifier>jakarta</classifier>
         </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>4.0.1</version>
+        </dependency>
 
         <!-- SECOM -->
         <dependency>
