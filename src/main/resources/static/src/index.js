@@ -248,5 +248,5 @@ function dateToSecomFormat(date) {
     return isoDateTimeString.toISOString()
             .replaceAll("-","")
             .replaceAll(":","")
-            .split(.)[0] + "Z";
+            .split(".")[0] + "Z";
 }
