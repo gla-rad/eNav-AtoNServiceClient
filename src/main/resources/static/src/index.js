@@ -237,14 +237,14 @@ function clearAtonMarkers() {
  */
 function dateToSecomFormat(date) {
     // Sanity Check
-    nullCheckedDate = = trimToNull(date)
+    var nullCheckedDate = trimToNull(date)
     if(nullCheckedDate == null || nullCheckedDate == undefined) {
         return null;
     }
 
     // To achieve out goal the easier way is to get the ISO date format
     // and remove the bits we don't like
-    isoDateTimeString = new Date(date);
+    var isoDateTimeString = new Date(date);
     return isoDateTimeString.toISOString()
             .replaceAll("-","")
             .replaceAll(":","")
