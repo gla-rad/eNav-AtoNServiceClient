@@ -212,7 +212,7 @@ function loadAtoNGeometry(aton) {
 }
 
 /**
- * Clears all the satellite map positions from the RAIM Availability map.
+ * Clears all the AtoN markers from the GUI map.
  */
 function clearAtonMarkers() {
     // First check that we have a map
