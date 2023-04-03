@@ -82,7 +82,7 @@ public class UploadSecomController implements UploadSecomInterface {
                     .filter(S125AidsToNavigationType.class::isInstance)
                     .map(S125AidsToNavigationType.class::cast)
                     .forEach(s125PubSubData -> this.webSocket.convertAndSend("/topic/secom/subscription/update" , s125PubSubData));
-        } catch (Exception e) {
+        } catch (JAXBException e) {
             uploadResponseObject.setSECOM_ResponseCode(SECOM_ResponseCodeEnum.SCHEMA_VALIDATION_ERROR);
             uploadResponseObject.setResponseText("Unable to validate the provided S-125 XML schema.");
         }
