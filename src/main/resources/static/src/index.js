@@ -152,8 +152,8 @@ function subscribe() {
         productVersion: trimToNull($("#productVersionInput").val()),
         geometry: trimToNull($("#geometyInput").val()),
         unlocode: trimToNull($("#unlocodeInput").val()),
-        subscriptionPeriodStart: trimToNull($("#subscriptionPeriodStartInput").val()),
-        subscriptionPeriodEnd: trimToNull($("#subscriptionPeriodEndInput").val())
+        subscriptionPeriodStart: dateToSecomFormat($("#subscriptionPeriodStartInput").val()),
+        subscriptionPeriodEnd: dateToSecomFormat($("#subscriptionPeriodEndInput").val())
     };
 
     // Perform the Subscription API request
@@ -212,7 +212,7 @@ function loadAtoNGeometry(aton) {
 }
 
 /**
- * Clears all the satellite map positions from the RAIM Availability map.
+ * Clears all the AtoN markers from the GUI map.
  */
 function clearAtonMarkers() {
     // First check that we have a map
@@ -227,4 +227,26 @@ function clearAtonMarkers() {
             atonMarkers.splice(i, 1);
         }
     };
+}
+
+/**
+ * We want to format the date in a format that is compatible with the
+ * SECOM date-time format which looks a bit like this:
+ * FORMAT:  yyyyMMddTHHmmss
+ * EXAMPLE: 19850412T101530
+ */
+function dateToSecomFormat(date) {
+    // Sanity Check
+    var nullCheckedDate = trimToNull(date)
+    if(nullCheckedDate == null || nullCheckedDate == undefined) {
+        return null;
+    }
+
+    // To achieve out goal the easier way is to get the ISO date format
+    // and remove the bits we don't like
+    var isoDateTimeString = new Date(date);
+    return isoDateTimeString.toISOString()
+            .replaceAll("-","")
+            .replaceAll(":","")
+            .split(".")[0] + "Z";
 }
