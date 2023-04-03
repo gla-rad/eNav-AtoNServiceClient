@@ -201,8 +201,8 @@ function unsubscribe() {
  */
 function loadAtoNGeometry(aton) {
     atonMarker = L.marker([
-                aton.geometries.pointProperty.point.pos.value[1],
-                aton.geometries.pointProperty.point.pos.value[0]
+                aton.geometries[0].pointProperty.point.pos.value[1],
+                aton.geometries[0].pointProperty.point.pos.value[0]
             ])
             .addTo(subscriptionMap)
             .bindPopup(aton.atonNumber + ' - ' + aton.textualDescription);
