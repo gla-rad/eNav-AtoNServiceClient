@@ -68,7 +68,7 @@ public class SecomTrustStoreProviderImpl implements SecomTrustStoreProvider {
     }
 
     /**
-     * Returns the trust store that contains the trusted SECOm certificate chain.
+     * Returns the trust store that contains the trusted SECOM certificate chain.
      * This is required to validate the received certificate for every applicable
      * request.
      *
