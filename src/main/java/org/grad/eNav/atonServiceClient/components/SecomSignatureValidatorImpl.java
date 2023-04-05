@@ -32,6 +32,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Signature;
 import java.security.SignatureException;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 
@@ -94,8 +95,10 @@ public class SecomSignatureValidatorImpl implements SecomSignatureProvider {
             sign.update(payload);
 
             // Sign and return the signature
-            return sign.sign();
-        } catch (NoSuchAlgorithmException | IOException | InvalidKeySpecException| SignatureException | InvalidKeyException ex) {
+            byte[] signature =  sign.sign();
+            this.validateSignature(SecomPemUtils.getMinifiedPemFromCert(signatureCertificate.getCertificate()), algorithm, signature, payload);
+            return signature;
+        } catch (NoSuchAlgorithmException | IOException | InvalidKeySpecException| SignatureException | InvalidKeyException | CertificateEncodingException ex) {
             log.error(ex.getMessage());
             return null;
         }
