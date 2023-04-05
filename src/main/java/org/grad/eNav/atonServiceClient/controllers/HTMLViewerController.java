@@ -78,6 +78,12 @@ public class HTMLViewerController {
     private String appMrn;
 
     /**
+     * The SECOM Service URL to subscribe to.
+     */
+    @Value("${gla.rad.aton-service-client.secom.serviceIUrl:}")
+    private String secomServiceUrl;
+
+    /**
      * The home page of the VDES Controller Application.
      *
      * @param model The application UI model
@@ -89,6 +95,7 @@ public class HTMLViewerController {
         model.addAttribute("appOperatorUrl", this.appOperatorUrl);
         model.addAttribute("appCopyright", this.appCopyright);
         model.addAttribute("appMrn", this.appMrn);
+        model.addAttribute("secomServiceUrl", this.secomServiceUrl);
         // Return the rendered index
         return "index";
     }
