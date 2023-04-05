@@ -48,7 +48,7 @@ import java.security.spec.InvalidKeySpecException;
 @Slf4j
 public class SecomSignatureValidatorImpl implements SecomSignatureProvider {
 
-    @Value("gla.rad.aton-service-client.secom.keypair.private:privateKey.pem")
+    @Value("${gla.rad.aton-service-client.secom.keypair.private:classpath:privateKey.pem}")
     Resource privateKeyFile;
 
     /**
