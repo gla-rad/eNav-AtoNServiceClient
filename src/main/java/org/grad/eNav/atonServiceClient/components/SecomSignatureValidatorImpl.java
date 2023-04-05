@@ -17,19 +17,23 @@
 package org.grad.eNav.atonServiceClient.components;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.NotImplementedException;
+import org.grad.eNav.atonServiceClient.utils.X509Utils;
 import org.grad.secom.core.base.DigitalSignatureCertificate;
 import org.grad.secom.core.base.SecomSignatureProvider;
 import org.grad.secom.core.models.enums.DigitalSignatureAlgorithmEnum;
 import org.grad.secom.core.utils.SecomPemUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
+import java.security.spec.InvalidKeySpecException;
 
 /**
  * The SECOM Signature Validator Implementation.
@@ -43,6 +47,15 @@ import java.security.cert.CertificateException;
 @Component
 @Slf4j
 public class SecomSignatureValidatorImpl implements SecomSignatureProvider {
+
+    @Value("gla.rad.aton-service-client.secom.keypair.private:classpath:privateKey.pem")
+    Resource privateKeyFile;
+
+    /**
+     * The Key-Pair Curve.
+     */
+    @Value("${gla.rad.aton-service-client.secom.keypair.curve:secp256r1}")
+    String keyPairCurve;
 
     /**
      * The Application Name.
@@ -74,7 +87,18 @@ public class SecomSignatureValidatorImpl implements SecomSignatureProvider {
      */
     @Override
     public byte[] generateSignature(DigitalSignatureCertificate signatureCertificate, DigitalSignatureAlgorithmEnum algorithm, byte[] payload) {
-        throw new NotImplementedException("The AtoN Client does not have the capability of generating signatures");
+        // Create a new signature to sign the provided content
+        try {
+            Signature sign = Signature.getInstance(algorithm.getValue());
+            sign.initSign(X509Utils.privateKeyFromPem(new String(this.privateKeyFile.getInputStream().readAllBytes(), StandardCharsets.UTF_8), this.keyPairCurve));
+            sign.update(payload);
+
+            // Sign and return the signature
+            return sign.sign();
+        } catch (NoSuchAlgorithmException | IOException | InvalidKeySpecException| SignatureException | InvalidKeyException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
     }
 
     /**

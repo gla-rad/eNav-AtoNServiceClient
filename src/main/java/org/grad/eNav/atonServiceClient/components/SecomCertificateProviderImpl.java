@@ -20,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.grad.secom.core.base.DigitalSignatureCertificate;
 import org.grad.secom.core.base.SecomCertificateProvider;
 import org.grad.secom.core.utils.KeyStoreUtils;
+import org.grad.secom.springboot3.components.SecomConfigProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -50,42 +52,6 @@ public class SecomCertificateProviderImpl implements SecomCertificateProvider {
     String appName;
 
     /**
-     * The X.509 Trust-Store.
-     */
-    @Value("${gla.rad.aton-service-client.secom.keyStore:keystore.jks}")
-    String keyStore;
-
-    /**
-     * The X.509 Trust-Store Password.
-     */
-    @Value("${gla.rad.aton-service-client.secom.keyStorePassword:password}")
-    String keyStorePassword;
-
-    /**
-     * The X.509 Trust-Store Type.
-     */
-    @Value("${gla.rad.aton-service-client.secom.keyStoreType:JKS}")
-    String keyStoreType;
-
-    /**
-     * The X.509 Trust-Store.
-     */
-    @Value("${gla.rad.aton-service-client.secom.trustStore:truststore.jks}")
-    String trustStore;
-
-    /**
-     * The X.509 Trust-Store Password.
-     */
-    @Value("${gla.rad.aton-service-client.secom.trustStorePassword:password}")
-    String trustStorePassword;
-
-    /**
-     * The X.509 Trust-Store Type.
-     */
-    @Value("${gla.rad.aton-service-client.secom.trustStoreType:JKS}")
-    String trustStoreType;
-
-    /**
      * The X.509 Certificate Alias.
      */
     @Value("${gla.rad.aton-service-client.secom.certificateAlias:certificate}")
@@ -96,6 +62,12 @@ public class SecomCertificateProviderImpl implements SecomCertificateProvider {
      */
     @Value("${gla.rad.aton-service-client.secom.rootCertificateAlias:rootCertificate}")
     String rootCertificateAlias;
+
+    /**
+     * The SECOM Configuration properties.
+     */
+    @Autowired
+    SecomConfigProperties secomConfigProperties;
 
     /**
      * This function overrides the interface definition to link the SECOM
@@ -111,7 +83,7 @@ public class SecomCertificateProviderImpl implements SecomCertificateProvider {
         final KeyStore keyStore;
         final X509Certificate certificate;
         try {
-            keyStore = KeyStoreUtils.getKeyStore(this.keyStore, this.keyStorePassword, this.keyStoreType);
+            keyStore = KeyStoreUtils.getKeyStore(this.secomConfigProperties.getKeystore(), this.secomConfigProperties.getKeystorePassword(), this.secomConfigProperties.getKeystoreType());
             certificate = (X509Certificate) keyStore.getCertificate(this.certificateAlias);
         } catch (KeyStoreException | NoSuchAlgorithmException | IOException | CertificateException ex) {
             throw new RuntimeException(ex);
@@ -121,7 +93,7 @@ public class SecomCertificateProviderImpl implements SecomCertificateProvider {
         final KeyStore trustStore;
         final X509Certificate rootCertificate;
         try {
-            trustStore = KeyStoreUtils.getKeyStore(this.trustStore, this.trustStorePassword, this.trustStoreType);
+            trustStore = KeyStoreUtils.getKeyStore(this.secomConfigProperties.getTruststore(), this.secomConfigProperties.getTruststorePassword(), this.secomConfigProperties.getTruststoreType());
             rootCertificate = (X509Certificate) trustStore.getCertificate(this.rootCertificateAlias);
         } catch (KeyStoreException | NoSuchAlgorithmException | IOException | CertificateException ex) {
             throw new RuntimeException(ex);
