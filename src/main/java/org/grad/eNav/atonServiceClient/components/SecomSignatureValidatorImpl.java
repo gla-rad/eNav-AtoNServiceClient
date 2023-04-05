@@ -95,10 +95,8 @@ public class SecomSignatureValidatorImpl implements SecomSignatureProvider {
             sign.update(payload);
 
             // Sign and return the signature
-            byte[] signature =  sign.sign();
-            this.validateSignature(SecomPemUtils.getMinifiedPemFromCert(signatureCertificate.getCertificate()), algorithm, signature, payload);
-            return signature;
-        } catch (NoSuchAlgorithmException | IOException | InvalidKeySpecException| SignatureException | InvalidKeyException | CertificateEncodingException ex) {
+            return sign.sign();
+        } catch (NoSuchAlgorithmException | IOException | InvalidKeySpecException| SignatureException | InvalidKeyException ex) {
             log.error(ex.getMessage());
             return null;
         }
