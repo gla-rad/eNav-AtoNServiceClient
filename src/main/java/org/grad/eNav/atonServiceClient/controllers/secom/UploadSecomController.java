@@ -36,6 +36,7 @@ import org.grad.secom.springboot3.components.SecomClient;
 import org.grad.secom.springboot3.components.SecomConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -53,6 +54,7 @@ import java.util.Optional;
 import static java.util.function.Predicate.not;
 
 @Component
+@DependsOn("secomSpringContext")
 @Path("/")
 @Validated
 @Slf4j
