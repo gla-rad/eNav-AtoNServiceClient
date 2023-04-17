@@ -42,7 +42,7 @@ import java.security.cert.CertificateException;
  */
 @Component
 @Slf4j
-public class SecomSignatureValidatorImpl implements SecomSignatureProvider {
+public class SecomSignatureProviderImpl implements SecomSignatureProvider {
 
     /**
      * The Application Name.
