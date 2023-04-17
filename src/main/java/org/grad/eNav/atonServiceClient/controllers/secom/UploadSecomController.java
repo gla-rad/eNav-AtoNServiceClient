@@ -18,42 +18,82 @@ package org.grad.eNav.atonServiceClient.controllers.secom;
 
 import _int.iala_aism.s125.gml._0_0.MemberType;
 import _int.iala_aism.s125.gml._0_0.S125AidsToNavigationType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;
-import org.grad.eNav.s125.utils.S125Utils;
-import org.grad.secom.core.interfaces.UploadSecomInterface;
-import org.grad.secom.core.models.UploadObject;
-import org.grad.secom.core.models.UploadResponseObject;
-import org.grad.secom.core.models.enums.SECOM_ResponseCodeEnum;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
-
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Path;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
+import org.grad.eNav.s125.utils.S125Utils;
+import org.grad.secom.core.interfaces.UploadSecomInterface;
+import org.grad.secom.core.models.*;
+import org.grad.secom.core.models.enums.AckRequestEnum;
+import org.grad.secom.core.models.enums.AckTypeEnum;
+import org.grad.secom.core.models.enums.SECOM_ResponseCodeEnum;
+import org.grad.secom.springboot3.components.SecomClient;
+import org.grad.secom.springboot3.components.SecomConfigProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
+
+import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static java.util.function.Predicate.not;
 
 @Component
+@DependsOn("secomSpringContext")
 @Path("/")
 @Validated
 @Slf4j
 public class UploadSecomController implements UploadSecomInterface {
 
     /**
-     * The Object Mapper.
+     * The SECOM Service URL to subscribe to.
      */
-    @Autowired
-    ObjectMapper objectMapper;
+    @Value("${gla.rad.aton-service-client.secom.serviceIUrl:}")
+    private String secomServiceUrl;
 
     /**
      * Attach the web-socket as a simple messaging template
      */
     @Autowired
     SimpMessagingTemplate webSocket;
+
+    /**
+     * The SECOM Configuration properties.
+     */
+    @Autowired
+    SecomConfigProperties secomConfigProperties;
+
+    // Class Variables
+    SecomClient secomClient;
+
+    /**
+     * The initialisation operation of the controller in order to setup a
+     * SECOM client that can respond with acknowledgements.
+     */
+    @PostConstruct
+    void init() throws IOException, UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException {
+        if(Strings.isNotBlank(this.secomServiceUrl)) {
+            this.secomClient = new SecomClient(
+                    new URL(this.secomServiceUrl),
+                    this.secomConfigProperties
+            );
+        }
+    }
 
     /**
      * POST /api/secom/v1/object : Accepts the incoming AtoN Service data in
@@ -82,7 +122,24 @@ public class UploadSecomController implements UploadSecomInterface {
                     .filter(S125AidsToNavigationType.class::isInstance)
                     .map(S125AidsToNavigationType.class::cast)
                     .forEach(s125PubSubData -> this.webSocket.convertAndSend("/topic/secom/subscription/update" , s125PubSubData));
-        } catch (JAXBException e) {
+
+            // Now generate an acknowledgement to be sent back if required
+            if(this.secomClient != null) {
+                Optional.of(uploadObject)
+                        .map(UploadObject::getEnvelope)
+                        .map(EnvelopeUploadObject::getAckRequest)
+                        .filter(not(AckRequestEnum.NO_ACK_REQUESTED::equals))
+                        .ifPresent(ackType -> {
+                            final AcknowledgementObject acknowledgementObject = new AcknowledgementObject();
+                            final EnvelopeAckObject envelopeAckObject = new EnvelopeAckObject();
+                            envelopeAckObject.setCreatedAt(LocalDateTime.now());
+                            envelopeAckObject.setTransactionIdentifier(uploadObject.getEnvelope().getTransactionIdentifier());
+                            envelopeAckObject.setAckType(AckTypeEnum.DELIVERED_ACK);
+                            acknowledgementObject.setEnvelope(envelopeAckObject);
+                            this.secomClient.acknowledgment(acknowledgementObject);
+                        });
+            }
+        } catch (JAXBException ex) {
             uploadResponseObject.setSECOM_ResponseCode(SECOM_ResponseCodeEnum.SCHEMA_VALIDATION_ERROR);
             uploadResponseObject.setResponseText("Unable to validate the provided S-125 XML schema.");
         }
