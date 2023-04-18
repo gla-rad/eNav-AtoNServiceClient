@@ -61,7 +61,7 @@ public class SecomSignatureProviderImpl implements SecomSignatureProvider {
     /**
      * The Application Name.
      */
-    @Value("${gla.rad.aton-service-client.secom.signing-algorithm:SHA256withCVC-ECDSA}")
+    @Value("${gla.rad.aton-service-client.secom.signing-algorithm:SHA256withDSA}")
     String defaultSigningAlgorithm;
 
     /**
