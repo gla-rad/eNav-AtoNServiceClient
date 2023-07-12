@@ -201,9 +201,14 @@
             <version>2.3.3</version>
         </dependency>
         <dependency>
-            <groupId>org.webjars.bowergithub.leaflet</groupId>
-            <artifactId>leaflet.draw</artifactId>
-            <version>1.0.4</version>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>leaflet-draw</artifactId>
+            <version>1.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>leaflet</artifactId>
+            <version>1.9.4</version>
         </dependency>
 
         <dependency>
