@@ -43,7 +43,6 @@ class SubscriptionApi {
             url: `${url}/v1/subscription`,
             type: 'DELETE',
             contentType: 'application/json',
-
             crossDomain: true,
             data: JSON.stringify(removeSubscriptionObject),
             success: callback,
