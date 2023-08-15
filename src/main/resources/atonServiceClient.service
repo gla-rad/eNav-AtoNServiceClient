@@ -1,8 +1,9 @@
 [Unit]
 Description=GRAD e-Nav AtoN Service Client
-After=syslog.target
+After=syslog.target docker.service
 
 [Service]
+ExecStartPre=/bin/sleep 15
 ExecStart=/opt/e-nav/atonServiceClient/atonServiceClient.jar
 
 [Install]
