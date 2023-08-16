@@ -54,7 +54,6 @@ import java.util.Optional;
 import static java.util.function.Predicate.not;
 
 @Component
-@DependsOn("secomSpringContext")
 @Path("/")
 @Validated
 @Slf4j
