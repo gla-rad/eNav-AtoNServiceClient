@@ -17,7 +17,7 @@
 package org.grad.eNav.atonServiceClient.controllers.secom;
 
 import _int.iala_aism.s125.gml._0_0.MemberType;
-import _int.iala_aism.s125.gml._0_0.S125AidsToNavigationType;
+import _int.iala_aism.s125.gml._0_0.AidsToNavigationType;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
@@ -118,8 +118,8 @@ public class UploadSecomController implements UploadSecomInterface {
                     .map(MemberType.class::cast)
                     .map(MemberType::getAbstractFeature)
                     .map(JAXBElement::getValue)
-                    .filter(S125AidsToNavigationType.class::isInstance)
-                    .map(S125AidsToNavigationType.class::cast)
+                    .filter(AidsToNavigationType.class::isInstance)
+                    .map(AidsToNavigationType.class::cast)
                     .forEach(s125PubSubData -> this.webSocket.convertAndSend("/topic/secom/subscription/update" , s125PubSubData));
 
             // Now generate an acknowledgement to be sent back if required
