@@ -109,15 +109,10 @@ public class UploadSecomController implements UploadSecomInterface {
         // Get the upload object data
         String data = new String(uploadObject.getEnvelope().getData(), StandardCharsets.UTF_8);
         
-        // Decode the and down the web-socket
+        // Decode the data and down the web-socket
         try {
-            S125Utils.unmarshallS125(data)
-                    .getImembersAndMembers()
+            S125Utils.getS125Members(data)
                     .stream()
-                    .filter(MemberType.class::isInstance)
-                    .map(MemberType.class::cast)
-                    .map(MemberType::getAbstractFeature)
-                    .map(JAXBElement::getValue)
                     .filter(AidsToNavigationType.class::isInstance)
                     .map(AidsToNavigationType.class::cast)
                     .forEach(s125PubSubData -> this.webSocket.convertAndSend("/topic/secom/subscription/update" , s125PubSubData));
