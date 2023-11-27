@@ -7,7 +7,7 @@
 #     sudo docker run -t -i --rm -p 8768:8768 -v /path/to/config-directory/on/machine:/conf <image-id>
 #
 # You can also push to docker-hub like:
-#     docker push rnavlab.gla-rad.org:8768/aton-service-client:tagname
+#     docker push rnavlab.gla-rad.org:5000/aton-service-client:tagname
 #
 # A customized conf file (application.properties) can be made available in the folder mounted to /conf.
 # When using in non-local environment it is recommended to generate new trust and keystores and place them in
