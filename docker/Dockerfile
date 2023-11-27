@@ -1,7 +1,7 @@
 # Build like this:
 #     docker build -t <version> -f Dockerfile ..
 # e.g.
-#     docker build -t rnavlab.gla-rad.org:8768/aton-service-client:latest -f Dockerfile ..
+#     docker build -t rnavlab.gla-rad.org:5000/aton-service-client:latest -f Dockerfile ..
 #
 # Run like this:
 #     sudo docker run -t -i --rm -p 8768:8768 -v /path/to/config-directory/on/machine:/conf <image-id>
