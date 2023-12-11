@@ -23,6 +23,7 @@
         <bootstrap.version>5.3.0</bootstrap.version>
         <jquery.version>3.6.4</jquery.version>
         <fa.version>6.4.0</fa.version>
+        <pact-version>4.6.3</pact-version>
     </properties>
 
     <repositories>
@@ -40,6 +41,32 @@
         </repository>
     </repositories>
 
+    <profiles>
+        <profile>
+            <id>tag-specific-pact</id>
+            <activation>
+                <property>
+                    <name>pact-tag</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <!--suppress UnresolvedMavenProperty -->
+                            <argLine>${argLine}</argLine>
+                            <systemPropertyVariables>
+                                <pactbroker.tags>${pact-tag}</pactbroker.tags>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <plugin>
@@ -52,6 +79,30 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <executable>true</executable>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
+                <version>7.0.0</version>
+            </plugin>
+            <plugin>
+                <groupId>au.com.dius.pact.provider</groupId>
+                <artifactId>maven</artifactId>
+                <version>${pact-version}</version>
+                <configuration>
+                    <pactBrokerUrl>http://pacts.grad-rrnav.pub</pactBrokerUrl>
+                    <pactBrokerUsername>${pact_broker_username}</pactBrokerUsername>
+                    <pactBrokerPassword>${pact_broker_password}</pactBrokerPassword>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <projectVersion>${git.commit.id.abbrev}</projectVersion> <!-- Defaults to ${project.version} -->
+                    <trimSnapshot>true</trimSnapshot> <!-- Defaults to false -->
+                    <tags>
+                        <!--suppress UnresolvedMavenProperty -->
+                        <tag>${git.branch}</tag>
+                        <!--suppress UnresolvedMavenProperty -->
+                        <tag>${git.commit.time}.${git.commit.id.abbrev}</tag>
+                    </tags>
                 </configuration>
             </plugin>
         </plugins>
@@ -212,6 +263,7 @@
             <version>1.9.4</version>
         </dependency>
 
+        <!--    Testing     -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -223,10 +275,15 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>au.com.dius.pact.consumer</groupId>
+            <artifactId>junit5</artifactId>
+            <version>${pact-version}</version>
             <scope>test</scope>
         </dependency>
 
