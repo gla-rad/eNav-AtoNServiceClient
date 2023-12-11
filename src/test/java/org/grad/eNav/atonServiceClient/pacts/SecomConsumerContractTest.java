@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ActiveProfiles("test")
 @PactConsumerTest
 @PactTestFor(providerName = "SecomS125Service")
-class SecomConsumerDriverContractTest {
+class SecomConsumerContractTest {
 
     /**
      * SECOM Capability Pact Body
