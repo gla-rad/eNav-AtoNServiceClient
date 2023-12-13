@@ -18,7 +18,6 @@ package org.grad.eNav.atonServiceClient.pacts;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.PactBuilder;
-import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.junit5.PactConsumerTest;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.V4Pact;
@@ -31,29 +30,19 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * The Secom Consumer Contact Test Class.
+ * <p/>
+ * This class provides the definition of the consumer-driver contracts and
+ * generates then data to be publised to the pacts-broker. This can be done
+ * through a separate maven goal, so that it doesn't conflict with the
+ * development of the service.
+ *
+ * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
+ */
 @PactConsumerTest
 @PactTestFor(providerName = "SecomS125Service")
 class SecomConsumerContractTest {
-
-    /**
-     * SECOM Capability Pact Body
-     */
-    final PactDslJsonBody capabilityDsl = new PactDslJsonBody()
-            .array("capability").object()
-                            .numberValue("containerType", 0)
-                            .stringValue("dataProductType", "S125")
-                            .stringType("productSchemaUrl", "https://rnavlab.gla-rad.org/enav/aton-service/xsd/S125.xsd")
-                            .object("implementedInterfaces", new PactDslJsonBody()
-                                    .booleanType("upload",  true)
-                                    .booleanType("uploadLink",  true)
-                                    .booleanType("get", true)
-                                    .booleanType("getSummary", true)
-                                    .booleanType("getByLink", true)
-                                    .booleanType("subscription", true)
-                                    .booleanType("access", true)
-                                    .booleanType("encryptionKey", true)
-                            )
-                            .stringType("serviceVersion", "0.0.1");
 
     /**
      * SECOM Capability Pact
@@ -71,7 +60,7 @@ class SecomConsumerContractTest {
                                         .method("GET"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
-                                        .body(this.capabilityDsl))
+                                        .body(SecomPactDslDefinitions.capabilityDsl))
                 )
                 .toPact();
     }
