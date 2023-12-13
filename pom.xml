@@ -41,32 +41,6 @@
         </repository>
     </repositories>
 
-    <profiles>
-        <profile>
-            <id>tag-specific-pact</id>
-            <activation>
-                <property>
-                    <name>pact-tag</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <!--suppress UnresolvedMavenProperty -->
-                            <argLine>${argLine}</argLine>
-                            <systemPropertyVariables>
-                                <pactbroker.tags>${pact-tag}</pactbroker.tags>
-                            </systemPropertyVariables>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
     <build>
         <plugins>
             <plugin>
@@ -91,18 +65,12 @@
                 <artifactId>maven</artifactId>
                 <version>${pact-version}</version>
                 <configuration>
-                    <pactBrokerUrl>http://pacts.grad-rrnav.pub</pactBrokerUrl>
+                    <pactBrokerUrl>${pact_broker_url}</pactBrokerUrl>
                     <pactBrokerUsername>${pact_broker_username}</pactBrokerUsername>
                     <pactBrokerPassword>${pact_broker_password}</pactBrokerPassword>
-                    <!--suppress UnresolvedMavenProperty -->
-                    <projectVersion>${git.commit.id.abbrev}</projectVersion> <!-- Defaults to ${project.version} -->
-                    <trimSnapshot>true</trimSnapshot> <!-- Defaults to false -->
-                    <tags>
-                        <!--suppress UnresolvedMavenProperty -->
-                        <tag>${git.branch}</tag>
-                        <!--suppress UnresolvedMavenProperty -->
-                        <tag>${git.commit.time}.${git.commit.id.abbrev}</tag>
-                    </tags>
+                    <projectVersion>${project.version}-${git.commit.id.abbrev}</projectVersion> <!-- Defaults to ${project.version} -->
+                    <branchName>${git.branch}</branchName> <!-- Defaults to "develop" -->
+                    <trimSnapshot>false</trimSnapshot> <!-- Defaults to false -->
                 </configuration>
             </plugin>
         </plugins>

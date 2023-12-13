@@ -26,13 +26,11 @@ import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.support.Response;
 import au.com.dius.pact.core.support.SimpleHttp;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ActiveProfiles("test")
 @PactConsumerTest
 @PactTestFor(providerName = "SecomS125Service")
 class SecomConsumerContractTest {
@@ -44,18 +42,18 @@ class SecomConsumerContractTest {
             .array("capability").object()
                             .numberValue("containerType", 0)
                             .stringValue("dataProductType", "S125")
-                            .stringValue("productSchemaUrl", "https://rnavlab.gla-rad.org/enav/aton-service/xsd/S125.xsd")
+                            .stringType("productSchemaUrl", "https://rnavlab.gla-rad.org/enav/aton-service/xsd/S125.xsd")
                             .object("implementedInterfaces", new PactDslJsonBody()
-                                    .booleanType("upload", false)
-                                    .booleanType("uploadLink", false)
-                                    .booleanType("get", false)
-                                    .booleanType("getSummary", false)
-                                    .booleanType("getByLink", false)
-                                    .booleanType("subscription", false)
-                                    .booleanType("access", false)
-                                    .booleanType("encryptionKey", false)
+                                    .booleanType("upload",  true)
+                                    .booleanType("uploadLink",  true)
+                                    .booleanType("get", true)
+                                    .booleanType("getSummary", true)
+                                    .booleanType("getByLink", true)
+                                    .booleanType("subscription", true)
+                                    .booleanType("access", true)
+                                    .booleanType("encryptionKey", true)
                             )
-                            .stringValue("serviceVersion", "0.0.1");
+                            .stringType("serviceVersion", "0.0.1");
 
     /**
      * SECOM Capability Pact
