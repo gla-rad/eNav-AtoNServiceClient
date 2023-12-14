@@ -66,7 +66,7 @@ public class SecomPactDslDefinitions {
                     .stringType("info_identifier", "test")
                     .stringType("info_name", "test")
                     .stringType("info_status", "present")
-                    .dateExpression("info_lastModifiedDate", "yyyyMMddTHHmmZ")
+                    .datetime("info_lastModifiedDate", "yyyyMMddTHHmmZ")
                     .stringType("info_productVersion", "0.0.1")
                     .integerType("info_size", 12345)
                 .closeObject()
