@@ -85,7 +85,7 @@ public class SecomPactDslDefinitions {
     static final DslPart getDsl = new PactDslJsonBody()
             .array("dataResponseObject")
                 .object()
-                    .stringMatcher("dataReference",  "^[-A-Za-z0-9+/]*={0,3}$", "ZXhhbXBsZW9mYmFzZTY0ZW5jb2RlZGRhdGE=")
+                    .stringMatcher("data",  "^[-A-Za-z0-9+/]*={0,3}$", "ZXhhbXBsZW9mYmFzZTY0ZW5jb2RlZGRhdGE=")
                     .object("exchangeMetadata", new PactDslJsonBody()
                             .booleanType("dataProtection",  true)
                             .stringType("protectionScheme", "SECOM")
