@@ -16,8 +16,13 @@
 
 package org.grad.eNav.atonServiceClient.pacts;
 
-import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
 import au.com.dius.pact.consumer.dsl.DslPart;
+import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
+
+import java.time.Instant;
+import java.util.TimeZone;
+
+import static org.grad.secom.core.base.SecomConstants.SECOM_DATE_TIME_FORMAT;
 
 /**
  * The SECOM Pact DSL Definitions class.
@@ -66,7 +71,7 @@ public class SecomPactDslDefinitions {
                     .stringType("info_identifier", "test")
                     .stringType("info_name", "test")
                     .stringType("info_status", "present")
-                    .datetime("info_lastModifiedDate", "yyyyMMddTHHmmZ")
+                    .datetime("info_lastModifiedDate", SECOM_DATE_TIME_FORMAT, Instant.now(), TimeZone.getDefault())
                     .stringType("info_productVersion", "0.0.1")
                     .integerType("info_size", 12345)
                 .closeObject()
