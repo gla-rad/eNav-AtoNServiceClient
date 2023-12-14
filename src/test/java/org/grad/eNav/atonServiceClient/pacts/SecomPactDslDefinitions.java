@@ -71,7 +71,7 @@ public class SecomPactDslDefinitions {
                     .stringType("info_identifier", "test")
                     .stringType("info_name", "test")
                     .stringType("info_status", "present")
-                    .datetime("info_lastModifiedDate", SECOM_DATE_TIME_FORMAT + "'Z'", Instant.now(), TimeZone.getDefault())
+                    .datetime("info_lastModifiedDate", SECOM_DATE_TIME_FORMAT + "xx", Instant.now(), TimeZone.getDefault())
                     .stringType("info_productVersion", "0.0.1")
                     .integerType("info_size", 12345)
                 .closeObject()
