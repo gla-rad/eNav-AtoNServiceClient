@@ -77,7 +77,7 @@ public class SecomPactDslDefinitions {
                 .integerType("maxItemsPerPage", 1000)
             .closeObject()
             .asBody()
-            .stringType("responseText", "");
+            .stringType("responseText");
 
     /**
      * SECOM Get Pact Body
@@ -104,7 +104,7 @@ public class SecomPactDslDefinitions {
                 .integerType("maxItemsPerPage", 100)
             .closeObject()
             .asBody()
-            .stringType("responseText", "");
+            .stringType("responseText");
 
 
 }
