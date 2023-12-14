@@ -56,7 +56,7 @@ public class SecomPactDslDefinitions {
      * SECOM GetSummary Pact Body
      */
      static final DslPart getSummaryDsl = new PactDslJsonBody()
-            .array("dataResponseObject")
+            .array("summaryObject")
                 .object()
                     .stringMatcher("dataReference",  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "7f000101-8ad6-1ee7-818a-d7332b920002")
                     .booleanType("dataProtection",  true)
@@ -83,7 +83,7 @@ public class SecomPactDslDefinitions {
      * SECOM Get Pact Body
      */
     static final DslPart getDsl = new PactDslJsonBody()
-            .array("summaryObject")
+            .array("dataResponseObject")
                 .object()
                     .stringMatcher("dataReference",  "^[-A-Za-z0-9+/]*={0,3}$", "ZXhhbXBsZW9mYmFzZTY0ZW5jb2RlZGRhdGE=")
                     .object("exchangeMetadata", new PactDslJsonBody()
