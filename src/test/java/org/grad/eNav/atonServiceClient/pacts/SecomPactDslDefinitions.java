@@ -85,6 +85,12 @@ public class SecomPactDslDefinitions {
             .stringType("responseText", "");
 
     /**
+     * SECOM GetSummaryError Pact Body
+     */
+    static final DslPart getSummaryErrorDsl = new PactDslJsonBody()
+            .stringType("responseText", "");
+
+    /**
      * SECOM Get Pact Body
      */
     static final DslPart getDsl = new PactDslJsonBody()
@@ -111,5 +117,10 @@ public class SecomPactDslDefinitions {
             .asBody()
             .stringType("responseText");
 
+    /**
+     * SECOM GetError Pact Body
+     */
+    static final DslPart getErrorDsl = new PactDslJsonBody()
+            .stringType("responseText", "");
 
 }

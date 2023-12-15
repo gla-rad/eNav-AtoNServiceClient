@@ -34,47 +34,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * The Secom Consumer Contact Test Class.
+ * The S125 Aton client Consumer SECOM Get Summary Interface Contact Test Class.
  * <p/>
- * This class provides the definition of the consumer-driver contracts and
- * generates then data to be publised to the pacts-broker. This can be done
- * through a separate maven goal, so that it doesn't conflict with the
- * development of the service.
+ * This class provides the definition of the consumer-driver contracts for the
+ * S125 AtoN Service Client SECOM Get Summary interface and generates then data
+ * to be publised to the pacts-broker. This can be done through a separate maven
+ * goal, so that it doesn't conflict with the development of the service.
  *
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
 @PactConsumerTest
 @PactTestFor(providerName = "SecomS125Service")
-class SecomS125ServiceClientTest {
-
-    /**
-     * SECOM Get Summary Pact.
-     * @param builder The Pact Builder
-     */
-    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
-    public V4Pact createGetSummaryPact(PactBuilder builder) {
-        return builder
-                .given("Test SECOM Get Summary")
-                .expectsToReceiveHttpInteraction(
-                        "Test Get Summary interaction with success",
-                        httpBuilder -> httpBuilder
-                                .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v1/object/summary")
-                                        .method("GET"))
-                                .willRespondWith(responseBuilder -> responseBuilder
-                                        .status(200)
-                                        .body(SecomPactDslDefinitions.getSummaryDsl))
-                )
-                .toPact();
-    }
+public class S125ServiceClientSecomGetSummaryTest {
 
     /**
      * Define a map of query parameters for the createGetSummaryPactWithParams
      * pacts. This can also be reused in the testing.
      */
-    final Map<String, String> createGetSummaryPactWithParamsQueryMap = Map.of(
+    final Map<String, String> queryParamsMap = Map.of(
             "containerType" ,"0",
             "dataProductType" ,"S125",
             "productVersion" ,"0.0.1",
@@ -85,6 +65,27 @@ class SecomS125ServiceClientTest {
             "page" ,"0",
             "pageSize" ,"10"
     );
+
+    /**
+     * SECOM Get Summary Pact.
+     * @param builder The Pact Builder
+     */
+    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
+    public V4Pact createGetSummaryPact(PactBuilder builder) {
+        return builder
+                .given("Test SECOM Get Summary")
+                .expectsToReceiveHttpInteraction(
+                        "Test Get Summary interaction with success\"",
+                        httpBuilder -> httpBuilder
+                                .withRequest(requestBuilder -> requestBuilder
+                                        .path("/v1/object/summary")
+                                        .method("GET"))
+                                .willRespondWith(responseBuilder -> responseBuilder
+                                        .status(200)
+                                        .body(SecomPactDslDefinitions.getSummaryDsl))
+                )
+                .toPact();
+    }
 
     /**
      * SECOM Get Summary With Parameters Pact.
@@ -100,7 +101,7 @@ class SecomS125ServiceClientTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object/summary")
                                         .method("GET")
-                                        .queryParameters(this.createGetSummaryPactWithParamsQueryMap))
+                                        .queryParameters(this.queryParamsMap))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
                                         .body(SecomPactDslDefinitions.getSummaryDsl))
@@ -122,10 +123,10 @@ class SecomS125ServiceClientTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object/summary")
                                         .method("GET")
-                                        .queryParameters(this.updateMapValue(this.createGetSummaryPactWithParamsQueryMap, "containerType", "invalid")))
+                                        .queryParameters(this.updateMapValue(this.queryParamsMap, "containerType", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomPactDslDefinitions.getSummaryDsl))
+                                        .body(SecomPactDslDefinitions.getSummaryErrorDsl))
                 )
                 .toPact();
     }
@@ -145,10 +146,10 @@ class SecomS125ServiceClientTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object/summary")
                                         .method("GET")
-                                        .queryParameters(this.updateMapValue(this.createGetSummaryPactWithParamsQueryMap, "dataProductType", "invalid")))
+                                        .queryParameters(this.updateMapValue(this.queryParamsMap, "dataProductType", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomPactDslDefinitions.getSummaryDsl))
+                                        .body(SecomPactDslDefinitions.getSummaryErrorDsl))
                 )
                 .toPact();
     }
@@ -167,10 +168,10 @@ class SecomS125ServiceClientTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object/summary")
                                         .method("GET")
-                                        .queryParameters(this.updateMapValue(this.createGetSummaryPactWithParamsQueryMap, "geometry", "invalid")))
+                                        .queryParameters(this.updateMapValue(this.queryParamsMap, "geometry", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomPactDslDefinitions.getSummaryDsl))
+                                        .body(SecomPactDslDefinitions.getSummaryErrorDsl))
                 )
                 .toPact();
     }
@@ -189,10 +190,10 @@ class SecomS125ServiceClientTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object/summary")
                                         .method("GET")
-                                        .queryParameters(this.updateMapValue(this.createGetSummaryPactWithParamsQueryMap, "unlocode", "invalid")))
+                                        .queryParameters(this.updateMapValue(this.queryParamsMap, "unlocode", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomPactDslDefinitions.getSummaryDsl))
+                                        .body(SecomPactDslDefinitions.getSummaryErrorDsl))
                 )
                 .toPact();
     }
@@ -211,10 +212,10 @@ class SecomS125ServiceClientTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object/summary")
                                         .method("GET")
-                                        .queryParameters(this.updateMapValue(this.createGetSummaryPactWithParamsQueryMap, "validFrom", "invalid")))
+                                        .queryParameters(this.updateMapValue(this.queryParamsMap, "validFrom", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomPactDslDefinitions.getSummaryDsl))
+                                        .body(SecomPactDslDefinitions.getSummaryErrorDsl))
                 )
                 .toPact();
     }
@@ -233,31 +234,10 @@ class SecomS125ServiceClientTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object/summary")
                                         .method("GET")
-                                        .queryParameters(this.updateMapValue(this.createGetSummaryPactWithParamsQueryMap, "validTo", "invalid")))
+                                        .queryParameters(this.updateMapValue(this.queryParamsMap, "validTo", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomPactDslDefinitions.getSummaryDsl))
-                )
-                .toPact();
-    }
-
-    /**
-     * SECOM Get Pact.
-     * @param builder The Pact Builder
-     */
-    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
-    public V4Pact createGetPact(PactBuilder builder) {
-        return builder
-                .given("Test SECOM Get")
-                .expectsToReceiveHttpInteraction(
-                        "Test Get interaction with success",
-                        httpBuilder -> httpBuilder
-                                .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v1/object")
-                                        .method("GET"))
-                                .willRespondWith(responseBuilder -> responseBuilder
-                                        .status(200)
-                                        .body(SecomPactDslDefinitions.getDsl))
+                                        .body(SecomPactDslDefinitions.getSummaryErrorDsl))
                 )
                 .toPact();
     }
@@ -274,6 +254,7 @@ class SecomS125ServiceClientTest {
         SimpleHttp http = new SimpleHttp(mockServer.getUrl());
         Response httpResponse = http.get(mockServer.getUrl() + "/v1/object/summary");
         assertEquals(httpResponse.getStatusCode(), 200);
+        assertTrue(httpResponse.getHasBody());
     }
 
     /**
@@ -290,9 +271,10 @@ class SecomS125ServiceClientTest {
         Response httpResponse = http.get(
                 mockServer.getUrl() + "/v1/object/summary",
                 Maps.transformValues(
-                        this.createGetSummaryPactWithParamsQueryMap,
+                        this.queryParamsMap,
                         v -> URLEncoder.encode(v, StandardCharsets.UTF_8)));
         assertEquals(httpResponse.getStatusCode(), 200);
+        assertTrue(httpResponse.getHasBody());
     }
 
     /**
@@ -310,9 +292,10 @@ class SecomS125ServiceClientTest {
         Response httpResponse = http.get(
                 mockServer.getUrl() + "/v1/object/summary",
                 Maps.transformValues(
-                        this.updateMapValue(this.createGetSummaryPactWithParamsQueryMap, "containerType", "invalid"),
+                        this.updateMapValue(this.queryParamsMap, "containerType", "invalid"),
                         v -> URLEncoder.encode(v, StandardCharsets.UTF_8)));
         assertEquals(httpResponse.getStatusCode(), 400);
+        assertTrue(httpResponse.getHasBody());
     }
 
     /**
@@ -330,9 +313,10 @@ class SecomS125ServiceClientTest {
         Response httpResponse = http.get(
                 mockServer.getUrl() + "/v1/object/summary",
                 Maps.transformValues(
-                        this.updateMapValue(this.createGetSummaryPactWithParamsQueryMap, "dataProductType", "invalid"),
+                        this.updateMapValue(this.queryParamsMap, "dataProductType", "invalid"),
                         v -> URLEncoder.encode(v, StandardCharsets.UTF_8)));
         assertEquals(httpResponse.getStatusCode(), 400);
+        assertTrue(httpResponse.getHasBody());
     }
 
     /**
@@ -350,9 +334,10 @@ class SecomS125ServiceClientTest {
         Response httpResponse = http.get(
                 mockServer.getUrl() + "/v1/object/summary",
                 Maps.transformValues(
-                        this.updateMapValue(this.createGetSummaryPactWithParamsQueryMap, "geometry", "invalid"),
+                        this.updateMapValue(this.queryParamsMap, "geometry", "invalid"),
                         v -> URLEncoder.encode(v, StandardCharsets.UTF_8)));
         assertEquals(httpResponse.getStatusCode(), 400);
+        assertTrue(httpResponse.getHasBody());
     }
 
     /**
@@ -370,9 +355,10 @@ class SecomS125ServiceClientTest {
         Response httpResponse = http.get(
                 mockServer.getUrl() + "/v1/object/summary",
                 Maps.transformValues(
-                        this.updateMapValue(this.createGetSummaryPactWithParamsQueryMap, "unlocode", "invalid"),
+                        this.updateMapValue(this.queryParamsMap, "unlocode", "invalid"),
                         v -> URLEncoder.encode(v, StandardCharsets.UTF_8)));
         assertEquals(httpResponse.getStatusCode(), 400);
+        assertTrue(httpResponse.getHasBody());
     }
 
     /**
@@ -390,9 +376,10 @@ class SecomS125ServiceClientTest {
         Response httpResponse = http.get(
                 mockServer.getUrl() + "/v1/object/summary",
                 Maps.transformValues(
-                        this.updateMapValue(this.createGetSummaryPactWithParamsQueryMap, "validFrom", "invalid"),
+                        this.updateMapValue(this.queryParamsMap, "validFrom", "invalid"),
                         v -> URLEncoder.encode(v, StandardCharsets.UTF_8)));
         assertEquals(httpResponse.getStatusCode(), 400);
+        assertTrue(httpResponse.getHasBody());
     }
 
     /**
@@ -410,23 +397,10 @@ class SecomS125ServiceClientTest {
         Response httpResponse = http.get(
                 mockServer.getUrl() + "/v1/object/summary",
                 Maps.transformValues(
-                        this.updateMapValue(this.createGetSummaryPactWithParamsQueryMap, "validTo", "invalid"),
+                        this.updateMapValue(this.queryParamsMap, "validTo", "invalid"),
                         v -> URLEncoder.encode(v, StandardCharsets.UTF_8)));
         assertEquals(httpResponse.getStatusCode(), 400);
-    }
-
-    /**
-     * Test that the client can request the SECOM Get Summary of the server
-     * and generate the pacts to be uploaded to the pacts broker.
-     * @param mockServer the mocked server
-     * @throws IOException the IO exception that occurred
-     */
-    @Test
-    @PactTestFor(pactMethods = "createGetPact")
-    void testGet(MockServer mockServer) throws IOException {
-        SimpleHttp http = new SimpleHttp(mockServer.getUrl());
-        Response httpResponse = http.get(mockServer.getUrl() + "/v1/object");
-        assertEquals(httpResponse.getStatusCode(), 200);
+        assertTrue(httpResponse.getHasBody());
     }
 
     /**
@@ -443,4 +417,5 @@ class SecomS125ServiceClientTest {
         newMap.put(key, value);
         return newMap;
     }
+
 }
