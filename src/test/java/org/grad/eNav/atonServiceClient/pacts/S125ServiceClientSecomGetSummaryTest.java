@@ -60,8 +60,8 @@ public class S125ServiceClientSecomGetSummaryTest {
             "productVersion" ,"0.0.1",
             "geometry" ,"POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))",
             "unlocode" ,"GBHRW",
-            "validFrom" ,"20200101T100000",
-            "validTo" ,"20200101T1235959",
+            "validFrom" ,"20200101T1000000",
+            "validTo" ,"20200101T235959",
             "page" ,"0",
             "pageSize" ,"10"
     );
