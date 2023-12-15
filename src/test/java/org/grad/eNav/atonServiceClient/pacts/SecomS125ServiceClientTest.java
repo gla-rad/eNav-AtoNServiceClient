@@ -24,9 +24,13 @@ import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import au.com.dius.pact.core.support.Response;
 import au.com.dius.pact.core.support.SimpleHttp;
+import com.google.common.collect.Maps;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -87,6 +91,44 @@ class SecomS125ServiceClientTest {
     }
 
     /**
+     * Define a map of query parameters for the createGetSummaryPactWithParams
+     * pacts. This can also be reused in the testing.
+     */
+    final Map<String, String> createGetSummaryPactWithParamsQueryMap = Map.of(
+            "containerType" ,"0",
+            "dataProductType" ,"S125",
+            "productVersion" ,"0.0.1",
+            "geometry" ,"POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))",
+            "unlocode" ,"GBHRW",
+            "validFrom" ,"20200101T100000",
+            "validTo" ,"20200101T1235959",
+            "page" ,"0",
+            "pageSize" ,"10"
+    );
+
+    /**
+     * SECOM Get Summary With Parameters Pact.
+     * @param builder The Pact Builder
+     */
+    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
+    public V4Pact createGetSummaryPactWithParams(PactBuilder builder) {
+        return builder
+                .given("Test SECOM Get Summary success")
+                .expectsToReceiveHttpInteraction(
+                        "SecomS125ServiceConsumer test Get Summary with query parameters interaction with success\"",
+                        httpBuilder -> httpBuilder
+                                .withRequest(requestBuilder -> requestBuilder
+                                        .path("/v1/object/summary")
+                                        .method("GET")
+                                        .queryParameters(this.createGetSummaryPactWithParamsQueryMap))
+                                .willRespondWith(responseBuilder -> responseBuilder
+                                        .status(200)
+                                        .body(SecomPactDslDefinitions.getSummaryDsl))
+                )
+                .toPact();
+    }
+
+    /**
      * SECOM Get Pact.
      * @param builder The Pact Builder
      */
@@ -132,6 +174,23 @@ class SecomS125ServiceClientTest {
     void testGetSummary(MockServer mockServer) throws IOException {
         SimpleHttp http = new SimpleHttp(mockServer.getUrl());
         Response httpResponse = http.get(mockServer.getUrl() + "/v1/object/summary");
+        assertEquals(httpResponse.getStatusCode(), 200);
+    }
+
+    /**
+     * Test that the client can request the SECOM Get Summary of the server
+     * alongside query parameters and generate the pacts to be uploaded to the
+     * pacts broker.
+     * @param mockServer the mocked server
+     * @throws IOException the IO exception that occurred
+     */
+    @Test
+    @PactTestFor(pactMethods = "createGetSummaryPactWithParams")
+    void testGetSummaryWithParams(MockServer mockServer) throws IOException {
+        SimpleHttp http = new SimpleHttp(mockServer.getUrl());
+        Response httpResponse = http.get(
+                mockServer.getUrl() + "/v1/object/summary",
+                Maps.transformValues(this.createGetSummaryPactWithParamsQueryMap, v -> URLEncoder.encode(v, StandardCharsets.UTF_8)));
         assertEquals(httpResponse.getStatusCode(), 200);
     }
 
