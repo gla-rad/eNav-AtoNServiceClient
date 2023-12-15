@@ -60,7 +60,7 @@ class S125ServiceClientSecomGetTest {
             "productVersion" ,"0.0.1",
             "geometry" ,"POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))",
             "unlocode" ,"GBHRW",
-            "validFrom" ,"20200101T1000000",
+            "validFrom" ,"20200101T000000",
             "validTo" ,"20200101T235959",
             "page" ,"0",
             "pageSize" ,"10"
