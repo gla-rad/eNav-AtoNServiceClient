@@ -100,7 +100,7 @@ public class S125ServiceClientSecomAcknowledgementTest {
                                         .body("{\"envelope\":\"bad-envelope\", \"digitalSignature\":\"bad-digital-signature\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomPactDslDefinitions.acknowledgementResponseErrorDsl.))
+                                        .body(SecomPactDslDefinitions.acknowledgementResponseErrorDsl))
                 )
                 .toPact();
     }
