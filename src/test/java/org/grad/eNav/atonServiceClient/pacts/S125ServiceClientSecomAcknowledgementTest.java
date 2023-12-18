@@ -73,6 +73,7 @@ public class S125ServiceClientSecomAcknowledgementTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/acknowledgement")
                                         .method("POST")
+                                        .headers("content-type", ContentType.APPLICATION_JSON.getMimeType())
                                         .body(SecomPactDslDefinitions.acknowledgementRequestDsl))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
@@ -95,10 +96,11 @@ public class S125ServiceClientSecomAcknowledgementTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/acknowledgement")
                                         .method("POST")
+                                        .headers("content-type", ContentType.APPLICATION_JSON.getMimeType())
                                         .body("{\"envelope\":\"bad-envelope\", \"digitalSignature\":\"bad-digital-signature\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomPactDslDefinitions.acknowledgementResponseErrorDsl))
+                                        .body(SecomPactDslDefinitions.acknowledgementResponseErrorDsl.))
                 )
                 .toPact();
     }
@@ -110,13 +112,14 @@ public class S125ServiceClientSecomAcknowledgementTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createAcknowledgementPactWithoutTransactionIdentifier(PactBuilder builder) {
         return builder
-                .given("Test SECOM Post Acknowledgement")
+                    .given("Test SECOM Post Acknowledgement")
                 .expectsToReceiveHttpInteraction(
                         "Test Post Acknowledgement interaction without transaction identifier",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/acknowledgement")
                                         .method("POST")
+                                        .headers("content-type", ContentType.APPLICATION_JSON.getMimeType())
                                         .body(SecomPactDslDefinitions.acknowledgementRequestWithoutTransactionIdentifierDsl))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
