@@ -35,9 +35,9 @@ import static org.grad.secom.core.base.SecomConstants.SECOM_DATE_TIME_FORMAT;
 public class SecomPactDslDefinitions {
 
     /**
-     * SECOM Capability Pact Body
+     * SECOM Capability Response Pact Body
      */
-    static final DslPart capabilityDsl = new PactDslJsonBody()
+    static final DslPart capabilityResponseDsl = new PactDslJsonBody()
             .array("capability")
                 .object()
                     .numberValue("containerType", 0)
@@ -55,12 +55,13 @@ public class SecomPactDslDefinitions {
                     )
                     .stringType("serviceVersion", "0.0.1")
                 .closeObject()
-            .closeArray();
+            .closeArray()
+            .asBody();
 
     /**
-     * SECOM GetSummary Pact Body
+     * SECOM GetSummary Response Pact Body
      */
-     static final DslPart getSummaryDsl = new PactDslJsonBody()
+     static final DslPart getSummaryResponseDsl = new PactDslJsonBody()
             .array("summaryObject")
                 .object()
                     .stringMatcher("dataReference",  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "7f000101-8ad6-1ee7-818a-d7332b920002")
@@ -85,15 +86,15 @@ public class SecomPactDslDefinitions {
             .stringType("responseText", "");
 
     /**
-     * SECOM GetSummaryError Pact Body
+     * SECOM GetSummary Response Error Pact Body
      */
-    static final DslPart getSummaryErrorDsl = new PactDslJsonBody()
+    static final DslPart getSummaryResponseErrorDsl = new PactDslJsonBody()
             .stringType("responseText", "");
 
     /**
      * SECOM Get Pact Body
      */
-    static final DslPart getDsl = new PactDslJsonBody()
+    static final DslPart getResponseDsl = new PactDslJsonBody()
             .array("dataResponseObject")
                 .object()
                     .stringMatcher("data",  "^[-A-Za-z0-9+/]*={0,3}$", "ZXhhbXBsZW9mYmFzZTY0ZW5jb2RlZGRhdGE=")
@@ -118,9 +119,55 @@ public class SecomPactDslDefinitions {
             .stringType("responseText");
 
     /**
-     * SECOM GetError Pact Body
+     * SECOM Get Response Error Pact Body
      */
-    static final DslPart getErrorDsl = new PactDslJsonBody()
+    static final DslPart getResponseErrorDsl = new PactDslJsonBody()
             .stringType("responseText", "");
+
+    /**
+     * SECOM Acknowledgement Request Pact Body
+     */
+    static final DslPart acknowledgementRequestDsl = new PactDslJsonBody()
+            .object("envelope")
+                .datetime("createdAt", SECOM_DATE_TIME_FORMAT + "XX", Instant.now(), TimeZone.getDefault())
+                .stringMatcher("envelopeCertificate", "^[-A-Za-z0-9+/]*={0,3}$", "ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ==")
+                .stringMatcher("envelopeRootCertificateThumbprint",  "^[-A-Za-z0-9+/]*={0,3}$", "ZW52ZWxvcGVSb290Q2VydGlmaWNhdGVUaHVtYnByaW50=")
+                .stringMatcher("transactionIdentifier",  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "3fa85f64-5717-4562-b3fc-2c963f66afa6")
+                .integerMatching("ackType", "[1|2|3]", 1)
+                .integerMatching("nackType", "[0|1|2|3|4]", 0)
+                .datetime("envelopeSignatureTime", SECOM_DATE_TIME_FORMAT + "XX", Instant.now(), TimeZone.getDefault())
+            .closeObject()
+            .asBody()
+            .stringMatcher("digitalSignature",  "^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==");
+
+    /**
+     * SECOM Acknowledgement Request Pact Body Without Transaction Identifier
+     */
+    static final DslPart acknowledgementRequestWithoutTransactionIdentifierDsl = new PactDslJsonBody()
+            .object("envelope")
+            .datetime("createdAt", SECOM_DATE_TIME_FORMAT + "XX", Instant.now(), TimeZone.getDefault())
+            .stringMatcher("envelopeCertificate", "^[-A-Za-z0-9+/]*={0,3}$", "ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ==")
+            .stringMatcher("envelopeRootCertificateThumbprint",  "^[-A-Za-z0-9+/]*={0,3}$", "ZW52ZWxvcGVSb290Q2VydGlmaWNhdGVUaHVtYnByaW50=")
+            .nullValue("transactionIdentifier")
+            .integerMatching("ackType", "[1|2|3]", 1)
+            .integerMatching("nackType", "[0|1|2|3|4]", 0)
+            .datetime("envelopeSignatureTime", SECOM_DATE_TIME_FORMAT + "XX", Instant.now(), TimeZone.getDefault())
+            .closeObject()
+            .asBody()
+            .stringMatcher("digitalSignature",  "^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==");
+
+    /**
+     * SECOM Acknowledgement Response Pact Body
+     */
+    static final DslPart acknowledgementResponseDsl = new PactDslJsonBody()
+            .integerMatching("SECOM_ResponseCode", "[0|1|2|3]", 1)
+            .stringType("message",  "Achnowledgement message.");
+
+    /**
+     * SECOM Acknowledgement Response Error Pact Body
+     */
+    static final DslPart acknowledgementResponseErrorDsl = new PactDslJsonBody()
+            .nullValue("SECOM_ResponseCode")
+            .stringType("message",  "Acknowledgement message.");
 
 }

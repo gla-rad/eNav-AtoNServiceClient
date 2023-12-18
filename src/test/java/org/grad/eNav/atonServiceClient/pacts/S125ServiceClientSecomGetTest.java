@@ -37,11 +37,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * The S125 Aton client Consumer SECOM Get Interface Contact Test Class.
+ * The S125 Aton client Consumer SECOM Get Interface Contract Test Class.
  * <p/>
  * This class provides the definition of the consumer-driver contracts for the
- * S125 AtoN Service Client SECOM Get interface and generates then data
- * to be publised to the pacts-broker. This can be done through a separate maven
+ * S125 AtoN Service Client SECOM Get interface and generates the data to be
+ * published to the pacts-broker. This can be done through a separate maven
  * goal, so that it doesn't conflict with the development of the service.
  *
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
@@ -82,7 +82,7 @@ class S125ServiceClientSecomGetTest {
                                         .method("GET"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
-                                        .body(SecomPactDslDefinitions.getDsl))
+                                        .body(SecomPactDslDefinitions.getResponseDsl))
                 )
                 .toPact();
     }
@@ -104,7 +104,7 @@ class S125ServiceClientSecomGetTest {
                                         .queryParameters(this.queryParamsMap))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
-                                        .body(SecomPactDslDefinitions.getDsl))
+                                        .body(SecomPactDslDefinitions.getResponseDsl))
                 )
                 .toPact();
     }
@@ -126,7 +126,7 @@ class S125ServiceClientSecomGetTest {
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "containerType", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomPactDslDefinitions.getErrorDsl))
+                                        .body(SecomPactDslDefinitions.getResponseErrorDsl))
                 )
                 .toPact();
     }
@@ -148,7 +148,7 @@ class S125ServiceClientSecomGetTest {
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "dataProductType", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomPactDslDefinitions.getErrorDsl))
+                                        .body(SecomPactDslDefinitions.getResponseErrorDsl))
                 )
                 .toPact();
     }
@@ -170,7 +170,7 @@ class S125ServiceClientSecomGetTest {
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "geometry", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomPactDslDefinitions.getErrorDsl))
+                                        .body(SecomPactDslDefinitions.getResponseErrorDsl))
                 )
                 .toPact();
     }
@@ -192,7 +192,7 @@ class S125ServiceClientSecomGetTest {
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "unlocode", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomPactDslDefinitions.getErrorDsl))
+                                        .body(SecomPactDslDefinitions.getResponseErrorDsl))
                 )
                 .toPact();
     }
@@ -214,7 +214,7 @@ class S125ServiceClientSecomGetTest {
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "validFrom", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomPactDslDefinitions.getErrorDsl))
+                                        .body(SecomPactDslDefinitions.getResponseErrorDsl))
                 )
                 .toPact();
     }
@@ -236,7 +236,7 @@ class S125ServiceClientSecomGetTest {
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "validTo", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomPactDslDefinitions.getErrorDsl))
+                                        .body(SecomPactDslDefinitions.getResponseErrorDsl))
                 )
                 .toPact();
     }

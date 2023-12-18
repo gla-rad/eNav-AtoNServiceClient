@@ -32,12 +32,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 /**
- * The S125 Aton client Consumer SECOM Capability Interface Contact Test Class.
+ * The S125 Aton client Consumer SECOM Capability Interface Contract Test Class.
  * <p/>
  * This class provides the definition of the consumer-driver contracts for the
- * S125 AtoN Service Client SECOM Capability interface and generates then data
- * to be publised to the pacts-broker. This can be done through a separate maven
- * goal, so that it doesn't conflict with the development of the service.
+ * S125 AtoN Service Client SECOM Capability interface and generates the data
+ * to be published to the pacts-broker. This can be done through a separate
+ * maven goal, so that it doesn't conflict with the development of the service.
  *
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
@@ -61,7 +61,7 @@ public class S125ServiceClientSecomCapabilityTest {
                                         .method("GET"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
-                                        .body(SecomPactDslDefinitions.capabilityDsl))
+                                        .body(SecomPactDslDefinitions.capabilityResponseDsl))
                 )
                 .toPact();
     }
