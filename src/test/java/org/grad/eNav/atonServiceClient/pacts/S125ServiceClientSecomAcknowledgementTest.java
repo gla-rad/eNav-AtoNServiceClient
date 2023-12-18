@@ -150,7 +150,7 @@ public class S125ServiceClientSecomAcknowledgementTest {
         EnvelopeAckObject envelopeAckObject = new EnvelopeAckObject();
         envelopeAckObject.setCreatedAt(LocalDateTime.now());
         envelopeAckObject.setEnvelopeSignatureCertificate("ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ==");
-        envelopeAckObject.setEnvelopeRootCertificateThumbprint("ZW52ZWxvcGVSb290Q2VydGlmaWNhdGVUaHVtYnByaW50=");
+        envelopeAckObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
         envelopeAckObject.setTransactionIdentifier(UUID.randomUUID());
         envelopeAckObject.setAckType(AckTypeEnum.DELIVERED_ACK);
         envelopeAckObject.setNackType(NackTypeEnum.XML_SCHEMA_VALIDATION_ERROR);
@@ -198,7 +198,7 @@ public class S125ServiceClientSecomAcknowledgementTest {
         EnvelopeAckObject envelopeAckObject = new EnvelopeAckObject();
         envelopeAckObject.setCreatedAt(LocalDateTime.now());
         envelopeAckObject.setEnvelopeSignatureCertificate("ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ==");
-        envelopeAckObject.setEnvelopeRootCertificateThumbprint("ZW52ZWxvcGVSb290Q2VydGlmaWNhdGVUaHVtYnByaW50=");
+        envelopeAckObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
         envelopeAckObject.setAckType(AckTypeEnum.DELIVERED_ACK);
         envelopeAckObject.setNackType(NackTypeEnum.XML_SCHEMA_VALIDATION_ERROR);
         envelopeAckObject.setEnvelopeSignatureTime(LocalDateTime.now());
