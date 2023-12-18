@@ -73,7 +73,6 @@ public class S125ServiceClientSecomAcknowledgementTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/acknowledgement")
                                         .method("POST")
-                                        .headers("content-type", ContentType.APPLICATION_JSON.getMimeType())
                                         .body(SecomPactDslDefinitions.acknowledgementRequestDsl))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
@@ -83,7 +82,7 @@ public class S125ServiceClientSecomAcknowledgementTest {
     }
 
     /**
-     * SECOM Capability Pact.
+     * SECOM Acknowledgement With Bad Body Pact.
      * @param builder The Pact Builder
      */
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
@@ -96,7 +95,6 @@ public class S125ServiceClientSecomAcknowledgementTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/acknowledgement")
                                         .method("POST")
-                                        .headers("content-type", ContentType.APPLICATION_JSON.getMimeType())
                                         .body("{\"envelope\":\"bad-envelope\", \"digitalSignature\":\"bad-digital-signature\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
@@ -106,7 +104,7 @@ public class S125ServiceClientSecomAcknowledgementTest {
     }
 
     /**
-     * SECOM Capability Pact.
+     * SECOM Acknowledgement Without Transaction Identifier Pact.
      * @param builder The Pact Builder
      */
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
@@ -119,7 +117,6 @@ public class S125ServiceClientSecomAcknowledgementTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/acknowledgement")
                                         .method("POST")
-                                        .headers("content-type", ContentType.APPLICATION_JSON.getMimeType())
                                         .body(SecomPactDslDefinitions.acknowledgementRequestWithoutTransactionIdentifierDsl))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
@@ -167,14 +164,13 @@ public class S125ServiceClientSecomAcknowledgementTest {
     }
 
     /**
-     * Test that the client cannot perform a badly formed acknowledgement update
+     * Test that the client cannot perform a badly formed acknowledgement request
      * on the server and generate the pacts to be uploaded to the pacts broker.
      * @param mockServer the mocked server
-     * @throws IOException the IO exception that occurred
      */
     @Test
     @PactTestFor(pactMethods = "createAcknowledgementPactWithBadBody")
-    void testAcknowledgementWithBodBody(MockServer mockServer) throws IOException {
+    void testAcknowledgementWithBodBody(MockServer mockServer) {
         // And post it to the mock server
         SimpleHttp http = new SimpleHttp(mockServer.getUrl());
         Response httpResponse = http.post(mockServer.getUrl() + "/v1/acknowledgement",

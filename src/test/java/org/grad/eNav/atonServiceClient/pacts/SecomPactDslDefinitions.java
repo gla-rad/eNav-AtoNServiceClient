@@ -170,4 +170,30 @@ public class SecomPactDslDefinitions {
             .integerMatching("SECOM_ResponseCode", "[0|1|2|3]", 0)
             .stringType("message",  "Acknowledgement message.");
 
+    /**
+     * SECOM Subscription Request Pact Body
+     */
+    static final DslPart subscriptionRequestDsl = new PactDslJsonBody()
+            .integerMatching("containerType", "[0|1|2]", 1)
+            .stringValue("dataProductType", "S125")
+            .stringMatcher("dataReference",  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "7f000101-8ad6-1ee7-818a-d7332b920002")
+            .stringType("productVersion", "0.0.1")
+            .stringMatcher("geometry", "^([A-Z]+\\s*\\(\\(?\\s*(-?\\d+(\\.\\d+)?)\\s+-?\\d+(\\.\\d+)?(?:\\s+-?\\d+(\\.\\d+)?)?\\s*(,\\s*(-?\\d+(\\.\\d+)?)\\s+-?\\d+(\\.\\d+)?(?:\\s+-?\\d+(\\.\\d+)?)?\\s*)*\\)\\)?\\s*)+$", "POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))")
+            .stringMatcher("unlocode",  "[A-Z]{5}", "GBHRW")
+            .datetime("subscriptionPeriodStart", SECOM_DATE_TIME_FORMAT + "XX", Instant.now(), TimeZone.getDefault())
+            .datetime("subscriptionPeriodEnd", SECOM_DATE_TIME_FORMAT + "XX", Instant.now(), TimeZone.getDefault());
+
+    /**
+     * SECOM Subscription Response Pact Body
+     */
+    static final DslPart subscriptionResponseDsl = new PactDslJsonBody()
+            .stringType("message", "Subscription successfully created")
+            .stringMatcher("subscriptionIdentifier",  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "3fa85f64-5717-4562-b3fc-2c963f66afa6");
+
+    /**
+     * SECOM Subscription Response Error Pact Body
+     */
+    static final DslPart subscriptionResponseErrorDsl = new PactDslJsonBody()
+            .stringType("message", "Bad Request")
+            .nullValue("subscriptionIdentifier");
 }
