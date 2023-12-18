@@ -160,8 +160,8 @@ public class SecomPactDslDefinitions {
      * SECOM Acknowledgement Response Pact Body
      */
     static final DslPart acknowledgementResponseDsl = new PactDslJsonBody()
-            .integerMatching("SECOM_ResponseCode", "[0|1|2|3]", 0)
-            .stringType("message",  "Achnowledgement message.");
+            .nullValue("SECOM_ResponseCode")
+            .stringType("message",  "Acknowledgement message.");
 
     /**
      * SECOM Acknowledgement Response Error Pact Body
