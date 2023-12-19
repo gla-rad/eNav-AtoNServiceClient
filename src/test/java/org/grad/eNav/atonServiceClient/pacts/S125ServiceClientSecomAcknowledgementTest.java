@@ -66,7 +66,7 @@ public class S125ServiceClientSecomAcknowledgementTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createAcknowledgementPact(PactBuilder builder) {
         return builder
-                .given("Test SECOM Acknowledgement")
+                .given("Test SECOM Acknowledgement Interface")
                 .expectsToReceiveHttpInteraction(
                         "A valid acknowledgement request",
                         httpBuilder -> httpBuilder
