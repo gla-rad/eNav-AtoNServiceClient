@@ -194,8 +194,7 @@ public class SecomPactDslDefinitions {
      * SECOM Subscription Response Error Pact Body
      */
     static final DslPart subscriptionResponseErrorDsl = new PactDslJsonBody()
-            .stringType("message", "Bad Request")
-            .nullValue("subscriptionIdentifier");
+            .stringType("message", "Bad Request");
 
     /**
      * SECOM Remove Subscription Request Pact Body
