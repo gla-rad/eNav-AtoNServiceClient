@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.grad.eNav.atonServiceClient.pacts;
+package org.grad.eNav.atonServiceClient.pacts.secomClient;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.PactBuilder;
@@ -41,18 +41,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 /**
- * The S125 Aton client Consumer SECOM Acknowledgement Interface Contract Test Class.
+ * The basic SECOM Client Consumer Acknowledgement Interface Contract Test Class.
  * <p/>
- * This class provides the definition of the consumer-driver contracts for the
- * S125 AtoN Service Client SECOM Acknowledgement interface and generates the
+ * This class provides the definition of the consumer-driver contracts for a
+ * basic SECOM Client Consumer Acknowledgement interface and generates the
  * data to be published to the pacts-broker. This can be done through a separate
  * maven goal, so that it doesn't conflict with the development of the service.
  *
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
 @PactConsumerTest
-@PactTestFor(providerName = "SecomS125Service")
-public class S125ServiceClientSecomAcknowledgementTest {
+@PactTestFor(providerName = "SecomService")
+public class BasicSecomAcknowledgementTest {
 
     /**
      * The test object mapper.
@@ -63,7 +63,7 @@ public class S125ServiceClientSecomAcknowledgementTest {
      * SECOM Capability Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
+    @Pact(provider="SecomService", consumer="SecomServiceClient")
     public V4Pact createAcknowledgementPact(PactBuilder builder) {
         return builder
                 .given("Test SECOM Acknowledgement Interface")
@@ -85,7 +85,7 @@ public class S125ServiceClientSecomAcknowledgementTest {
      * SECOM Acknowledgement With Bad Body Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
+    @Pact(provider="SecomService", consumer="SecomServiceClient")
     public V4Pact createAcknowledgementPactWithBadBody(PactBuilder builder) {
         return builder
                 .given("Test SECOM Acknowledgement Interface")
@@ -107,7 +107,7 @@ public class S125ServiceClientSecomAcknowledgementTest {
      * SECOM Acknowledgement Without Transaction Identifier Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
+    @Pact(provider="SecomService", consumer="SecomServiceClient")
     public V4Pact createAcknowledgementPactWithoutTransactionIdentifier(PactBuilder builder) {
         return builder
                     .given("Test SECOM Acknowledgement Interface")

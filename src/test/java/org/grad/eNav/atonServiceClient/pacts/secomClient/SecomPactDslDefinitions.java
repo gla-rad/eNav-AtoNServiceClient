@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.grad.eNav.atonServiceClient.pacts;
+package org.grad.eNav.atonServiceClient.pacts.secomClient;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
@@ -41,7 +41,7 @@ public class SecomPactDslDefinitions {
             .array("capability")
                 .object()
                     .numberValue("containerType", 0)
-                    .stringValue("dataProductType", "S125")
+                    .stringMatcher("dataProductType", "S\\d{3}", "S125")
                     .stringType("productSchemaUrl", "https://rnavlab.gla-rad.org/enav/aton-service/xsd/S125.xsd")
                     .object("implementedInterfaces", new PactDslJsonBody()
                             .booleanType("upload",  true)
@@ -89,7 +89,7 @@ public class SecomPactDslDefinitions {
      * SECOM GetSummary Response Error Pact Body
      */
     static final DslPart getSummaryResponseErrorDsl = new PactDslJsonBody()
-            .stringType("responseText", "");
+            .stringType("responseText", "Bad Request");
 
     /**
      * SECOM Get Pact Body
@@ -122,7 +122,7 @@ public class SecomPactDslDefinitions {
      * SECOM Get Response Error Pact Body
      */
     static final DslPart getResponseErrorDsl = new PactDslJsonBody()
-            .stringType("responseText", "");
+            .stringType("responseText", "Bad Request");
 
     /**
      * SECOM Acknowledgement Request Pact Body
@@ -161,21 +161,21 @@ public class SecomPactDslDefinitions {
      */
     static final DslPart acknowledgementResponseDsl = new PactDslJsonBody()
             .nullValue("SECOM_ResponseCode")
-            .stringType("message",  "Acknowledgement message.");
+            .stringType("message",  "Acknowledgement successful.");
 
     /**
      * SECOM Acknowledgement Response Error Pact Body
      */
     static final DslPart acknowledgementResponseErrorDsl = new PactDslJsonBody()
             .integerMatching("SECOM_ResponseCode", "[0|1|2|3]", 0)
-            .stringType("message",  "Acknowledgement message.");
+            .stringType("message",  "Bad Request");
 
     /**
      * SECOM Subscription Request Pact Body
      */
     static final DslPart subscriptionRequestDsl = new PactDslJsonBody()
             .integerMatching("containerType", "[0|1|2]", 1)
-            .stringValue("dataProductType", "S125")
+            .stringMatcher("dataProductType", "S\\d{3}", "S125")
             .stringMatcher("dataReference",  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "7f000101-8ad6-1ee7-818a-d7332b920002")
             .stringType("productVersion", "0.0.1")
             .stringMatcher("geometry", "^([A-Z]+\\s*\\(\\(?\\s*(-?\\d+(\\.\\d+)?)\\s+-?\\d+(\\.\\d+)?(?:\\s+-?\\d+(\\.\\d+)?)?\\s*(,\\s*(-?\\d+(\\.\\d+)?)\\s+-?\\d+(\\.\\d+)?(?:\\s+-?\\d+(\\.\\d+)?)?\\s*)*\\)\\)?\\s*)+$", "POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))")
