@@ -164,10 +164,10 @@ public class S125ServiceClientSecomRemoveSubscriptionTest {
         removeSubscriptionObject.setSubscriptionIdentifier(UUID.randomUUID());
 
         // And perform the SECOM request
-        Response httpResponse = Request.delete(mockServer.getUrl() + "/v1/subscription")
+        Response response = Request.delete(mockServer.getUrl() + "/v1/subscription")
                 .bodyString("{\"field1\":\"bad-field\", \"field2\":\"bad-field\"}", ContentType.APPLICATION_JSON)
                 .execute();
-        assertEquals(httpResponse.returnResponse().getCode(), 400);
+        assertEquals(400, response.returnResponse().getCode());
     }
 
     /**
@@ -184,10 +184,10 @@ public class S125ServiceClientSecomRemoveSubscriptionTest {
         removeSubscriptionObject.setSubscriptionIdentifier(UUID.randomUUID());
 
         // And perform the SECOM request
-        Response httpResponse = Request.delete(mockServer.getUrl() + "/v1/subscription")
+        Response response = Request.delete(mockServer.getUrl() + "/v1/subscription")
                 .bodyString(this.objectMapper.writeValueAsString(removeSubscriptionObject), ContentType.APPLICATION_JSON)
                 .execute();
-        assertEquals(httpResponse.returnResponse().getCode(), 404);
+        assertEquals(404, response.returnResponse().getCode());
     }
 
 }

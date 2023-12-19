@@ -22,8 +22,8 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTest;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import au.com.dius.pact.core.support.Response;
-import au.com.dius.pact.core.support.SimpleHttp;
+import org.apache.hc.client5.http.fluent.Request;
+import org.apache.hc.client5.http.fluent.Response;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -75,9 +75,10 @@ public class S125ServiceClientSecomCapabilityTest {
     @Test
     @PactTestFor(pactMethods = "createCapabilityPact")
     void testCapability(MockServer mockServer) throws IOException {
-        SimpleHttp http = new SimpleHttp(mockServer.getUrl());
-        Response httpResponse = http.get(mockServer.getUrl() + "/v1/capability");
-        assertEquals(httpResponse.getStatusCode(), 200);
+        // Perform the SECOM request
+        Response response = Request.get(mockServer.getUrl() + "/v1/capability")
+                .execute();
+        assertEquals(200, response.returnResponse().getCode());
     }
 
 }

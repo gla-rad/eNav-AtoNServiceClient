@@ -22,10 +22,10 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTest;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import au.com.dius.pact.core.support.Response;
-import au.com.dius.pact.core.support.SimpleHttp;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.entity.ContentType;
+import org.apache.hc.client5.http.fluent.Request;
+import org.apache.hc.client5.http.fluent.Response;
+import org.apache.hc.core5.http.ContentType;
 import org.grad.secom.core.models.AcknowledgementObject;
 import org.grad.secom.core.models.EnvelopeAckObject;
 import org.grad.secom.core.models.enums.AckTypeEnum;
@@ -155,12 +155,11 @@ public class S125ServiceClientSecomAcknowledgementTest {
         acknowledgementObject.setEnvelope(envelopeAckObject);
         acknowledgementObject.setDigitalSignature("ZGlnaXRhbFNpZ25hdHVyZQ==");
 
-        // And post it to the mock server
-        SimpleHttp http = new SimpleHttp(mockServer.getUrl());
-        Response httpResponse = http.post(mockServer.getUrl() + "/v1/acknowledgement",
-                this.objectMapper.writeValueAsString(acknowledgementObject),
-                ContentType.APPLICATION_JSON.getMimeType());
-        assertEquals(httpResponse.getStatusCode(), 200);
+        // And perform the SECOM request
+        Response httpResponse = Request.post(mockServer.getUrl() + "/v1/acknowledgement")
+                .bodyString(this.objectMapper.writeValueAsString(acknowledgementObject), ContentType.APPLICATION_JSON)
+                .execute();
+        assertEquals(200, httpResponse.returnResponse().getCode());
     }
 
     /**
@@ -170,13 +169,12 @@ public class S125ServiceClientSecomAcknowledgementTest {
      */
     @Test
     @PactTestFor(pactMethods = "createAcknowledgementPactWithBadBody")
-    void testAcknowledgementWithBodBody(MockServer mockServer) {
-        // And post it to the mock server
-        SimpleHttp http = new SimpleHttp(mockServer.getUrl());
-        Response httpResponse = http.post(mockServer.getUrl() + "/v1/acknowledgement",
-                "{\"envelope\":\"bad-envelope\", \"digitalSignature\":\"bad-digital-signature\"}",
-                ContentType.APPLICATION_JSON.getMimeType());
-        assertEquals(httpResponse.getStatusCode(), 400);
+    void testAcknowledgementWithBodBody(MockServer mockServer) throws IOException {
+        // Perform the SECOM request
+        Response response = Request.post(mockServer.getUrl() + "/v1/acknowledgement")
+                .bodyString("{\"envelope\":\"bad-envelope\", \"digitalSignature\":\"bad-digital-signature\"}", ContentType.APPLICATION_JSON)
+                .execute();
+        assertEquals(400, response.returnResponse().getCode());
     }
 
     /**
@@ -201,12 +199,11 @@ public class S125ServiceClientSecomAcknowledgementTest {
         acknowledgementObject.setEnvelope(envelopeAckObject);
         acknowledgementObject.setDigitalSignature("ZGlnaXRhbFNpZ25hdHVyZQ==");
 
-        // And post it to the mock server
-        SimpleHttp http = new SimpleHttp(mockServer.getUrl());
-        Response httpResponse = http.post(mockServer.getUrl() + "/v1/acknowledgement",
-                this.objectMapper.writeValueAsString(acknowledgementObject),
-                ContentType.APPLICATION_JSON.getMimeType());
-        assertEquals(httpResponse.getStatusCode(), 400);
+        // Perform the SECOM request
+        Response response = Request.post(mockServer.getUrl() + "/v1/acknowledgement")
+                .bodyString(this.objectMapper.writeValueAsString(acknowledgementObject), ContentType.APPLICATION_JSON)
+                .execute();
+        assertEquals(400, response.returnResponse().getCode());
     }
 
 }

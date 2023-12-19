@@ -22,17 +22,17 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTest;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import au.com.dius.pact.core.support.Response;
-import au.com.dius.pact.core.support.SimpleHttp;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.entity.ContentType;
+import org.apache.hc.client5.http.fluent.Request;
+import org.apache.hc.client5.http.fluent.Response;
+import org.apache.hc.core5.http.ContentType;
 import org.grad.secom.core.models.SubscriptionRequestObject;
 import org.grad.secom.core.models.enums.ContainerTypeEnum;
 import org.grad.secom.core.models.enums.SECOM_DataProductType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -117,7 +117,7 @@ public class S125ServiceClientSecomSubscriptionTest {
      */
     @Test
     @PactTestFor(pactMethods = "subscriptionPact")
-    void testSubscription(MockServer mockServer) throws JsonProcessingException {
+    void testSubscription(MockServer mockServer) throws IOException {
         // Create an subscription request object
         SubscriptionRequestObject subscriptionRequestObject = new SubscriptionRequestObject();
         subscriptionRequestObject.setContainerType(ContainerTypeEnum.S100_DataSet);
@@ -129,11 +129,11 @@ public class S125ServiceClientSecomSubscriptionTest {
         subscriptionRequestObject.setSubscriptionPeriodStart(LocalDateTime.now());
         subscriptionRequestObject.setSubscriptionPeriodEnd(LocalDateTime.now());
 
-        SimpleHttp http = new SimpleHttp(mockServer.getUrl());
-        Response httpResponse = http.post(mockServer.getUrl() + "/v1/subscription",
-                this.objectMapper.writeValueAsString(subscriptionRequestObject),
-                ContentType.APPLICATION_JSON.getMimeType());
-        assertEquals(httpResponse.getStatusCode(), 200);
+        // And perform the SECOM request
+        Response response = Request.post(mockServer.getUrl() + "/v1/subscription")
+                .bodyString(this.objectMapper.writeValueAsString(subscriptionRequestObject), org.apache.hc.core5.http.ContentType.APPLICATION_JSON)
+                .execute();
+        assertEquals(200, response.returnResponse().getCode());
     }
 
     /**
@@ -143,12 +143,12 @@ public class S125ServiceClientSecomSubscriptionTest {
      */
     @Test
     @PactTestFor(pactMethods = "subscriptionPactWithBadBody")
-    void createSubscriptionPactWithBadBody(MockServer mockServer) {
-        SimpleHttp http = new SimpleHttp(mockServer.getUrl());
-        Response httpResponse = http.post(mockServer.getUrl() + "/v1/subscription",
-                "{\"field1\":\"bad-field\", \"field2\":\"bad-field\"}",
-                ContentType.APPLICATION_JSON.getMimeType());
-        assertEquals(httpResponse.getStatusCode(), 400);
+    void createSubscriptionPactWithBadBody(MockServer mockServer) throws IOException {
+        // And perform the SECOM request
+        Response response = Request.post(mockServer.getUrl() + "/v1/subscription")
+                .bodyString("{\"field1\":\"bad-field\", \"field2\":\"bad-field\"}", ContentType.APPLICATION_JSON)
+                .execute();
+        assertEquals(400, response.returnResponse().getCode());
     }
 
 }

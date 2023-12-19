@@ -22,19 +22,20 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTest;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import au.com.dius.pact.core.support.Response;
-import au.com.dius.pact.core.support.SimpleHttp;
-import com.google.common.collect.Maps;
+import org.apache.hc.client5.http.fluent.Request;
+import org.apache.hc.client5.http.fluent.Response;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
+import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * The S125 Aton client Consumer SECOM Get Summary Interface Contract Test Class.
@@ -55,15 +56,15 @@ public class S125ServiceClientSecomGetSummaryTest {
      * pacts. This can also be reused in the testing.
      */
     final Map<String, String> queryParamsMap = Map.of(
-            "containerType" ,"0",
-            "dataProductType" ,"S125",
-            "productVersion" ,"0.0.1",
-            "geometry" ,"POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))",
-            "unlocode" ,"GBHRW",
-            "validFrom" ,"20200101T000000",
-            "validTo" ,"20200101T235959",
-            "page" ,"0",
-            "pageSize" ,"10"
+            "containerType", "0",
+            "dataProductType", "S125",
+            "productVersion", "0.0.1",
+            "geometry", "POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))",
+            "unlocode", "GBHRW",
+            "validFrom", "20200101T000000",
+            "validTo", "20200101T235959",
+            "page", "0",
+            "pageSize", "10"
     );
 
     /**
@@ -250,11 +251,13 @@ public class S125ServiceClientSecomGetSummaryTest {
      */
     @Test
     @PactTestFor(pactMethods = "createGetSummaryPact")
-    void testGetSummary(MockServer mockServer) throws IOException {
-        SimpleHttp http = new SimpleHttp(mockServer.getUrl());
-        Response httpResponse = http.get(mockServer.getUrl() + "/v1/object/summary");
-        assertEquals(httpResponse.getStatusCode(), 200);
-        assertTrue(httpResponse.getHasBody());
+    void testGetSummary(MockServer mockServer) throws IOException, URISyntaxException {
+        // Perform the SECOM request
+        Response response = Request.get(
+                new URIBuilder(mockServer.getUrl() + "/v1/object/summary")
+                        .build())
+                .execute();
+        assertEquals(200, response.returnResponse().getCode());
     }
 
     /**
@@ -266,15 +269,14 @@ public class S125ServiceClientSecomGetSummaryTest {
      */
     @Test
     @PactTestFor(pactMethods = "createGetSummaryPactWithParams")
-    void testGetSummaryWithParams(MockServer mockServer) throws IOException {
-        SimpleHttp http = new SimpleHttp(mockServer.getUrl());
-        Response httpResponse = http.get(
-                mockServer.getUrl() + "/v1/object/summary",
-                Maps.transformValues(
-                        this.queryParamsMap,
-                        v -> URLEncoder.encode(v, StandardCharsets.UTF_8)));
-        assertEquals(httpResponse.getStatusCode(), 200);
-        assertTrue(httpResponse.getHasBody());
+    void testGetSummaryWithParams(MockServer mockServer) throws IOException, URISyntaxException {
+        // Perform the SECOM request
+        Response response = Request.get(
+                new URIBuilder(mockServer.getUrl() + "/v1/object/summary")
+                        .addParameters(this.mapToNameValueParams(this.queryParamsMap))
+                        .build())
+                .execute();
+        assertEquals(200, response.returnResponse().getCode());
     }
 
     /**
@@ -287,15 +289,16 @@ public class S125ServiceClientSecomGetSummaryTest {
      */
     @Test
     @PactTestFor(pactMethods = "createGetSummaryPactWithParamsContainerTypeBadFormat")
-    void testGetSummaryWithParamsContainerTypeBadFormat(MockServer mockServer) throws IOException {
-        SimpleHttp http = new SimpleHttp(mockServer.getUrl());
-        Response httpResponse = http.get(
-                mockServer.getUrl() + "/v1/object/summary",
-                Maps.transformValues(
-                        this.updateMapValue(this.queryParamsMap, "containerType", "invalid"),
-                        v -> URLEncoder.encode(v, StandardCharsets.UTF_8)));
-        assertEquals(httpResponse.getStatusCode(), 400);
-        assertTrue(httpResponse.getHasBody());
+    void testGetSummaryWithParamsContainerTypeBadFormat(MockServer mockServer) throws IOException, URISyntaxException {
+        // Update the query params
+        final Map<String, String> queryParams = this.updateMapValue(this.queryParamsMap, "containerType", "invalid");
+        // Perform the SECOM request
+        Response response = Request.get(
+                        new URIBuilder(mockServer.getUrl() + "/v1/object/summary")
+                                .addParameters(this.mapToNameValueParams(queryParams))
+                                .build())
+                .execute();
+        assertEquals(400, response.returnResponse().getCode());
     }
 
     /**
@@ -308,15 +311,16 @@ public class S125ServiceClientSecomGetSummaryTest {
      */
     @Test
     @PactTestFor(pactMethods = "createGetSummaryPactWithParamsDataProductTypeBadFormat")
-    void testGetSummaryWithParamsDataProductTypeBadFormat(MockServer mockServer) throws IOException {
-        SimpleHttp http = new SimpleHttp(mockServer.getUrl());
-        Response httpResponse = http.get(
-                mockServer.getUrl() + "/v1/object/summary",
-                Maps.transformValues(
-                        this.updateMapValue(this.queryParamsMap, "dataProductType", "invalid"),
-                        v -> URLEncoder.encode(v, StandardCharsets.UTF_8)));
-        assertEquals(httpResponse.getStatusCode(), 400);
-        assertTrue(httpResponse.getHasBody());
+    void testGetSummaryWithParamsDataProductTypeBadFormat(MockServer mockServer) throws IOException, URISyntaxException {
+        // Update the query params
+        final Map<String, String> queryParams = this.updateMapValue(this.queryParamsMap, "dataProductType", "invalid");
+        // Perform the SECOM request
+        Response response = Request.get(
+                        new URIBuilder(mockServer.getUrl() + "/v1/object/summary")
+                                .addParameters(this.mapToNameValueParams(queryParams))
+                                .build())
+                .execute();
+        assertEquals(400, response.returnResponse().getCode());
     }
 
     /**
@@ -329,15 +333,16 @@ public class S125ServiceClientSecomGetSummaryTest {
      */
     @Test
     @PactTestFor(pactMethods = "createGetSummaryPactWithParamsGeometryBadFormat")
-    void testGetSummaryWithParamsGeometryBadFormat(MockServer mockServer) throws IOException {
-        SimpleHttp http = new SimpleHttp(mockServer.getUrl());
-        Response httpResponse = http.get(
-                mockServer.getUrl() + "/v1/object/summary",
-                Maps.transformValues(
-                        this.updateMapValue(this.queryParamsMap, "geometry", "invalid"),
-                        v -> URLEncoder.encode(v, StandardCharsets.UTF_8)));
-        assertEquals(httpResponse.getStatusCode(), 400);
-        assertTrue(httpResponse.getHasBody());
+    void testGetSummaryWithParamsGeometryBadFormat(MockServer mockServer) throws IOException, URISyntaxException {
+        // Update the query params
+        final Map<String, String> queryParams = this.updateMapValue(this.queryParamsMap, "geometry", "invalid");
+        // Perform the SECOM request
+        Response response = Request.get(
+                        new URIBuilder(mockServer.getUrl() + "/v1/object/summary")
+                                .addParameters(this.mapToNameValueParams(queryParams))
+                                .build())
+                .execute();
+        assertEquals(400, response.returnResponse().getCode());
     }
 
     /**
@@ -350,15 +355,16 @@ public class S125ServiceClientSecomGetSummaryTest {
      */
     @Test
     @PactTestFor(pactMethods = "createGetSummaryPactWithParamsUnLoCodeBadFormat")
-    void testGetSummaryWithParamsUnLoCodeBadFormat(MockServer mockServer) throws IOException {
-        SimpleHttp http = new SimpleHttp(mockServer.getUrl());
-        Response httpResponse = http.get(
-                mockServer.getUrl() + "/v1/object/summary",
-                Maps.transformValues(
-                        this.updateMapValue(this.queryParamsMap, "unlocode", "invalid"),
-                        v -> URLEncoder.encode(v, StandardCharsets.UTF_8)));
-        assertEquals(httpResponse.getStatusCode(), 400);
-        assertTrue(httpResponse.getHasBody());
+    void testGetSummaryWithParamsUnLoCodeBadFormat(MockServer mockServer) throws IOException, URISyntaxException {
+        // Update the query params
+        final Map<String, String> queryParams = this.updateMapValue(this.queryParamsMap, "unlocode", "invalid");
+        // Perform the SECOM request
+        Response response = Request.get(
+                        new URIBuilder(mockServer.getUrl() + "/v1/object/summary")
+                                .addParameters(this.mapToNameValueParams(queryParams))
+                                .build())
+                .execute();
+        assertEquals(400, response.returnResponse().getCode());
     }
 
     /**
@@ -371,15 +377,16 @@ public class S125ServiceClientSecomGetSummaryTest {
      */
     @Test
     @PactTestFor(pactMethods = "createGetSummaryPactWithParamsValidFromBadFormat")
-    void testGetSummaryWithParamsValidFromBadFormat(MockServer mockServer) throws IOException {
-        SimpleHttp http = new SimpleHttp(mockServer.getUrl());
-        Response httpResponse = http.get(
-                mockServer.getUrl() + "/v1/object/summary",
-                Maps.transformValues(
-                        this.updateMapValue(this.queryParamsMap, "validFrom", "invalid"),
-                        v -> URLEncoder.encode(v, StandardCharsets.UTF_8)));
-        assertEquals(httpResponse.getStatusCode(), 400);
-        assertTrue(httpResponse.getHasBody());
+    void testGetSummaryWithParamsValidFromBadFormat(MockServer mockServer) throws IOException, URISyntaxException {
+        // Update the query params
+        final Map<String, String> queryParams = this.updateMapValue(this.queryParamsMap, "validFrom", "invalid");
+        // Perform the SECOM request
+        Response response = Request.get(
+                        new URIBuilder(mockServer.getUrl() + "/v1/object/summary")
+                                .addParameters(this.mapToNameValueParams(queryParams))
+                                .build())
+                .execute();
+        assertEquals(400, response.returnResponse().getCode());
     }
 
     /**
@@ -392,15 +399,16 @@ public class S125ServiceClientSecomGetSummaryTest {
      */
     @Test
     @PactTestFor(pactMethods = "createGetSummaryPactWithParamsValidToBadFormat")
-    void testGetSummaryWithParamsValidToBadFormat(MockServer mockServer) throws IOException {
-        SimpleHttp http = new SimpleHttp(mockServer.getUrl());
-        Response httpResponse = http.get(
-                mockServer.getUrl() + "/v1/object/summary",
-                Maps.transformValues(
-                        this.updateMapValue(this.queryParamsMap, "validTo", "invalid"),
-                        v -> URLEncoder.encode(v, StandardCharsets.UTF_8)));
-        assertEquals(httpResponse.getStatusCode(), 400);
-        assertTrue(httpResponse.getHasBody());
+    void testGetSummaryWithParamsValidToBadFormat(MockServer mockServer) throws IOException, URISyntaxException {
+        // Update the query params
+        final Map<String, String> queryParams = this.updateMapValue(this.queryParamsMap, "validTo", "invalid");
+        // Perform the SECOM request
+        Response response = Request.get(
+                        new URIBuilder(mockServer.getUrl() + "/v1/object/summary")
+                                .addParameters(this.mapToNameValueParams(queryParams))
+                                .build())
+                .execute();
+        assertEquals(400, response.returnResponse().getCode());
     }
 
     /**
@@ -416,6 +424,21 @@ public class S125ServiceClientSecomGetSummaryTest {
         final Map<String, String>  newMap = new HashMap<>(map);
         newMap.put(key, value);
         return newMap;
+    }
+
+    /**
+     * A helper function that transforms all the entries of the provided string
+     * map to name-value pairs.
+     *
+     * @param map the map with the header string values
+     * @return the generated name-value pairs
+     */
+    private List<NameValuePair> mapToNameValueParams(Map<String, String> map) {
+        return map.entrySet()
+                .stream()
+                .map(e -> new BasicNameValuePair(e.getKey(), e.getValue()))
+                .map(NameValuePair.class::cast)
+                .toList();
     }
 
 }
