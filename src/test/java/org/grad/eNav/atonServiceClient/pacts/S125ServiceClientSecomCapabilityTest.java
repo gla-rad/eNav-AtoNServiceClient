@@ -52,9 +52,9 @@ public class S125ServiceClientSecomCapabilityTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createCapabilityPact(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Capability")
+                .given("Test SECOM Capability Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Get Capability interaction with success",
+                        "A valid capability request",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/capability")

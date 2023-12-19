@@ -74,9 +74,9 @@ class S125ServiceClientSecomGetTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createGetPact(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get")
+                .given("Test SECOM Get Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Get interaction with success",
+                        "A valid get request",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object")
@@ -95,9 +95,9 @@ class S125ServiceClientSecomGetTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createGetPactWithParams(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get")
+                .given("Test SECOM Get Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Get with query parameters interaction with success\"",
+                        "A valid get request with query parameters",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object")
@@ -117,9 +117,9 @@ class S125ServiceClientSecomGetTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createGetPactWithParamsContainerTypeBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get")
+                .given("Test SECOM Get Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Get with query parameters badly formatted containertype interaction with failure",
+                        "A get request with query parameters but a badly formatted containerType",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object")
@@ -139,9 +139,9 @@ class S125ServiceClientSecomGetTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createGetPactWithParamsDataProductTypeBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get")
+                .given("Test SECOM Get Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Get with query parameters badly formatted dataProductType interaction with failure",
+                        "A get request with query parameters but a badly formatted dataProductType",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object")
@@ -161,9 +161,9 @@ class S125ServiceClientSecomGetTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createGetPactWithParamsGeometryBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get")
+                .given("Test SECOM Get Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Get with query parameters badly formatted geometry interaction with failure",
+                        "A get request with query parameters but a badly formatted geometry",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object")
@@ -183,9 +183,9 @@ class S125ServiceClientSecomGetTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createGetPactWithParamsUnLoCodeBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get")
+                .given("Test SECOM Get Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Get with query parameters badly formatted UnLoCode interaction with failure",
+                        "A get request with query parameters but a badly formatted UnLoCode",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object")
@@ -205,9 +205,9 @@ class S125ServiceClientSecomGetTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createGetPactWithParamsValidFromBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get")
+                .given("Test SECOM Get Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Get with query parameters badly formatted validFrom interaction with failure",
+                        "A get request with query parameters but a badly validFrom",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object")
@@ -227,9 +227,9 @@ class S125ServiceClientSecomGetTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createGetPactWithParamsValidToBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get")
+                .given("Test SECOM Get Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Get with query parameters badly formatted validTo interaction with failure",
+                        "A get request with query parameters but a badly validTo ",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object")

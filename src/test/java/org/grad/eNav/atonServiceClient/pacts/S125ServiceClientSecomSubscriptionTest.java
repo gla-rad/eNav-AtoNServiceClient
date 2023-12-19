@@ -65,9 +65,9 @@ public class S125ServiceClientSecomSubscriptionTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact subscriptionPact(PactBuilder builder) {
         return builder
-                .given("Test SECOM Post Subscription")
+                .given("Test SECOM Subscription Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Post Subscription interaction with success",
+                        "A valid subscription request",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/subscription")
@@ -87,9 +87,9 @@ public class S125ServiceClientSecomSubscriptionTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact subscriptionPactWithBadBody(PactBuilder builder) {
         return builder
-                .given("Test SECOM Post Subscription")
+                .given("Test SECOM Subscription Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Post Subscription interaction for badly formed body with failure",
+                        "A remove subscription request with a badly formed body",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/subscription")

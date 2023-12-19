@@ -64,9 +64,9 @@ public class S125ServiceClientSecomRemoveSubscriptionTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact removeSubscriptionPact(PactBuilder builder) {
         return builder
-                .given("Test SECOM Remove Subscription")
+                .given("Test SECOM Remove Subscription Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Delete Subscription interaction with success",
+                        "A valid remove subscription request",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/subscription")
@@ -86,9 +86,9 @@ public class S125ServiceClientSecomRemoveSubscriptionTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact removeSubscriptionPactWithBadBody(PactBuilder builder) {
         return builder
-                .given("Test SECOM Remove Subscription")
+                .given("Test SECOM Remove Subscription Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Remove Subscription interaction for badly formed body with failure",
+                        "A remove subscription request with a badly formed body",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/subscription")
@@ -108,9 +108,9 @@ public class S125ServiceClientSecomRemoveSubscriptionTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact removeSubscriptionPactNotFound(PactBuilder builder) {
         return builder
-                .given("Test SECOM Remove Subscription")
+                .given("Test SECOM Remove Subscription Interface for an invalid identifier")
                 .expectsToReceiveHttpInteraction(
-                        "Test Remove Subscription interaction for subscription identifier not found",
+                        "A remove subscription request for a subscription identifier that does not exist",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/subscription")

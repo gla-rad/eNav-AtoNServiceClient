@@ -74,9 +74,9 @@ public class S125ServiceClientSecomGetSummaryTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createGetSummaryPact(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Summary")
+                .given("Test SECOM Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Get Summary interaction with success\"",
+                        "A valid get summary request",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object/summary")
@@ -95,9 +95,9 @@ public class S125ServiceClientSecomGetSummaryTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createGetSummaryPactWithParams(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Summary")
+                .given("Test SECOM Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Get Summary with query parameters interaction with success\"",
+                        "A valid get summary request with query parameters",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object/summary")
@@ -117,9 +117,9 @@ public class S125ServiceClientSecomGetSummaryTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createGetSummaryPactWithParamsContainerTypeBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Summary")
+                .given("Test SECOM Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Get Summary with query parameters badly formatted containertype interaction with failure",
+                        "A get summary request with query parameters but a badly formatted containerType",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object/summary")
@@ -140,9 +140,9 @@ public class S125ServiceClientSecomGetSummaryTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createGetSummaryPactWithParamsDataProductTypeBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Summary")
+                .given("Test SECOM Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Get Summary with query parameters badly formatted dataProductType interaction with failure",
+                        "A get summary request with query parameters but a badly formatted dataProductType",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object/summary")
@@ -162,9 +162,9 @@ public class S125ServiceClientSecomGetSummaryTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createGetSummaryPactWithParamsGeometryBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Summary")
+                .given("Test SECOM Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Get Summary with query parameters badly formatted geometry interaction with failure",
+                        "A get summary request with query parameters but a badly formatted geometry",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object/summary")
@@ -184,9 +184,9 @@ public class S125ServiceClientSecomGetSummaryTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createGetSummaryPactWithParamsUnLoCodeBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Summary")
+                .given("Test SECOM Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Get Summary with query parameters badly formatted UnLoCode interaction with failure",
+                        "A get summary request with query parameters but a badly formatted UnLoCode",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object/summary")
@@ -206,9 +206,9 @@ public class S125ServiceClientSecomGetSummaryTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createGetSummaryPactWithParamsValidFromBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Summary")
+                .given("Test SECOM Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Get Summary with query parameters badly formatted validFrom interaction with failure",
+                        "A get summary request with query parameters but a badly formatted validFrom",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object/summary")
@@ -228,9 +228,9 @@ public class S125ServiceClientSecomGetSummaryTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createGetSummaryPactWithParamsValidToBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Summary")
+                .given("Test SECOM Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Get Summary with query parameters badly formatted validTo interaction with failure",
+                        "A get summary request with query parameters but a badly validTo",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/object/summary")

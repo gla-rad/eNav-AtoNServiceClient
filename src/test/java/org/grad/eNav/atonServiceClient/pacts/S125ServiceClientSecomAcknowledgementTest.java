@@ -66,9 +66,9 @@ public class S125ServiceClientSecomAcknowledgementTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createAcknowledgementPact(PactBuilder builder) {
         return builder
-                .given("Test SECOM Post Acknowledgement")
+                .given("Test SECOM Acknowledgement")
                 .expectsToReceiveHttpInteraction(
-                        "Test Post Acknowledgement interaction with success",
+                        "A valid acknowledgement request",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/acknowledgement")
@@ -88,9 +88,9 @@ public class S125ServiceClientSecomAcknowledgementTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createAcknowledgementPactWithBadBody(PactBuilder builder) {
         return builder
-                .given("Test SECOM Post Acknowledgement")
+                .given("Test SECOM Acknowledgement Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Post Acknowledgement interaction for badly formed body with failure",
+                        "An acknowledgement request with badly formed body",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/acknowledgement")
@@ -110,9 +110,9 @@ public class S125ServiceClientSecomAcknowledgementTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact createAcknowledgementPactWithoutTransactionIdentifier(PactBuilder builder) {
         return builder
-                    .given("Test SECOM Post Acknowledgement")
+                    .given("Test SECOM Acknowledgement Interface")
                 .expectsToReceiveHttpInteraction(
-                        "Test Post Acknowledgement interaction without transaction identifier",
+                        "An acknowledgement request without a transaction identifier",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/acknowledgement")
