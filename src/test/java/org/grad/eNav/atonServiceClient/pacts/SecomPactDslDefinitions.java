@@ -196,4 +196,28 @@ public class SecomPactDslDefinitions {
     static final DslPart subscriptionResponseErrorDsl = new PactDslJsonBody()
             .stringType("message", "Bad Request")
             .nullValue("subscriptionIdentifier");
+
+    /**
+     * SECOM Remove Subscription Request Pact Body
+     */
+    static final DslPart removeSubscriptionRequestDsl = new PactDslJsonBody()
+            .stringMatcher("subscriptionIdentifier",  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "7f000101-8ad6-1ee7-818a-d7332b920002");
+
+    /**
+     * SECOM Remove Subscription Response Pact Body
+     */
+    static final DslPart removeSubscriptionResponseDsl = new PactDslJsonBody()
+            .stringType("message", "Subscription successfully removed");
+
+    /**
+     * SECOM Remove Subscription Response Error Pact Body
+     */
+    static final DslPart removeSubscriptionResponseErrorDsl = new PactDslJsonBody()
+            .stringType("message", "Bad Request");
+
+    /**
+     * SECOM Remove Subscription Response Error Pact Body
+     */
+    static final DslPart removeSubscriptionResponseNotFoundDsl = new PactDslJsonBody()
+            .stringType("message", "Subscriber identifier not found");
 }

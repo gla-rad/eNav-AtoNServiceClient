@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * The S125 Aton client Consumer SECOM Subscription Interface Contract Test Class.
  * <p/>
  * This class provides the definition of the consumer-driver contracts for the
- * S125 AtoN Service Client SECOM Capability interface and generates the data
+ * S125 AtoN Service Client SECOM Subscription interface and generates the data
  * to be published to the pacts-broker. This can be done through a separate
  * maven goal, so that it doesn't conflict with the development of the service.
  *
@@ -63,7 +63,7 @@ public class S125ServiceClientSecomSubscriptionTest {
      * @param builder The Pact Builder
      */
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
-    public V4Pact createSubscriptionPact(PactBuilder builder) {
+    public V4Pact subscriptionPact(PactBuilder builder) {
         return builder
                 .given("Test SECOM Post Subscription")
                 .expectsToReceiveHttpInteraction(
@@ -85,9 +85,9 @@ public class S125ServiceClientSecomSubscriptionTest {
      * @param builder The Pact Builder
      */
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
-    public V4Pact createSubscriptionPactWithBadBody(PactBuilder builder) {
+    public V4Pact subscriptionPactWithBadBody(PactBuilder builder) {
         return builder
-                .given("Test SECOM Post Acknowledgement")
+                .given("Test SECOM Post Subscription")
                 .expectsToReceiveHttpInteraction(
                         "Test Post Subscription interaction for badly formed body with failure",
                         httpBuilder -> httpBuilder
@@ -116,7 +116,7 @@ public class S125ServiceClientSecomSubscriptionTest {
      * @param mockServer the mocked server
      */
     @Test
-    @PactTestFor(pactMethods = "createSubscriptionPact")
+    @PactTestFor(pactMethods = "subscriptionPact")
     void testSubscription(MockServer mockServer) throws JsonProcessingException {
         // Create an subscription request object
         SubscriptionRequestObject subscriptionRequestObject = new SubscriptionRequestObject();
@@ -142,7 +142,7 @@ public class S125ServiceClientSecomSubscriptionTest {
      * @param mockServer the mocked server
      */
     @Test
-    @PactTestFor(pactMethods = "createSubscriptionPactWithBadBody")
+    @PactTestFor(pactMethods = "subscriptionPactWithBadBody")
     void createSubscriptionPactWithBadBody(MockServer mockServer) {
         SimpleHttp http = new SimpleHttp(mockServer.getUrl());
         Response httpResponse = http.post(mockServer.getUrl() + "/v1/subscription",
