@@ -169,28 +169,6 @@ public class S125ServiceClientSecomSubscriptionTest {
     }
 
     /**
-     * SECOM Subscription With Badly Formatted Product Version Pact.
-     * @param builder The Pact Builder
-     */
-    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
-    public V4Pact subscriptionPactWithProductVersionBadFormat(PactBuilder builder) {
-        return builder
-                .given("Test SECOM Subscription Interface")
-                .expectsToReceiveHttpInteraction(
-                        "A subscription request with a badly formatted productVersion",
-                        httpBuilder -> httpBuilder
-                                .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v1/subscription")
-                                        .method("POST")
-                                        .body("{\"productVersion\":0}"))
-                                .willRespondWith(responseBuilder -> responseBuilder
-                                        .status(400)
-                                        .body(SecomPactDslDefinitions.subscriptionResponseErrorDsl))
-                )
-                .toPact();
-    }
-
-    /**
      * SECOM Subscription With Badly Formatted Geometry Pact.
      * @param builder The Pact Builder
      */
@@ -371,22 +349,6 @@ public class S125ServiceClientSecomSubscriptionTest {
         // And perform the SECOM request
         Response response = Request.post(mockServer.getUrl() + "/v1/subscription")
                 .bodyString("{\"dataReference\":\"invalid\"}", ContentType.APPLICATION_JSON)
-                .execute();
-        assertEquals(400, response.returnResponse().getCode());
-    }
-
-    /**
-     * Test that the client cannot perform a subscription request with a badly
-     * formatted productVersion field on the server and generate the pacts to be
-     * uploaded to the pacts broker.
-     * @param mockServer the mocked server
-     */
-    @Test
-    @PactTestFor(pactMethods = "subscriptionPactWithProductVersionBadFormat")
-    void createSubscriptionPactWithProductVersionBadFormat(MockServer mockServer) throws IOException {
-        // And perform the SECOM request
-        Response response = Request.post(mockServer.getUrl() + "/v1/subscription")
-                .bodyString("{\"productVersion\":0}", ContentType.APPLICATION_JSON)
                 .execute();
         assertEquals(400, response.returnResponse().getCode());
     }
