@@ -177,7 +177,7 @@ public class S125ServiceClientSecomSubscriptionTest {
         return builder
                 .given("Test SECOM Subscription Interface")
                 .expectsToReceiveHttpInteraction(
-                        "A subscription request with a badly formatted productVersion",
+                        "A subscription request with a badly formatted geometry",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/subscription")
