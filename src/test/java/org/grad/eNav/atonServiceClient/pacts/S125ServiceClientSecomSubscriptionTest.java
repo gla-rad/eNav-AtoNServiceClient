@@ -96,6 +96,182 @@ public class S125ServiceClientSecomSubscriptionTest {
                                         .method("POST")
                                         .body("{\"field1\":\"bad-field\", \"field2\":\"bad-field\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
+                                        .status(200)
+                                        .body(SecomPactDslDefinitions.subscriptionResponseDsl))
+                )
+                .toPact();
+    }
+
+    /**
+     * SECOM Subscription With Badly Formatted Container Type Pact.
+     * @param builder The Pact Builder
+     */
+    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
+    public V4Pact subscriptionPactWithContainerTypeBadFormat(PactBuilder builder) {
+        return builder
+                .given("Test SECOM Subscription Interface")
+                .expectsToReceiveHttpInteraction(
+                        "A subscription request with a badly formatted containerType",
+                        httpBuilder -> httpBuilder
+                                .withRequest(requestBuilder -> requestBuilder
+                                        .path("/v1/subscription")
+                                        .method("POST")
+                                        .body("{\"containerType\":\"invalid\"}"))
+                                .willRespondWith(responseBuilder -> responseBuilder
+                                        .status(400)
+                                        .body(SecomPactDslDefinitions.subscriptionResponseErrorDsl))
+                )
+                .toPact();
+    }
+
+    /**
+     * SECOM Subscription With Badly Formatted Data Product Type Pact.
+     * @param builder The Pact Builder
+     */
+    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
+    public V4Pact subscriptionPactWithDataProductTypeBadFormat(PactBuilder builder) {
+        return builder
+                .given("Test SECOM Subscription Interface")
+                .expectsToReceiveHttpInteraction(
+                        "A subscription request with a badly formatted containerType",
+                        httpBuilder -> httpBuilder
+                                .withRequest(requestBuilder -> requestBuilder
+                                        .path("/v1/subscription")
+                                        .method("POST")
+                                        .body("{\"dataProductType\":\"invalid\"}"))
+                                .willRespondWith(responseBuilder -> responseBuilder
+                                        .status(400)
+                                        .body(SecomPactDslDefinitions.subscriptionResponseErrorDsl))
+                )
+                .toPact();
+    }
+
+    /**
+     * SECOM Subscription With Badly Formatted Data Reference Type Pact.
+     * @param builder The Pact Builder
+     */
+    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
+    public V4Pact subscriptionPactWithDataReferenceBadFormat(PactBuilder builder) {
+        return builder
+                .given("Test SECOM Subscription Interface")
+                .expectsToReceiveHttpInteraction(
+                        "A subscription request with a badly formatted dataReference",
+                        httpBuilder -> httpBuilder
+                                .withRequest(requestBuilder -> requestBuilder
+                                        .path("/v1/subscription")
+                                        .method("POST")
+                                        .body("{\"dataReference\":\"invalid\"}"))
+                                .willRespondWith(responseBuilder -> responseBuilder
+                                        .status(400)
+                                        .body(SecomPactDslDefinitions.subscriptionResponseErrorDsl))
+                )
+                .toPact();
+    }
+
+    /**
+     * SECOM Subscription With Badly Formatted Product Version Pact.
+     * @param builder The Pact Builder
+     */
+    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
+    public V4Pact subscriptionPactWithProductVersionBadFormat(PactBuilder builder) {
+        return builder
+                .given("Test SECOM Subscription Interface")
+                .expectsToReceiveHttpInteraction(
+                        "A subscription request with a badly formatted productVersion",
+                        httpBuilder -> httpBuilder
+                                .withRequest(requestBuilder -> requestBuilder
+                                        .path("/v1/subscription")
+                                        .method("POST")
+                                        .body("{\"productVersion\":0}"))
+                                .willRespondWith(responseBuilder -> responseBuilder
+                                        .status(400)
+                                        .body(SecomPactDslDefinitions.subscriptionResponseErrorDsl))
+                )
+                .toPact();
+    }
+
+    /**
+     * SECOM Subscription With Badly Formatted Geometry Pact.
+     * @param builder The Pact Builder
+     */
+    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
+    public V4Pact subscriptionPactWithGeometryBadFormat(PactBuilder builder) {
+        return builder
+                .given("Test SECOM Subscription Interface")
+                .expectsToReceiveHttpInteraction(
+                        "A subscription request with a badly formatted productVersion",
+                        httpBuilder -> httpBuilder
+                                .withRequest(requestBuilder -> requestBuilder
+                                        .path("/v1/subscription")
+                                        .method("POST")
+                                        .body("{\"geometry\":\"invalid\"}"))
+                                .willRespondWith(responseBuilder -> responseBuilder
+                                        .status(400)
+                                        .body(SecomPactDslDefinitions.subscriptionResponseErrorDsl))
+                )
+                .toPact();
+    }
+
+    /**
+     * SECOM Subscription With Badly Formatted UnLoCode Pact.
+     * @param builder The Pact Builder
+     */
+    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
+    public V4Pact subscriptionPactWithUnLoCodeBadFormat(PactBuilder builder) {
+        return builder
+                .given("Test SECOM Subscription Interface")
+                .expectsToReceiveHttpInteraction(
+                        "A subscription request with a badly formatted unlocode",
+                        httpBuilder -> httpBuilder
+                                .withRequest(requestBuilder -> requestBuilder
+                                        .path("/v1/subscription")
+                                        .method("POST")
+                                        .body("{\"unlocode\":\"invalid\"}"))
+                                .willRespondWith(responseBuilder -> responseBuilder
+                                        .status(400)
+                                        .body(SecomPactDslDefinitions.subscriptionResponseErrorDsl))
+                )
+                .toPact();
+    }
+
+    /**
+     * SECOM Subscription With Badly Formatted Subscription Period Start Pact.
+     * @param builder The Pact Builder
+     */
+    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
+    public V4Pact subscriptionPactWithSubscriptionPeriodStartBadFormat(PactBuilder builder) {
+        return builder
+                .given("Test SECOM Subscription Interface")
+                .expectsToReceiveHttpInteraction(
+                        "A subscription request with a badly formatted subscriptionPeriodStart",
+                        httpBuilder -> httpBuilder
+                                .withRequest(requestBuilder -> requestBuilder
+                                        .path("/v1/subscription")
+                                        .method("POST")
+                                        .body("{\"subscriptionPeriodStart\":\"invalid\"}"))
+                                .willRespondWith(responseBuilder -> responseBuilder
+                                        .status(400)
+                                        .body(SecomPactDslDefinitions.subscriptionResponseErrorDsl))
+                )
+                .toPact();
+    }
+
+    /**
+     * SECOM Subscription With Badly Formatted Subscription Period End Pact.
+     * @param builder The Pact Builder
+     */
+    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
+    public V4Pact subscriptionPactWithSubscriptionPeriodEndBadFormat(PactBuilder builder) {
+        return builder
+                .given("Test SECOM Subscription Interface")
+                .expectsToReceiveHttpInteraction(
+                        "A subscription request with a badly formatted subscriptionPeriodEnd",
+                        httpBuilder -> httpBuilder
+                                .withRequest(requestBuilder -> requestBuilder
+                                        .path("/v1/subscription")
+                                        .method("POST")
+                                        .body("{\"subscriptionPeriodEnd\":\"invalid\"}"))
+                                .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
                                         .body(SecomPactDslDefinitions.subscriptionResponseErrorDsl))
                 )
@@ -147,6 +323,134 @@ public class S125ServiceClientSecomSubscriptionTest {
         // And perform the SECOM request
         Response response = Request.post(mockServer.getUrl() + "/v1/subscription")
                 .bodyString("{\"field1\":\"bad-field\", \"field2\":\"bad-field\"}", ContentType.APPLICATION_JSON)
+                .execute();
+        assertEquals(200, response.returnResponse().getCode());
+    }
+
+    /**
+     * Test that the client cannot perform a subscription request with a badly
+     * formatted containerType field on the server and generate the pacts to be
+     * uploaded to the pacts broker.
+     * @param mockServer the mocked server
+     */
+    @Test
+    @PactTestFor(pactMethods = "subscriptionPactWithContainerTypeBadFormat")
+    void createSubscriptionPactWithContainerTypeBadFormat(MockServer mockServer) throws IOException {
+        // And perform the SECOM request
+        Response response = Request.post(mockServer.getUrl() + "/v1/subscription")
+                .bodyString("{\"containerType\":\"invalid\"}", ContentType.APPLICATION_JSON)
+                .execute();
+        assertEquals(400, response.returnResponse().getCode());
+    }
+
+    /**
+     * Test that the client cannot perform a subscription request with a badly
+     * formatted dataProductType field on the server and generate the pacts to be
+     * uploaded to the pacts broker.
+     * @param mockServer the mocked server
+     */
+    @Test
+    @PactTestFor(pactMethods = "subscriptionPactWithDataProductTypeBadFormat")
+    void createSubscriptionPactWithDataProductTypeBadFormat(MockServer mockServer) throws IOException {
+        // And perform the SECOM request
+        Response response = Request.post(mockServer.getUrl() + "/v1/subscription")
+                .bodyString("{\"dataProductType\":\"invalid\"}", ContentType.APPLICATION_JSON)
+                .execute();
+        assertEquals(400, response.returnResponse().getCode());
+    }
+
+    /**
+     * Test that the client cannot perform a subscription request with a badly
+     * formatted dataReference field on the server and generate the pacts to be
+     * uploaded to the pacts broker.
+     * @param mockServer the mocked server
+     */
+    @Test
+    @PactTestFor(pactMethods = "subscriptionPactWithDataReferenceBadFormat")
+    void createSubscriptionPactWithDataReferenceBadFormat(MockServer mockServer) throws IOException {
+        // And perform the SECOM request
+        Response response = Request.post(mockServer.getUrl() + "/v1/subscription")
+                .bodyString("{\"dataReference\":\"invalid\"}", ContentType.APPLICATION_JSON)
+                .execute();
+        assertEquals(400, response.returnResponse().getCode());
+    }
+
+    /**
+     * Test that the client cannot perform a subscription request with a badly
+     * formatted productVersion field on the server and generate the pacts to be
+     * uploaded to the pacts broker.
+     * @param mockServer the mocked server
+     */
+    @Test
+    @PactTestFor(pactMethods = "subscriptionPactWithProductVersionBadFormat")
+    void createSubscriptionPactWithProductVersionBadFormat(MockServer mockServer) throws IOException {
+        // And perform the SECOM request
+        Response response = Request.post(mockServer.getUrl() + "/v1/subscription")
+                .bodyString("{\"productVersion\":0}", ContentType.APPLICATION_JSON)
+                .execute();
+        assertEquals(400, response.returnResponse().getCode());
+    }
+
+    /**
+     * Test that the client cannot perform a subscription request with a badly
+     * formatted productVersion field on the server and generate the pacts to be
+     * uploaded to the pacts broker.
+     * @param mockServer the mocked server
+     */
+    @Test
+    @PactTestFor(pactMethods = "subscriptionPactWithGeometryBadFormat")
+    void createSubscriptionPactWithGeometryBadFormat(MockServer mockServer) throws IOException {
+        // And perform the SECOM request
+        Response response = Request.post(mockServer.getUrl() + "/v1/subscription")
+                .bodyString("{\"geometry\":\"invalid\"}", ContentType.APPLICATION_JSON)
+                .execute();
+        assertEquals(400, response.returnResponse().getCode());
+    }
+
+    /**
+     * Test that the client cannot perform a subscription request with a badly
+     * formatted unlocode field on the server and generate the pacts to be
+     * uploaded to the pacts broker.
+     * @param mockServer the mocked server
+     */
+    @Test
+    @PactTestFor(pactMethods = "subscriptionPactWithUnLoCodeBadFormat")
+    void createSubscriptionPactWithUnLoCodeBadFormat(MockServer mockServer) throws IOException {
+        // And perform the SECOM request
+        Response response = Request.post(mockServer.getUrl() + "/v1/subscription")
+                .bodyString("{\"unlocode\":\"invalid\"}", ContentType.APPLICATION_JSON)
+                .execute();
+        assertEquals(400, response.returnResponse().getCode());
+    }
+
+    /**
+     * Test that the client cannot perform a subscription request with a badly
+     * formatted subscriptionPeriodStart field on the server and generate the
+     * pacts to be uploaded to the pacts broker.
+     * @param mockServer the mocked server
+     */
+    @Test
+    @PactTestFor(pactMethods = "subscriptionPactWithSubscriptionPeriodStartBadFormat")
+    void createSubscriptionPactWithSubscriptionPeriodStartBadFormat(MockServer mockServer) throws IOException {
+        // And perform the SECOM request
+        Response response = Request.post(mockServer.getUrl() + "/v1/subscription")
+                .bodyString("{\"subscriptionPeriodStart\":\"invalid\"}", ContentType.APPLICATION_JSON)
+                .execute();
+        assertEquals(400, response.returnResponse().getCode());
+    }
+
+    /**
+     * Test that the client cannot perform a subscription request with a badly
+     * formatted subscriptionPeriodStart field on the server and generate the
+     * pacts to be uploaded to the pacts broker.
+     * @param mockServer the mocked server
+     */
+    @Test
+    @PactTestFor(pactMethods = "subscriptionPactWithSubscriptionPeriodEndBadFormat")
+    void createSubscriptionPactWithSubscriptionPeriodEndBadFormat(MockServer mockServer) throws IOException {
+        // And perform the SECOM request
+        Response response = Request.post(mockServer.getUrl() + "/v1/subscription")
+                .bodyString("{\"subscriptionPeriodEnd\":\"invalid\"}", ContentType.APPLICATION_JSON)
                 .execute();
         assertEquals(400, response.returnResponse().getCode());
     }
