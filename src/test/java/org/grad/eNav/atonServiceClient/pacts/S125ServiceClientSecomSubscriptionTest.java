@@ -89,7 +89,7 @@ public class S125ServiceClientSecomSubscriptionTest {
         return builder
                 .given("Test SECOM Subscription Interface")
                 .expectsToReceiveHttpInteraction(
-                        "A remove subscription request with a badly formed body",
+                        "A subscription request with a badly formed body",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v1/subscription")

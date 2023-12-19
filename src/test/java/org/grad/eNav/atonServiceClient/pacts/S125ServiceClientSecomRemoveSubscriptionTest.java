@@ -108,7 +108,7 @@ public class S125ServiceClientSecomRemoveSubscriptionTest {
     @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
     public V4Pact removeSubscriptionPactNotFound(PactBuilder builder) {
         return builder
-                .given("Test SECOM Remove Subscription Interface for an invalid identifier")
+                .given("Test SECOM Remove Subscription Interface without subscriptions")
                 .expectsToReceiveHttpInteraction(
                         "A remove subscription request for a subscription identifier that does not exist",
                         httpBuilder -> httpBuilder
