@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.1</version>
+        <version>3.2.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -162,14 +162,9 @@
 
         <!-- S-125 -->
         <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.grad.eNav</groupId>
             <artifactId>S125</artifactId>
-            <version>0.5.44</version>
-            <classifier>jakarta</classifier>
+            <version>0.5.63</version>
         </dependency>
 
         <!-- SECOM -->

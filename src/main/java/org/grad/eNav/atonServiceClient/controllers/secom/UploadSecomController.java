@@ -16,13 +16,11 @@
 
 package org.grad.eNav.atonServiceClient.controllers.secom;
 
-import _int.iala_aism.s125.gml._0_0.MemberType;
-import _int.iala_aism.s125.gml._0_0.AidsToNavigationType;
+import _int.iho.s125.gml.cs0._1.AidsToNavigationType;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Path;
-import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -36,7 +34,6 @@ import org.grad.secom.springboot3.components.SecomClient;
 import org.grad.secom.springboot3.components.SecomConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -111,7 +108,7 @@ public class UploadSecomController implements UploadSecomInterface {
         
         // Decode the data and down the web-socket
         try {
-            S125Utils.getS125Members(data)
+            S125Utils.getDatasetMembers(data)
                     .stream()
                     .filter(AidsToNavigationType.class::isInstance)
                     .map(AidsToNavigationType.class::cast)
