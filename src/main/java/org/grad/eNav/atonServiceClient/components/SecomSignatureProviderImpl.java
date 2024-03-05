@@ -32,7 +32,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Signature;
 import java.security.SignatureException;
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
 
@@ -61,7 +60,7 @@ public class SecomSignatureProviderImpl implements SecomSignatureProvider {
     /**
      * The Application Name.
      */
-    @Value("${gla.rad.aton-service-client.secom.signing-algorithm:SHA256withECDSA}")
+    @Value("${gla.rad.aton-service-client.secom.signing-algorithm:SHA3-384withECDSA}")
     String defaultSigningAlgorithm;
 
     /**

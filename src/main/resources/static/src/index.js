@@ -200,12 +200,15 @@ function unsubscribe() {
  * @param {Object}        aton          The AtoN object to be drawn on the map
  */
 function loadAtoNGeometry(aton) {
+    // Get the display name for the AtoN
+    displayName = aton.featureNames.find(f => f.displayName);
+
     atonMarker = L.marker([
                 aton.geometries[0].pointProperty.point.pos.value[1],
                 aton.geometries[0].pointProperty.point.pos.value[0]
             ])
             .addTo(subscriptionMap)
-            .bindPopup(aton.atonNumber + ' - ' + aton.textualDescription);
+            .bindPopup(displayName ? displayName.name : "unknown");
 
     // And add the new marker in the satellite position markers
     atonMarkers.push(atonMarker);
