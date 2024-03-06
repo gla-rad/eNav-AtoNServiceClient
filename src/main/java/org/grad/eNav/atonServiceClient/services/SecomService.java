@@ -34,7 +34,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
@@ -80,7 +80,7 @@ public class SecomService {
                 .filter(StringUtils::isNotBlank)
                 .map(url -> {
                     try {
-                        return new URL(url);
+                        return URI.create(url).toURL();
                     } catch (MalformedURLException ex) {
                         log.error("Invalid SECOM discovery service URL provided...", ex);
                         return null;
@@ -148,8 +148,8 @@ public class SecomService {
 
         // Now construct and return a SECOM client for the discovered URI
         try {
-            return new SecomClient(new URL(instance.getEndpointUri()), this.secomConfigProperties);
-        } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException | UnrecoverableKeyException ex) {
+            return new SecomClient(URI.create(instance.getEndpointUri()).toURL(), this.secomConfigProperties);
+        } catch (Exception ex) {
             log.error(ex.getMessage(), ex);
             throw new SecomValidationException(ex.getMessage());
         }

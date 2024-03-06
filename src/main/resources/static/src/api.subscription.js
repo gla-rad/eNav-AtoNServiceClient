@@ -13,17 +13,16 @@ class SubscriptionApi {
     /**
      * API Generate Subscription function.
      *
-     * @param  {string} url                     The SECOM service URL
+     * @param  {string} mrn                     The service MRN
      * @param  {any} subscriptionRequestObject  The subscription request object
      * @param  {Function} callback              The callback to be used after the AJAX call
      * @param  {Function} errorCallback         The error callback to be used if the AJAX call fails
      */
-    subscribe(url, subscriptionRequestObject, callback, errorCallback) {
+    subscribe(mrn, subscriptionRequestObject, callback, errorCallback) {
         $.ajax({
-            url: `${url}/v1/subscription`,
+            url: `./api/subscription/${mrn}`,
             type: 'POST',
             contentType: 'application/json',
-            crossDomain: true,
             data: JSON.stringify(subscriptionRequestObject),
             success: callback,
             error: (response, status, more) => handleAjaxError(response, status, more, errorCallback)
@@ -33,18 +32,15 @@ class SubscriptionApi {
     /**
      * API Remove Subscription function.
      *
-     * @param  {string} url                     The SECOM service URL
-     * @param  {any} removeSubscriptionObject   The remove subscription request object
+     * @param  {string} mrn                     The service MRN
      * @param  {Function} callback              The callback to be used after the AJAX call
      * @param  {Function} errorCallback         The error callback to be used if the AJAX call fails
      */
-    unsubscribe(url, removeSubscriptionObject, callback, errorCallback) {
+    unsubscribe(mrn, callback, errorCallback) {
         $.ajax({
-            url: `${url}/v1/subscription`,
+            url: `./api/subscription/${mrn}`,
             type: 'DELETE',
             contentType: 'application/json',
-            crossDomain: true,
-            data: JSON.stringify(removeSubscriptionObject),
             success: callback,
             error: (response, status, more) => handleAjaxError(response, status, more, errorCallback)
         });

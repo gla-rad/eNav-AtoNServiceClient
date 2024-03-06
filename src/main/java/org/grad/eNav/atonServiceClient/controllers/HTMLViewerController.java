@@ -16,6 +16,9 @@
 
 package org.grad.eNav.atonServiceClient.controllers;
 
+import org.grad.eNav.atonServiceClient.models.domain.Subscription;
+import org.grad.eNav.atonServiceClient.services.SubscriptionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -80,8 +83,14 @@ public class HTMLViewerController {
     /**
      * The SECOM Service URL to subscribe to.
      */
-    @Value("${gla.rad.aton-service-client.secom.serviceIUrl:}")
-    private String secomServiceUrl;
+    @Value("${gla.rad.aton-service-client.secom.serviceMrn:}")
+    private String secomServiceMrn;
+
+    /**
+     * The Subscription Service.
+     */
+    @Autowired
+    SubscriptionService subscriptionService;
 
     /**
      * The home page of the VDES Controller Application.
@@ -95,7 +104,14 @@ public class HTMLViewerController {
         model.addAttribute("appOperatorUrl", this.appOperatorUrl);
         model.addAttribute("appCopyright", this.appCopyright);
         model.addAttribute("appMrn", this.appMrn);
-        model.addAttribute("secomServiceUrl", this.secomServiceUrl);
+        model.addAttribute("secomServiceMrn", this.secomServiceMrn);
+
+        // Also get the subscription identifier if available
+        model.addAttribute("subscriptionId", this.subscriptionService
+                .getActiveSubscription()
+                .map(Subscription::getIdentifier)
+                .orElse(null));
+
         // Return the rendered index
         return "index";
     }

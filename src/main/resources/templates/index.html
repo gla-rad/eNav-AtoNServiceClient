@@ -42,9 +42,9 @@
                             <div class="card-body">
                                 <form id="subscriptionForm">
                                     <div class="mb-3">
-                                        <label for="atonServiceUrlInput" class="form-label">AtoN Service URL</label>
-                                        <input id="atonServiceUrlInput" class="form-control form-control-sm" aria-label="AtoN Service URL"
-                                               placeholder="AtoN Service URL" th:value="${secomServiceUrl}" required>
+                                        <label for="atonServiceMrnInput" class="form-label">AtoN Service MRN</label>
+                                        <input id="atonServiceMrnInput" class="form-control form-control-sm" aria-label="AtoN Service MRN"
+                                               placeholder="AtoN Service MRN" th:value="${secomServiceMrn}" required>
                                     </div>
                                     <div class="mb-3">
                                         <label for="containerTypeInput" class="form-label">Container Type</label>
@@ -142,7 +142,7 @@
                                     <div class="col-6">
                                         <div class="d-flex flex-row justify-content-end align-items-center h-100">
                                             <button id="clearButton" class="btn btn-warning me-2" title="Subscribe">Clear</button>
-                                            <button id="subscribeButton" class="btn btn-primary" title="Subscribe">Subscribe</button>
+                                            <button id="subscribeButton" class="btn btn-primary" th:data-subscriptionId="${subscriptionId}" title="Subscribe">Subscribe</button>
                                             <button id="unsubscribeButton" class="btn btn-danger" title="Unsubscribe">Unsubscribe</button>
                                         </div>
                                     </div>

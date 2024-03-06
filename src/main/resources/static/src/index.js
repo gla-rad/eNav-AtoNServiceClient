@@ -42,6 +42,14 @@ $(() => {
         clearForm();
     });
 
+    // Check for an active subscription
+    var subscriptionId = $("#subscribeButton").attr("data-subscriptionId");
+    if(subscriptionId) {
+        $("#subscribeButton").hide();
+    } else {
+        $("#unsubscribeButton").hide();
+    }
+
     // Connect the subscribe button
     $("#subscribeButton").click(function() {
         // Check the form configuration
@@ -55,7 +63,6 @@ $(() => {
     });
 
     // Connect the unsubscribe button
-    $("#unsubscribeButton").hide();
     $("#unsubscribeButton").click(function() {
         // Check the form configuration
         if (!$('#subscriptionForm')[0].checkValidity()) {
@@ -141,8 +148,8 @@ function clearForm() {
  * web form.
  */
 function subscribe() {
-    // Get the AtoN Service URL to subscribe to
-    var atonServiceUrl = trimToNull($("#atonServiceUrlInput").val());
+    // Get the AtoN Service MRN to subscribe to
+    var atonServiceMrn = trimToNull($("#atonServiceMrnInput").val());
 
     // Create the subscription request
     var subscriptionRequestObject = {
@@ -157,9 +164,10 @@ function subscribe() {
     };
 
     // Perform the Subscription API request
-    subscriptionApi.subscribe(atonServiceUrl, subscriptionRequestObject, (subscriptionResponse) => {
+    subscriptionApi.subscribe(atonServiceMrn, subscriptionRequestObject, (subscriptionResponse) => {
         subscriptionIdentifier = subscriptionResponse.subscriptionIdentifier;
         // Hide the subscribe button
+        $("#subscribeButton").attr("data-subscriptionId", subscriptionIdentifier);
         $("#subscribeButton").hide();
         $("#unsubscribeButton").show();
     }, (response, status, more, errorCallback) => {
@@ -173,8 +181,8 @@ function subscribe() {
  * web form.
  */
 function unsubscribe() {
-    // Get the AtoN Service URL to subscribe to
-    var atonServiceUrl = trimToNull($("#atonServiceUrlInput").val());
+    // Get the AtoN Service MRN to subscribe to
+    var atonServiceMrn = trimToNull($("#atonServiceMrnInput").val());
 
     // Create the remove subscription request
     var removeSubscriptionObject = {
@@ -182,10 +190,11 @@ function unsubscribe() {
     };
 
     // Perform the Subscription API request
-    subscriptionApi.unsubscribe(atonServiceUrl, removeSubscriptionObject, (subscriptionResponse) => {
+    subscriptionApi.unsubscribe(atonServiceMrn, (subscriptionResponse) => {
        subscriptionIdentifier = undefined;
        // Hide the unsubscribe button
        $("#unsubscribeButton").hide();
+       $("#subscribeButton").attr("data-subscriptionId", "");
        $("#subscribeButton").show();
     }, (response, status, more, errorCallback) => {
         console.error(response);
