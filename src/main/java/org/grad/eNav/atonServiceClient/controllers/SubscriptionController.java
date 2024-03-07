@@ -50,7 +50,7 @@ public class SubscriptionController {
      * @return the ResponseEntity with status 200 (OK) and the list of datasets in body
      */
     @PostMapping(value = "/{mrn}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public SubscriptionResponseObject getDatasetsForDatatables(@PathVariable String mrn, @RequestBody SubscriptionRequestObject subscriptionRequestObject) {
+    public SubscriptionResponseObject createSubscription(@PathVariable String mrn, @RequestBody SubscriptionRequestObject subscriptionRequestObject) {
         log.debug("REST request to initiate a subscription with {}", mrn);
         return this.subscriptionService.createSubscription(mrn, subscriptionRequestObject);
     }
@@ -63,7 +63,7 @@ public class SubscriptionController {
      * @return the ResponseEntity with status 200 (OK) and the list of datasets in body
      */
     @DeleteMapping(value = "/{mrn}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RemoveSubscriptionResponseObject getDatasetsForDatatables(@PathVariable String mrn) {
+    public RemoveSubscriptionResponseObject removeSubscription(@PathVariable String mrn) {
         log.debug("REST request to terminate a subscription with {}", mrn);
         return this.subscriptionService.removeSubscription(mrn);
     }

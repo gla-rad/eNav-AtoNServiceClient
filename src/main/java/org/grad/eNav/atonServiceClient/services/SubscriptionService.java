@@ -121,7 +121,6 @@ public class SubscriptionService {
         // Search for the specified MRN in the service registry
         final SecomClient secomClient = secomService.getClient(mrn);
 
-
         // Terminate the subscription
         final RemoveSubscriptionObject removeSubscriptionObject = new RemoveSubscriptionObject();
         removeSubscriptionObject.setSubscriptionIdentifier(subscription.getIdentifier());
