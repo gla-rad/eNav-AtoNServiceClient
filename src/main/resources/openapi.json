@@ -15,11 +15,11 @@
     },
     "servers": [
       {
-        "url": "https://rnavlab.gla-rad.org/aton-client"
+        "url": "https://rnavlab.gla-rad.org/enav/aton-service-client"
       }, {
-        "url": "https://palatia:8768"
+        "url": "http://palatia:8768"
       }, {
-        "url": "https://localhost:8768"
+        "url": "http://localhost:8768"
       }
     ]
   },
