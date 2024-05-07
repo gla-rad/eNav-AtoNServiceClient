@@ -100,6 +100,10 @@ public class UploadSecomController implements UploadSecomInterface {
      */
     @Tag(name = "SECOM")
     public UploadResponseObject upload(@Valid UploadObject uploadObject) {
+        log.debug("Received SECOM upload transaction {} from subscription {}",
+                uploadObject.getEnvelope().getTransactionIdentifier(),
+                uploadObject.getEnvelope().getFromSubscription());
+
         // Initialise the response
         UploadResponseObject uploadResponseObject = new UploadResponseObject();
 

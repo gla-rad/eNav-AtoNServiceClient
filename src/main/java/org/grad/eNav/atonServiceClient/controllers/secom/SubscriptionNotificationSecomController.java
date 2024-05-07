@@ -51,6 +51,10 @@ public class SubscriptionNotificationSecomController implements SubscriptionNoti
      */
     @Tag(name = "SECOM")
     public SubscriptionNotificationResponseObject subscriptionNotification(@Valid SubscriptionNotificationObject subscriptionNotificationObject) {
+        log.debug("Received SECOM notification {} for subscription with identifier {}",
+                subscriptionNotificationObject.getEventEnum(),
+                subscriptionNotificationObject.getSubscriptionIdentifier());
+
         // Send the subscription notification to the web-socket
         this.webSocket.convertAndSend(
                 "/topic/secom/subscription/" + (subscriptionNotificationObject.getEventEnum() == SubscriptionEventEnum.SUBSCRIPTION_CREATED ? "created" : "removed"),

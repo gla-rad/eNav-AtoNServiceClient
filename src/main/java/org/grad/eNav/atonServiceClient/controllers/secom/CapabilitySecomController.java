@@ -78,6 +78,8 @@ public class CapabilitySecomController implements CapabilitySecomInterface {
      */
     @Tag(name = "SECOM")
     public CapabilityResponseObject capability() {
+        log.debug("Received SECOM capability request");
+
         final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
         final URL productSchemaUrl = Optional.of(this.dataProductSchemaLocation)
                 .map(l -> l.startsWith("http") ? l :(baseUrl + l) )
