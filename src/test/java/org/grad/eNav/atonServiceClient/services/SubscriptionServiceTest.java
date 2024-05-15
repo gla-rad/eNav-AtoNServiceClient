@@ -178,7 +178,7 @@ class SubscriptionServiceTest {
         doReturn(Optional.empty()).when(this.subscriptionRepo).findByIdentifier(any());
 
         // Perform the service call
-        assertThrows(NotFoundException.class, () -> this.subscriptionService.deleteSubscription(UUID.randomUUID()));
+        assertNull(this.subscriptionService.deleteSubscription(UUID.randomUUID()));
     }
 
     /**

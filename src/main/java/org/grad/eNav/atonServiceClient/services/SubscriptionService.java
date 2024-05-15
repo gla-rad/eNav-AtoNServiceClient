@@ -95,14 +95,20 @@ public class SubscriptionService {
      * @return the deleted subscription object
      */
     public Subscription deleteSubscription(UUID identifier) {
-        // First get the subscription to make sure it's there
-        final Subscription subscription = this.getSubscription(identifier);
+        try {
+            // First get the subscription
+            final Subscription subscription = this.getSubscription(identifier);
 
-        // Now delete it from the database
-        this.subscriptionRepo.delete(subscription);
+            // Now delete it from the database
+            this.subscriptionRepo.delete(subscription);
 
-        // And return the object
-        return subscription;
+            // And return the object
+            return subscription;
+        }
+        // Don't worry if it's not there, then we don't need to do anything
+        catch (NotFoundException ex) {
+            return null;
+        }
     }
 
     /**

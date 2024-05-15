@@ -65,8 +65,8 @@ public class SubscriptionNotificationSecomController implements SubscriptionNoti
         // Initialise a response
         SubscriptionNotificationResponseObject subscriptionNotificationResponseObject = new SubscriptionNotificationResponseObject();
 
-        // If the subscription event is a removal, we need to also remove the
-        // updated subscription from the current active list.
+        // If the subscription event is a removal, we might need to also need to
+        // remove the subscription from the current active list.
         if(subscriptionNotificationObject.getEventEnum() == SubscriptionEventEnum.SUBSCRIPTION_REMOVED) {
             this.subscriptionService.deleteSubscription(subscriptionNotificationObject.getSubscriptionIdentifier());
             subscriptionNotificationResponseObject.setResponseText(String.format(
