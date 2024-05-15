@@ -18,6 +18,7 @@ package org.grad.eNav.atonServiceClient.controllers.secom;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.grad.eNav.atonServiceClient.services.SubscriptionService;
 import org.grad.secom.core.interfaces.SubscriptionNotificationSecomInterface;
 import org.grad.secom.core.models.SubscriptionNotificationObject;
 import org.grad.secom.core.models.SubscriptionNotificationResponseObject;
@@ -43,6 +44,12 @@ public class SubscriptionNotificationSecomController implements SubscriptionNoti
     SimpMessagingTemplate webSocket;
 
     /**
+     * The Subscription Service.
+     */
+    @Autowired
+    SubscriptionService subscriptionService;
+
+    /**
      * POST /v1/subscription/notification : The interface receives notifications
      * when a subscription is created or removed by the information provider.
      *
@@ -55,6 +62,19 @@ public class SubscriptionNotificationSecomController implements SubscriptionNoti
                 subscriptionNotificationObject.getEventEnum(),
                 subscriptionNotificationObject.getSubscriptionIdentifier());
 
+        // Initialise a response
+        SubscriptionNotificationResponseObject subscriptionNotificationResponseObject = new SubscriptionNotificationResponseObject();
+
+        // If the subscription event is a removal, we need to also remove the
+        // updated subscription from the current active list.
+        if(subscriptionNotificationObject.getEventEnum() == SubscriptionEventEnum.SUBSCRIPTION_REMOVED) {
+            this.subscriptionService.deleteSubscription(subscriptionNotificationObject.getSubscriptionIdentifier());
+            subscriptionNotificationResponseObject.setResponseText(String.format(
+                    "The subscription with identifier %s has been removed by the service",
+                    subscriptionNotificationObject.getSubscriptionIdentifier()
+            ));
+        }
+
         // Send the subscription notification to the web-socket
         this.webSocket.convertAndSend(
                 "/topic/secom/subscription/" + (subscriptionNotificationObject.getEventEnum() == SubscriptionEventEnum.SUBSCRIPTION_CREATED ? "created" : "removed"),
@@ -62,7 +82,7 @@ public class SubscriptionNotificationSecomController implements SubscriptionNoti
         );
 
         // Return the response
-        return new SubscriptionNotificationResponseObject();
+        return subscriptionNotificationResponseObject;
     }
 
 }

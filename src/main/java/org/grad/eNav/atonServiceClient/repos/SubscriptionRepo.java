@@ -21,6 +21,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.math.BigInteger;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Spring Data JPA repository for the Subscription entities.
@@ -28,6 +29,14 @@ import java.util.Optional;
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
 public interface SubscriptionRepo extends JpaRepository<Subscription, BigInteger> {
+
+    /**
+     * Retrieves all the subscription that match a specific UUID identifier.
+     *
+     * @param identifier The UUID identifier to match the subscription for
+     * @return the subscription that matches the specified UUID identifier
+     */
+    Optional<Subscription> findByIdentifier(UUID identifier);
 
     /**
      * Retrieves all the subscription that match a specific MRN

@@ -101,7 +101,7 @@ class SubscriptionControllerTest {
     @Test
     void testCreateSubscription() throws Exception {
         // Mock the subscription service to return a fixed result on an MRN
-        doReturn(this.subscriptionResponseObject).when(this.subscriptionService).createSubscription(eq("urn:mrn:service"), any());
+        doReturn(this.subscriptionResponseObject).when(this.subscriptionService).createClientSubscription(eq("urn:mrn:service"), any());
 
         // Perform the MVC request
         MvcResult mvcResult = this.mockMvc.perform(post("/api/subscription/urn:mrn:service")
@@ -125,7 +125,7 @@ class SubscriptionControllerTest {
     @Test
     void testRemoveSubscription() throws Exception {
         // Mock the subscription service to return a fixed result on an MRN
-        doReturn(this.removeSubscriptionResponseObject).when(this.subscriptionService).removeSubscription(eq("urn:mrn:service"));
+        doReturn(this.removeSubscriptionResponseObject).when(this.subscriptionService).removeClientSubscription(eq("urn:mrn:service"));
 
         // Perform the MVC request
         MvcResult mvcResult = this.mockMvc.perform(delete("/api/subscription/urn:mrn:service"))

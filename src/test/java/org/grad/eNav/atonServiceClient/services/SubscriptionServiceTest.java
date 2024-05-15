@@ -16,6 +16,7 @@
 
 package org.grad.eNav.atonServiceClient.services;
 
+import jakarta.ws.rs.NotFoundException;
 import org.grad.eNav.atonServiceClient.models.domain.Subscription;
 import org.grad.eNav.atonServiceClient.repos.SubscriptionRepo;
 import org.grad.secom.core.models.RemoveSubscriptionResponseObject;
@@ -116,18 +117,83 @@ class SubscriptionServiceTest {
     }
 
     /**
+     * Test that we can successfully retrieve a subscription based on it's UUID
+     * identifier.
+     */
+    @Test
+    void testGetSubscription() {
+        // Mock the repository response
+        doReturn(Optional.of(this.subscription)).when(this.subscriptionRepo).findByIdentifier(any());
+
+        // Perform the service call
+        Subscription result =this.subscriptionService.getSubscription(UUID.randomUUID());
+
+        // Make sure the result seems OK
+        assertNotNull(result);
+        assertEquals(this.subscription.getId(), result.getId());
+        assertEquals(this.subscription.getMrn(), result.getMrn());
+        assertEquals(this.subscription.getIdentifier(), result.getIdentifier());
+    }
+
+    /**
+     * Test that if the specified UUID identifier is not found an exception
+     * will be thrown when we attempt to retrieve a subscription.
+     */
+    @Test
+    void testGetSubscriptionNotFound() {
+        // Mock the repository response
+        doReturn(Optional.empty()).when(this.subscriptionRepo).findByIdentifier(any());
+
+        // Perform the service call
+        assertThrows(NotFoundException.class, () -> this.subscriptionService.getSubscription(UUID.randomUUID()));
+    }
+
+    /**
+     * Test that we can successfully delete a subscription based on it's UUID
+     * identifier.
+     */
+    @Test
+    void testDeleteSubscription() {
+        // Mock the repository response
+        doReturn(Optional.of(this.subscription)).when(this.subscriptionRepo).findByIdentifier(any());
+        doNothing().when(this.subscriptionRepo).delete(any());
+
+        // Perform the service call
+        Subscription result =this.subscriptionService.deleteSubscription(UUID.randomUUID());
+
+        // Make sure the result seems OK
+        assertNotNull(result);
+        assertEquals(this.subscription.getId(), result.getId());
+        assertEquals(this.subscription.getMrn(), result.getMrn());
+        assertEquals(this.subscription.getIdentifier(), result.getIdentifier());
+    }
+
+    /**
+     * Test that if the specified UUID identifier is not found an exception
+     * will be thrown when we attempt to delete a subscription.
+     */
+    @Test
+    void testDeleteSubscriptionNotFound() {
+        // Mock the repository response
+        doReturn(Optional.empty()).when(this.subscriptionRepo).findByIdentifier(any());
+
+        // Perform the service call
+        assertThrows(NotFoundException.class, () -> this.subscriptionService.deleteSubscription(UUID.randomUUID()));
+    }
+
+    /**
      * Test that we can successfully create new subscriptions. In this operation
      * of the demonstration client, we only allow one subscription.
      */
     @Test
-    void testCreateSubscription() {
+    void testCreateClientSubscription() {
         // Mock the internal class - no other subscription exists
         doReturn(this.secomClient).when(this.secomService).getClient(any());
         doReturn(Optional.of(this.subscriptionResponseObject)).when(this.secomClient).subscription(any());
         doReturn(Optional.empty()).when(this.subscriptionService).getActiveSubscription();
 
         // Perform the service call
-        SubscriptionResponseObject result = this.subscriptionService.createSubscription("urn:mrn:service", new SubscriptionRequestObject());
+        SubscriptionResponseObject result = this.subscriptionService.createClientSubscription("urn:mrn:service", new SubscriptionRequestObject());
 
         // Make sure the result seems OK
         assertNotNull(result);
@@ -135,7 +201,7 @@ class SubscriptionServiceTest {
         assertEquals(this.subscriptionResponseObject.getMessage(), result.getMessage());
 
         // Ensure we did not have to remove any previous subscriptions
-        verify(this.subscriptionService, never()).removeSubscription(any());
+        verify(this.subscriptionService, never()).removeClientSubscription(any());
     }
 
     /**
@@ -144,15 +210,15 @@ class SubscriptionServiceTest {
      * already have an existing subscription, we should first remove that.
      */
     @Test
-    void testCreateSubscriptionWithExisting() {
+    void testCreateClientSubscriptionWithExisting() {
         // Mock the internal class - no other subscription exists
         doReturn(this.secomClient).when(this.secomService).getClient(any());
         doReturn(Optional.of(this.subscriptionResponseObject)).when(this.secomClient).subscription(any());
         doReturn(Optional.of(this.subscription)).when(this.subscriptionService).getActiveSubscription();
-        doReturn(this.removeSubscriptionResponseObject).when(this.subscriptionService).removeSubscription(any());
+        doReturn(this.removeSubscriptionResponseObject).when(this.subscriptionService).removeClientSubscription(any());
 
         // Perform the service call
-        SubscriptionResponseObject result = this.subscriptionService.createSubscription("urn:mrn:service", new SubscriptionRequestObject());
+        SubscriptionResponseObject result = this.subscriptionService.createClientSubscription("urn:mrn:service", new SubscriptionRequestObject());
 
         // Make sure the result seems OK
         assertNotNull(result);
@@ -160,7 +226,7 @@ class SubscriptionServiceTest {
         assertEquals(this.subscriptionResponseObject.getMessage(), result.getMessage());
 
         // Ensure we did not have to remove any previous subscriptions
-        verify(this.subscriptionService, times(1)).removeSubscription(any());
+        verify(this.subscriptionService, times(1)).removeClientSubscription(any());
     }
 
     /**
@@ -169,14 +235,14 @@ class SubscriptionServiceTest {
      * This should be returned as the active subscription.
      */
     @Test
-    void testRemoveSubscription() {
+    void testRemoveClientSubscription() {
         // Mock the internal class - no other subscription exists
         doReturn(this.secomClient).when(this.secomService).getClient(any());
         doReturn(Optional.of(this.removeSubscriptionResponseObject)).when(this.secomClient).removeSubscription(any());
         doReturn(Optional.of(this.subscription)).when(this.subscriptionService).getActiveSubscription();
 
         // Perform the service call
-        RemoveSubscriptionResponseObject result = this.subscriptionService.removeSubscription("urn:mrn:service");
+        RemoveSubscriptionResponseObject result = this.subscriptionService.removeClientSubscription("urn:mrn:service");
 
         // Make sure the result seems OK
         assertNotNull(result);
@@ -190,12 +256,12 @@ class SubscriptionServiceTest {
      * bother too much at this point with this error.
      */
     @Test
-    void testRemoveSubscriptionNoExisting() {
+    void testRemoveClientSubscriptionNoExisting() {
         // Mock the internal class - no other subscription exists
         doReturn(Optional.empty()).when(this.subscriptionService).getActiveSubscription();
 
         // Perform the service call
-        assertThrows(RuntimeException.class, () -> this.subscriptionService.removeSubscription("urn:mrn:service")
+        assertThrows(RuntimeException.class, () -> this.subscriptionService.removeClientSubscription("urn:mrn:service")
         );
     }
 

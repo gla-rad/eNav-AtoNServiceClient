@@ -52,7 +52,7 @@ public class SubscriptionController {
     @PostMapping(value = "/{mrn}", produces = MediaType.APPLICATION_JSON_VALUE)
     public SubscriptionResponseObject createSubscription(@PathVariable String mrn, @RequestBody SubscriptionRequestObject subscriptionRequestObject) {
         log.debug("REST request to initiate a subscription with {}", mrn);
-        return this.subscriptionService.createSubscription(mrn, subscriptionRequestObject);
+        return this.subscriptionService.createClientSubscription(mrn, subscriptionRequestObject);
     }
 
     /**
@@ -65,7 +65,7 @@ public class SubscriptionController {
     @DeleteMapping(value = "/{mrn}", produces = MediaType.APPLICATION_JSON_VALUE)
     public RemoveSubscriptionResponseObject removeSubscription(@PathVariable String mrn) {
         log.debug("REST request to terminate a subscription with {}", mrn);
-        return this.subscriptionService.removeSubscription(mrn);
+        return this.subscriptionService.removeClientSubscription(mrn);
     }
 
 }
