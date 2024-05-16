@@ -22,6 +22,7 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTest;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
@@ -283,8 +284,11 @@ public class BasicSecomSubscriptionTest {
         subscriptionRequestObject.setSubscriptionPeriodEnd(LocalDateTime.now());
 
         // And perform the SECOM request
+        // Don't include the non-defined data product type
         Response response = Request.post(mockServer.getUrl() + "/v1/subscription")
-                .bodyString(this.objectMapper.writeValueAsString(subscriptionRequestObject), ContentType.APPLICATION_JSON)
+                .bodyString(this.objectMapper
+                        .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                        .writeValueAsString(subscriptionRequestObject), ContentType.APPLICATION_JSON)
                 .execute();
         assertEquals(200, response.returnResponse().getCode());
     }
