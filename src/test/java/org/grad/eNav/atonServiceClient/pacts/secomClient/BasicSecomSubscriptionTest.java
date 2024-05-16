@@ -275,7 +275,6 @@ public class BasicSecomSubscriptionTest {
         // Create an subscription request object
         SubscriptionRequestObject subscriptionRequestObject = new SubscriptionRequestObject();
         subscriptionRequestObject.setContainerType(ContainerTypeEnum.S100_DataSet);
-        subscriptionRequestObject.setDataProductType(SECOM_DataProductType.S125);
         subscriptionRequestObject.setDataReference(UUID.randomUUID());
         subscriptionRequestObject.setProductVersion("0.0.1");
         subscriptionRequestObject.setGeometry("POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))");
