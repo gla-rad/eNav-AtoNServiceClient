@@ -101,7 +101,7 @@ public class SecomPactDslDefinitions {
                     .object("exchangeMetadata", new PactDslJsonBody()
                             .booleanType("dataProtection",  true)
                             .stringType("protectionScheme", "SECOM")
-                            .stringMatcher("digitalSignatureReference", "^(dsa|ecdsa|cvc_ecdsa)$", "dsa")
+                            .stringMatcher("digitalSignatureReference", "^(dsa|ecdsa-256-sha2-256|ecdsa-256-sha3-256|ecdsa-384-sha2|ecdsa-384-sha3|cvc_ecdsa)$", "dsa")
                             .object("digitalSignatureValue", new PactDslJsonBody()
                                     .stringMatcher("publicRootCertificateThumbprint", "^[-A-Za-z0-9+/]*={0,3}$", "cHVibGljUm9vdENlcnRpZmljYXRlVGh1bWJwcmludA===")
                                     .stringMatcher("publicCertificate", "^[-A-Za-z0-9+/]*={0,3}$", "cHVibGljQ2VydGlmaWNhdGU=")
