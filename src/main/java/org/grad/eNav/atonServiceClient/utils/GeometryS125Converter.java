@@ -16,17 +16,17 @@
 
 package org.grad.eNav.atonServiceClient.utils;
 
-import _int.iho.s100.gml.base._5_0.CurveType;
-import _int.iho.s100.gml.base._5_0.ObjectFactory;
-import _int.iho.s100.gml.base._5_0.PointType;
-import _int.iho.s100.gml.base._5_0.SurfaceType;
-import _int.iho.s100.gml.base._5_0.*;
-import _int.iho.s100.gml.base._5_0.impl.*;
-import _int.iho.s100.gml.base._5_0.impl.CurveTypeImpl;
-import _int.iho.s100.gml.base._5_0.impl.PointTypeImpl;
-import _int.iho.s100.gml.base._5_0.impl.SurfaceTypeImpl;
-import _int.iho.s100.gml.profiles._5_0.*;
-import _int.iho.s100.gml.profiles._5_0.impl.*;
+import _int.iho.s125.s100.gml.base._5_0.CurveType;
+import _int.iho.s125.s100.gml.base._5_0.ObjectFactory;
+import _int.iho.s125.s100.gml.base._5_0.PointType;
+import _int.iho.s125.s100.gml.base._5_0.SurfaceType;
+import _int.iho.s125.s100.gml.base._5_0.*;
+import _int.iho.s125.s100.gml.base._5_0.impl.*;
+import _int.iho.s125.s100.gml.base._5_0.impl.CurveTypeImpl;
+import _int.iho.s125.s100.gml.base._5_0.impl.PointTypeImpl;
+import _int.iho.s125.s100.gml.base._5_0.impl.SurfaceTypeImpl;
+import _int.iho.s125.s100.gml.profiles._5_0.*;
+import _int.iho.s125.s100.gml.profiles._5_0.impl.*;
 import _int.iho.s125.gml.cs0._1.AidsToNavigationType;
 import jakarta.xml.bind.JAXBElement;
 import org.grad.eNav.s125.utils.S125Utils;
@@ -142,7 +142,7 @@ public class GeometryS125Converter {
      */
     protected List<S100SpatialAttributeType> populatePointCurveSurfaceToGeometry(Geometry geometry, List<S100SpatialAttributeType> s100SpatialAttributeTypes) {
         // Create an OpenGIS GML factory
-        _int.iho.s100.gml.profiles._5_0.ObjectFactory opengisGMLFactory = new _int.iho.s100.gml.profiles._5_0.ObjectFactory();
+        _int.iho.s125.s100.gml.profiles._5_0.ObjectFactory opengisGMLFactory = new _int.iho.s125.s100.gml.profiles._5_0.ObjectFactory();
         s100SpatialAttributeTypes = s100SpatialAttributeTypes == null ? new ArrayList() : s100SpatialAttributeTypes;
 
         if(geometry instanceof Puntal) {
@@ -191,7 +191,7 @@ public class GeometryS125Converter {
      */
     protected PolygonPatchType generateSurfacePropertyPatch(Double[] coords) {
         // Create an OpenGIS GML factory
-        _int.iho.s100.gml.profiles._5_0.ObjectFactory opengisGMLFactory = new _int.iho.s100.gml.profiles._5_0.ObjectFactory();
+        _int.iho.s125.s100.gml.profiles._5_0.ObjectFactory opengisGMLFactory = new _int.iho.s125.s100.gml.profiles._5_0.ObjectFactory();
 
         // Generate the elements
         PolygonPatchType polygonPatchType = new PolygonPatchTypeImpl();
