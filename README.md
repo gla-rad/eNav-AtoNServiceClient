@@ -139,14 +139,14 @@ The available environment variables are:
     ENAV_CLOUD_CONFIG_PASSWORD=<The cloud configration server password>
 
 The parameters will be picked up and used to populate the default
-**bootstrap.properties** of the service that look as follows:
+**application.properties** of the service that look as follows:
 
     server.port=8768
     spring.application.name=aton-service-client
     spring.application.version=<application.version>
     
     # The Spring Cloud Discovery Config
-    spring.cloud.config.uri=${ENAV_CLOUD_CONFIG_URI}
+    spring.config.import=optional:configserver:${ENAV_CLOUD_CONFIG_URI}
     spring.cloud.config.username=${ENAV_CLOUD_CONFIG_USERNAME}
     spring.cloud.config.password=${ENAV_CLOUD_CONFIG_PASSWORD}
     spring.cloud.config.label=${ENAV_CLOUD_CONFIG_BRANCH}
@@ -169,7 +169,7 @@ use the following command:
 
 In order to run the service in a **Local Config** configuration, you just need
 to provide a local configuration directory that contains the necessary
-**.properties** files (including bootstrap).
+**application.properties** files.
 
 This can be done in the following way:
 
@@ -178,22 +178,6 @@ This can be done in the following way:
         <aton-service-client.jar>
 
 Examples of the required properties files can be seen below.
-
-For bootstrapping, we need to disable the cloud config client, and clear our the
-environment variable inputs:
-
-    server.port=8768
-    spring.application.name=aton-service-client
-    spring.application.version=<application.version>
-    
-    # Disable the cloud config
-    spring.cloud.config.enabled=false
-    
-    # Clear out the environment variables
-    spring.cloud.config.uri=
-    spring.cloud.config.username=
-    spring.cloud.config.password=
-    spring.cloud.config.label=
 
 While the application properties need to provide the service with an OAuth2.0
 server like keycloak, logging configuration, the eureka client connection etc.:
@@ -207,6 +191,14 @@ server like keycloak, logging configuration, the eureka client connection etc.:
     service.variable.mcp.service-registry.endpoint=<msr-url>
     service.variable.mcp.aton-service.mrn=<subscription-service-mrn>
     
+    # Service properties
+    server.port=8768
+    spring.application.name=aton-service-client
+    spring.application.version=0.0.3
+    
+    # Disable the cloud config
+    spring.cloud.config.enabled=false
+
     # Eureka Client Configuration
     eureka.client.service-url.defaultZone=http://${service.variable.eureka.server.name}:${service.variable.eureka.server.port}/eureka/
     eureka.client.registryFetchIntervalSeconds=5
