@@ -129,8 +129,8 @@ function connect() {
             $("#subscriptionSuccess").hide();
             $("#subscriptionFail").show();
         });
-        stompClient.subscribe('/topic/secom/subscription/update', function (msg) {
-            loadAtoNGeometry(JSON.parse(msg.body));
+        stompClient.subscribe('/topic/secom/subscription/update', function (msg, headers) {
+            loadAtoNGeometry(JSON.parse(msg.body), headers);
         });
     }
 }
@@ -207,8 +207,9 @@ function unsubscribe() {
  * so that it is shown in the station maps layers.
  *
  * @param {Object}        aton          The AtoN object to be drawn on the map
+ * @param {Object}        headers       The message headers passed down
  */
-function loadAtoNGeometry(aton) {
+function loadAtoNGeometry(aton, headers) {
     // Get the display name for the AtoN
     displayName = aton.featureNames.find(f => f.displayName);
 
@@ -261,4 +262,15 @@ function dateToSecomFormat(date) {
             .replaceAll("-","")
             .replaceAll(":","")
             .split(".")[0] + "Z";
+}
+
+/**
+ * This function will generate a URL to display an icon for the AtoN in
+ * question. This is achieved through some interaction with the DMA Niord
+ * system that uses a JOSM module to achieve this.
+ *
+ * @param {Object}        aton          The AtoN object to generate the icon for
+ */
+function computeAtonIconUrl(aton) {
+
 }

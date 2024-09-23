@@ -46,6 +46,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 import static java.util.function.Predicate.not;
@@ -116,7 +118,13 @@ public class UploadSecomController implements UploadSecomInterface {
                     .stream()
                     .filter(AidsToNavigationType.class::isInstance)
                     .map(AidsToNavigationType.class::cast)
-                    .forEach(s125PubSubData -> this.webSocket.convertAndSend("/topic/secom/subscription/update" , s125PubSubData));
+                    .forEach(aton ->
+                            this.webSocket.convertAndSend(
+                                    "/topic/secom/subscription/update",
+                                    aton,
+                                    Collections.singletonMap("type", Arrays.asList(aton.getClass().getInterfaces()).getLast().getSimpleName())
+                            )
+                    );
 
             // Now generate an acknowledgement to be sent back if required
             if(this.secomClient != null) {
