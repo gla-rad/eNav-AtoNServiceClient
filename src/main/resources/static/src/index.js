@@ -117,7 +117,7 @@ function connect() {
                 $("#subscriptionFail").show();
             });
             stompClient.subscribe('/topic/secom/subscription/update', function (msg) {
-                loadAtoNGeometry(JSON.parse(msg.body));
+                loadAtoNGeometry(msg);
             });
         });
     } else {
