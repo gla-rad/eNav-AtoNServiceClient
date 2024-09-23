@@ -9,6 +9,7 @@ var northEast = L.latLng(89.99346179538875, 180);
 var bounds = L.latLngBounds(southWest, northEast);
 var atonMarkers = [];
 var subscriptionIdentifier;
+var baseIconApiUrl = "https://rnavlab.gla-rad.org/niord-ng"
 
 // Define an icon for the satellite markers
 var satelliteIcon = L.icon({
@@ -211,12 +212,20 @@ function unsubscribe() {
  */
 function loadAtoNGeometry(type, aton) {
     // Get the display name for the AtoN#
-    displayName = aton.featureNames.find(f => f.displayName);
+    var displayName = aton.featureNames.find(f => f.displayName);
+    var iconUrl = computeAtonIconUrl(type, aton);
 
-    atonMarker = L.marker([
+    // Get an icon through Niord
+    var atonIcon = L.icon({
+        iconUrl: 'my-icon.png',
+        iconSize: [48, 48]
+    });
+
+    // Generate the map marker
+    var atonMarker = L.marker([
                 aton.geometries[0].pointProperty.point.pos.value[1],
                 aton.geometries[0].pointProperty.point.pos.value[0]
-            ])
+            ], {icon: atonIcon})
             .addTo(subscriptionMap)
             .bindPopup(displayName ? displayName.name : "unknown");
 
@@ -271,6 +280,31 @@ function dateToSecomFormat(date) {
  *
  * @param {Object}        aton          The AtoN object to generate the icon for
  */
-function computeAtonIconUrl(aton) {
+function computeAtonIconUrl(type, aton) {
+    if (!type) {
+        return baseIconApiUrl + '/assets/img/aton/aton.png';
+    }
 
+    var url = this.addParam('', 'seamark:type', type);
+//    url = this.addParam(url, 'seamark:' + type + ':category', 'special_purpose');
+//    url = this.addParam(url, 'seamark:' + type + ':shape', '');
+//    url = this.addParam(url, 'seamark:' + type + ':colour', 'yellow;black');
+//    url = this.addParam(url, 'seamark:' + type + ':colour_pattern', 'horizontal');
+//    url = this.addParam(url, 'seamark:topmark:shape', '');
+//    url = this.addParam(url, 'seamark:topmark:colour', 'yellow;black');
+
+    // And return the constructed URL
+    return baseIconApiUrl + '/rest/aton-icon/overview?' + url;
+}
+
+/**
+ * Adds a the given AtoN tag as a parameter if well-defined.
+ *
+ * @param url           The parameter URL
+ * @param aton          The AtoN in question
+ * @param k             The AtoN tag key
+ */
+function addParam(url, k, v): string {
+    url += encodeURIComponent(k) + '=' + encodeURIComponent(v);
+    return url;
 }

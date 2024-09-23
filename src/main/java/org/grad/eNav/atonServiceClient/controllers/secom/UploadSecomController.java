@@ -24,6 +24,7 @@ import jakarta.ws.rs.Path;
 import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
+import org.grad.eNav.atonServiceClient.utils.AtonTypeConverter;
 import org.grad.eNav.s125.utils.S125Utils;
 import org.grad.secom.core.interfaces.UploadSecomInterface;
 import org.grad.secom.core.models.*;
@@ -122,7 +123,9 @@ public class UploadSecomController implements UploadSecomInterface {
                             this.webSocket.convertAndSend(
                                     "/topic/secom/subscription/update",
                                     aton,
-                                    Collections.singletonMap("aton-type", Arrays.asList(aton.getClass().getInterfaces()).getLast().getSimpleName())
+                                    Collections.singletonMap("aton-type", AtonTypeConverter.convertToSeamarkType(
+                                            Arrays.asList(aton.getClass().getInterfaces()).getLast())
+                                    )
                             )
                     );
 
