@@ -217,7 +217,7 @@ function loadAtoNGeometry(type, aton) {
 
     // Get an icon through Niord
     var atonIcon = L.icon({
-        iconUrl: 'my-icon.png',
+        iconUrl: iconUrl,
         iconSize: [48, 48]
     });
 
