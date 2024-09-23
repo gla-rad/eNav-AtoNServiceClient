@@ -122,7 +122,7 @@ public class UploadSecomController implements UploadSecomInterface {
                             this.webSocket.convertAndSend(
                                     "/topic/secom/subscription/update",
                                     aton,
-                                    Collections.singletonMap("type", Arrays.asList(aton.getClass().getInterfaces()).getLast().getSimpleName())
+                                    Collections.singletonMap("aton-type", Arrays.asList(aton.getClass().getInterfaces()).getLast().getSimpleName())
                             )
                     );
 

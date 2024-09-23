@@ -117,7 +117,7 @@ function connect() {
                 $("#subscriptionFail").show();
             });
             stompClient.subscribe('/topic/secom/subscription/update', function (msg) {
-                loadAtoNGeometry(msg);
+                loadAtoNGeometry(msg.headers["aton-type"], JSON.parse(msg.body));
             });
         });
     } else {
@@ -130,7 +130,7 @@ function connect() {
             $("#subscriptionFail").show();
         });
         stompClient.subscribe('/topic/secom/subscription/update', function (msg) {
-            loadAtoNGeometry(msg);
+            loadAtoNGeometry(msg.headers["aton-type"], JSON.parse(msg.body));
         });
     }
 }
@@ -206,12 +206,11 @@ function unsubscribe() {
  * This function will load the AtoN geometry onto the drawnItems variable
  * so that it is shown in the station maps layers.
  *
- * @param {Object}        msg          The messages containing the AtoN to be drawn
+ * @param {String}        type          The type of the AtoN objects to be drawn on the map
+ * @param {Object}        aton          The AtoN objects to be drawn on the map
  */
-function loadAtoNGeometry(msg) {
+function loadAtoNGeometry(type, aton) {
     // Get the display name for the AtoN#
-    aton = JSON.parse(msg.body);
-    header = msg.headers;
     displayName = aton.featureNames.find(f => f.displayName);
 
     atonMarker = L.marker([
