@@ -47,6 +47,9 @@ public class AtonTypeConverter {
         else if(Objects.equals(s125Class, BuoySpecialPurposeGeneral.class)) {
             return "buoy_special_purpose";
         }
+        else if(Objects.equals(s125Class, Lighthouse.class)) {
+            return "light_major";
+        }
         else if(Objects.equals(s125Class, LandmarkType.class)) {
             return "landmark";
         }

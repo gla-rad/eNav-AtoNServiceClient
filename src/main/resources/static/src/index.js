@@ -312,7 +312,7 @@ function computeAtonIconUrl(type, aton) {
     }
     else if(aton.categoryOfLateralMark) {
         // Format the category
-        var categoryOfLateralMark = aton.categoryOfCardinalMark.replace('_TO','').replace('_LATERAL_MARK','').toLowerCase();
+        var categoryOfLateralMark = aton.categoryOfLateralMark.replace('_TO','').replace('_LATERAL_MARK','').toLowerCase();
         url = this.addParam(url, 'seamark:' + type + ':category', categoryOfLateralMark);
     }
     else if(aton.categoryOfCardinalMark) {
