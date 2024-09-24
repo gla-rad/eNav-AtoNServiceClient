@@ -294,36 +294,29 @@ function computeAtonIconUrl(type, aton) {
     }
     else if(aton.categoryOfInstallationBuoy) {
         // Choose one of the two types
-        if(aton.categoryOfInstallationBuoy.includes('CALM')) {
+        if(aton.categoryOfInstallationBuoy == 'CATENARY_ANCHOR_LEG_MOORING_CALM') {
             url = this.addParam(url, 'seamark:' + type + ':category', 'calm');
-        } else if(aton.categoryOfInstallationBuoy.includes('SBM')) {
+        } else if(aton.categoryOfInstallationBuoy == 'SINGLE_BUOY_MOORING_SBM_OR_SPM')) {
             url = this.addParam(url, 'seamark:' + type + ':category', 'sbm');
         }
     }
     else if(aton.categoryOfSpecialPurposeMark) {
         // Format the category
-        var categoryOfSpecialPurposeMark = aton.categoryOfSpecialPurposeMark.replace('mark','').trim().replace(' ', '_').toLowerCase();
+        var categoryOfSpecialPurposeMark = aton.categoryOfSpecialPurposeMark.replace('_MARK','').trim().toLowerCase();
         url = this.addParam(url, 'seamark:' + type + ':category', categoryOfSpecialPurposeMark);
     }
     else if(aton.categoryOfLateralMark) {
-        // Choose one of the four types
-        if(aton.categoryOfLateralMark == 'port-hand lateral mark') {
-            url = this.addParam(url, 'seamark:' + type + ':category', 'port');
-        } else if(aton.categoryOfLateralMark == 'starboard-hand lateral mark') {
-            url = this.addParam(url, 'seamark:' + type + ':category', 'starboard');
-        } else if(aton.categoryOfLateralMark == 'preferred channel to port lateral mark') {
-            url = this.addParam(url, 'seamark:' + type + ':category', 'preferred_channel_port');
-        } else if(aton.categoryOfLateralMark == 'preferred channel to starboard lateral mark') {
-            url = this.addParam(url, 'seamark:' + type + ':category', 'preferred_channel_starboard');
-        }
+        // Format the category
+        var categoryOfLateralMark = aton.categoryOfCardinalMark.replace('_TO','').replace('_LATERAL_MARK','').toLowerCase();
+        url = this.addParam(url, 'seamark:' + type + ':category', categoryOfLateralMark);
     }
     else if(aton.categoryOfCardinalMark) {
         // Format the category
-        var categoryOfCardinalMark = aton.categoryOfCardinalMark.replace('cardinal mark','').trim().replace(' ', '_').toLowerCase();
+        var categoryOfCardinalMark = aton.categoryOfCardinalMark.replace('_CARDINAL_MARK','').toLowerCase();
         url = this.addParam(url, 'seamark:' + type + ':category', categoryOfCardinalMark);
     }
     else if(aton.virtualAISAidToNavigationType) {
-        url = this.addParam(url, 'seamark:' + type + ':category', aton.virtualAISAidToNavigationType.toLowerCase());
+        url = this.addParam(url, 'seamark:' + type + ':category', aton.virtualAISAidToNavigationType.replace('_TO','').toLowerCase());
     }
 
     // Add the shape seamark entry if that is available
