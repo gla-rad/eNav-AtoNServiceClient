@@ -30,7 +30,7 @@ public class AtonTypeConverter {
             return "beacon_special_purpose";
         }
         else if(Objects.equals(s125Class, BuoyCardinal.class)) {
-            return "cardinal_buoy";
+            return "buoy_cardinal";
         }
         else if(Objects.equals(s125Class, BuoyLateral.class)) {
             return "buoy_lateral";
