@@ -316,7 +316,11 @@ function computeAtonIconUrl(type, aton) {
         url = this.addParam(url, 'seamark:' + type + ':category', categoryOfCardinalMark);
     }
     else if(aton.virtualAISAidToNavigationType) {
-        url = this.addParam(url, 'seamark:' + type + ':category', aton.virtualAISAidToNavigationType.replace('_TO','').toLowerCase());
+        if(aton.virtualAISAidToNavigationType == 'NEW_DANGER_MARKING') {
+            url = this.addParam(url, 'seamark:' + type + ':category', 'wreck');
+        } else {
+            url = this.addParam(url, 'seamark:' + type + ':category', aton.virtualAISAidToNavigationType.replace('_CHANNEL_TO','').toLowerCase());
+        }
     }
 
     // Add the shape seamark entry if that is available
@@ -331,7 +335,18 @@ function computeAtonIconUrl(type, aton) {
 
     // Add the colour-pattern seamark entry if that is available
     if(aton.colourPatterns) {
-        url = this.addParam(url, 'seamark:' + type + ':colour_pattern', aton.colourPatterns.join(';').toLowerCase());
+        // Format the colour patterns
+          var colourPatterns = aton.colourPatterns
+            .join(';')
+            .replace('HORIZONTAL_STRIPES','horizontal')
+            .replace('VERTICAL_STRIPES','vertical')
+            .replace('DIAGONAL_STRIPES','diagonal')
+            .replace('SQUARED','squared')
+            .replace('STRIPES_DIRECTION_UNKNOWN','stripes')
+            .replace('BORDER_STRIPE','border')
+            .replace('SINGLE_COLOUR','single')
+            .toLowerCase();
+        url = this.addParam(url, 'seamark:' + type + ':colour_pattern', colourPatterns);
     }
 
     // And return the constructed URL
