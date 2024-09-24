@@ -218,7 +218,7 @@ function loadAtoNGeometry(type, aton) {
     // Get an icon through Niord
     var atonIcon = L.icon({
         iconUrl: iconUrl,
-        iconSize: [48, 48]
+        iconSize: [96, 96]
     });
 
     // Generate the map marker
@@ -282,16 +282,64 @@ function dateToSecomFormat(date) {
  */
 function computeAtonIconUrl(type, aton) {
     if (!type) {
-        return baseIconApiUrl + '/assets/img/aton/aton.png';
+        return '/images/aton.png';
     }
 
+    // Add the seamark type if that is available
     var url = this.addParam('', 'seamark:type', type);
-//    url = this.addParam(url, 'seamark:' + type + ':category', 'special_purpose');
-//    url = this.addParam(url, 'seamark:' + type + ':shape', '');
-//    url = this.addParam(url, 'seamark:' + type + ':colour', 'yellow;black');
-//    url = this.addParam(url, 'seamark:' + type + ':colour_pattern', 'horizontal');
-//    url = this.addParam(url, 'seamark:topmark:shape', '');
-//    url = this.addParam(url, 'seamark:topmark:colour', 'yellow;black');
+
+    // Add the seamark sub-type (for each supported type) if that is available
+    if(aton.categoryOfLandmark) {
+        url = this.addParam(url, 'seamark:' + type + ':category', aton.categoryOfLandmark.toLowerCase());
+    }
+    else if(aton.categoryOfInstallationBuoy) {
+        // Choose one of the two types
+        if(aton.categoryOfInstallationBuoy.includes('CALM')) {
+            url = this.addParam(url, 'seamark:' + type + ':category', 'calm');
+        } else if(aton.categoryOfInstallationBuoy.includes('SBM')) {
+            url = this.addParam(url, 'seamark:' + type + ':category', 'sbm');
+        }
+    }
+    else if(aton.categoryOfSpecialPurposeMark) {
+        // Format the category
+        var categoryOfSpecialPurposeMark = aton.categoryOfSpecialPurposeMark.replace('mark','').trim().replace(' ', '_').toLowerCase();
+        url = this.addParam(url, 'seamark:' + type + ':category', categoryOfSpecialPurposeMark);
+    }
+    else if(aton.categoryOfLateralMark) {
+        // Choose one of the four types
+        if(aton.categoryOfLateralMark == 'port-hand lateral mark') {
+            url = this.addParam(url, 'seamark:' + type + ':category', 'port');
+        } else if(aton.categoryOfLateralMark == 'starboard-hand lateral mark') {
+            url = this.addParam(url, 'seamark:' + type + ':category', 'starboard');
+        } else if(aton.categoryOfLateralMark == 'preferred channel to port lateral mark') {
+            url = this.addParam(url, 'seamark:' + type + ':category', 'preferred_channel_port');
+        } else if(aton.categoryOfLateralMark == 'preferred channel to starboard lateral mark') {
+            url = this.addParam(url, 'seamark:' + type + ':category', 'preferred_channel_starboard');
+        }
+    }
+    else if(aton.categoryOfCardinalMark) {
+        // Format the category
+        var categoryOfCardinalMark = aton.categoryOfCardinalMark.replace('cardinal mark','').trim().replace(' ', '_').toLowerCase();
+        url = this.addParam(url, 'seamark:' + type + ':category', categoryOfCardinalMark);
+    }
+    else if(aton.virtualAISAidToNavigationType) {
+        url = this.addParam(url, 'seamark:' + type + ':category', aton.virtualAISAidToNavigationType.toLowerCase());
+    }
+
+    // Add the shape seamark entry if that is available
+    if(aton.shape) {
+        url = this.addParam(url, 'seamark:' + type + ':shape', aton.shape.toLowerCase());
+    }
+
+    // Add the colour seamark entry if that is available
+    if(aton.colours) {
+        url = this.addParam(url, 'seamark:' + type + ':colour', aton.colours.join(';').toLowerCase());
+    }
+
+    // Add the colour-pattern seamark entry if that is available
+    if(aton.colourPatterns) {
+        url = this.addParam(url, 'seamark:' + type + ':colour_pattern', aton.colourPatterns.join(';').toLowerCase());
+    }
 
     // And return the constructed URL
     return baseIconApiUrl + '/rest/aton-icon/overview?' + url;
