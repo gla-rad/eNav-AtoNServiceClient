@@ -215,10 +215,15 @@ function loadAtoNGeometry(type, aton) {
     var displayName = aton.featureNames.find(f => f.displayName);
     var iconUrl = computeAtonIconUrl(type, aton);
 
+    // If this is not a top-level object skip
+    if(aton.parent) {
+        return;
+    }
+
     // Get an icon through Niord
     var atonIcon = L.icon({
         iconUrl: iconUrl,
-        iconSize: [96, 96]
+        iconSize: [64, 64]
     });
 
     // Generate the map marker
