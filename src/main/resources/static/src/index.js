@@ -346,6 +346,9 @@ function computeAtonIconUrl(type, aton) {
  * @param k             The AtoN tag key
  */
 function addParam(url, k, v) {
+    if (url.length > 0) {
+        url = url + '&'
+    }
     url += encodeURIComponent(k) + '=' + encodeURIComponent(v);
     return url;
 }
