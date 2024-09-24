@@ -296,7 +296,7 @@ function computeAtonIconUrl(type, aton) {
         // Choose one of the two types
         if(aton.categoryOfInstallationBuoy == 'CATENARY_ANCHOR_LEG_MOORING_CALM') {
             url = this.addParam(url, 'seamark:' + type + ':category', 'calm');
-        } else if(aton.categoryOfInstallationBuoy == 'SINGLE_BUOY_MOORING_SBM_OR_SPM')) {
+        } else if(aton.categoryOfInstallationBuoy == 'SINGLE_BUOY_MOORING_SBM_OR_SPM') {
             url = this.addParam(url, 'seamark:' + type + ':category', 'sbm');
         }
     }
