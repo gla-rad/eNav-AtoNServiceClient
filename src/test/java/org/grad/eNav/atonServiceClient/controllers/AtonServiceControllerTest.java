@@ -1,5 +1,8 @@
 package org.grad.eNav.atonServiceClient.controllers;
 
+import _int.iho.s125.gml.cs0._1.AidsToNavigationType;
+import _int.iho.s125.gml.cs0._1.impl.AidsToNavigationTypeImpl;
+import _int.iho.s125.gml.cs0._1.impl.VirtualAISAidToNavigationImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.grad.eNav.atonServiceClient.services.SecomService;
 import org.grad.eNav.atonServiceClient.services.SubscriptionService;
@@ -64,6 +67,7 @@ class AtonServiceControllerTest {
     // Test Variables
     private List<SearchObjectResult> instances;
     private List<SummaryObject> summaryObjects;
+    private List<AidsToNavigationType> atons;
 
     /**
      * Common setup for all the tests.
@@ -91,6 +95,17 @@ class AtonServiceControllerTest {
         summaryObject2.setDataReference(UUID.randomUUID());
         summaryObject2.setContainerType(ContainerTypeEnum.S100_DataSet);
         this.summaryObjects = Arrays.asList(summaryObject1, summaryObject2);
+
+        // Create a list of AtoN objects
+        AidsToNavigationTypeImpl aton1 = new VirtualAISAidToNavigationImpl();
+        aton1.setId("ID1");
+        aton1.setIdCode("idCode1");
+        AidsToNavigationTypeImpl aton2 = new VirtualAISAidToNavigationImpl();
+        aton2.setId("ID1");
+        aton2.setIdCode("idCode1");
+        this.atons = Arrays.asList(aton1, aton2);
+
+
     }
 
     /**
@@ -147,6 +162,26 @@ class AtonServiceControllerTest {
             assertNotNull(result[i]);
             assertEquals(this.summaryObjects.get(i).getInfo_name(), result[i].getInfo_name());
         }
+    }
+
+    /**
+     * Test that the AtoN Service Client REST interface can be successfully used
+     * to get the contents of S-125 datasets currently provided by a specific
+     * S-125 AtoN service, identified by its MRN.
+     */
+    @Test
+    void testGetAtonDatasetContent() throws Exception {
+        // First select a UUID
+        UUID uuid = UUID.randomUUID();
+
+        // Mock the subscription service to return a fixed result on an MRN
+        doReturn(this.atons).when(this.secomService).getAtonDatasetContent(eq("mrn"), eq(uuid), any(), any(), any(), any(), any(), any(), any());
+
+        // Perform the MVC request
+        MvcResult mvcResult = this.mockMvc.perform(get("/api/aton_service/mrn/content?dataReference=" + uuid)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andReturn();
     }
 
 }

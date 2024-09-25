@@ -23,7 +23,7 @@ LABEL org.opencontainers.image.source="https://git.thls.org/NikolaosV/eNav-AtoNS
 WORKDIR /app
 
 # Copy the Spring Boot JAR file into the container
-COPY target/aton-service-client-0.0.5-SNAPSHOT.jar /app/
+COPY target/aton-service-client-0.0.6-SNAPSHOT.jar /app/
 
 # Create a modules path just in case
 ENV LOADER_PATH /modules
