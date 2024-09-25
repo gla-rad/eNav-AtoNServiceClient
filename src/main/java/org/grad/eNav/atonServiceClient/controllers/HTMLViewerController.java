@@ -17,9 +17,11 @@
 package org.grad.eNav.atonServiceClient.controllers;
 
 import org.grad.eNav.atonServiceClient.models.domain.Subscription;
+import org.grad.eNav.atonServiceClient.services.SecomService;
 import org.grad.eNav.atonServiceClient.services.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -87,6 +89,12 @@ public class HTMLViewerController {
     private String secomServiceMrn;
 
     /**
+     * The SECOM Service.
+     */
+    @Autowired
+    SecomService secomService;
+
+    /**
      * The Subscription Service.
      */
     @Autowired
@@ -100,11 +108,15 @@ public class HTMLViewerController {
      */
     @GetMapping("/index")
     public String index(Model model) {
+        // Add the standard operating information
         model.addAttribute("appName", this.appName);
         model.addAttribute("appOperatorUrl", this.appOperatorUrl);
         model.addAttribute("appCopyright", this.appCopyright);
         model.addAttribute("appMrn", this.appMrn);
         model.addAttribute("secomServiceMrn", this.secomServiceMrn);
+
+        // Add the discovered S-125 services
+        model.addAttribute("s125Services", this.secomService.getAtonServices(Pageable.unpaged()));
 
         // Also get the subscription identifier if available
         model.addAttribute("subscriptionId", this.subscriptionService

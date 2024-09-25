@@ -18,18 +18,17 @@ package org.grad.eNav.atonServiceClient.services;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.grad.secom.core.exceptions.SecomNotFoundException;
 import org.grad.secom.core.exceptions.SecomValidationException;
-import org.grad.secom.core.models.ResponseSearchObject;
-import org.grad.secom.core.models.SearchFilterObject;
-import org.grad.secom.core.models.SearchObjectResult;
-import org.grad.secom.core.models.SearchParameters;
+import org.grad.secom.core.models.*;
 import org.grad.secom.springboot3.components.SecomClient;
 import org.grad.secom.springboot3.components.SecomConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -40,6 +39,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.*;
+
+import static java.util.function.Predicate.not;
 
 /**
  * The SECOM Service Class
@@ -55,6 +56,11 @@ import java.util.*;
 public class SecomService {
 
     /**
+     * The maximum number of results for unpaged discovery searches
+     */
+    public static int MAX_UNPAGED_RESULTS_NO = 100;
+
+    /**
      * The Service Registry URL.
      */
     @Value("${secom.service-registry.url:}" )
@@ -68,6 +74,8 @@ public class SecomService {
 
     // Class Variables
     SecomClient discoveryService;
+    private SearchObjectResult searchObjectResult;
+    private ResponseSearchObject responseSearchObject;
 
     /**
      * The service post-construct operations where the handler auto-registers
@@ -155,5 +163,59 @@ public class SecomService {
         }
     }
 
+    /**
+     * Searches the connected discovery client to identify all the registered
+     * services that seems to provide AtoN information encoded in S-125. It
+     * supports a paged search and the complete SECOM search result will be
+     * returned.
+     *
+     * @param pageable the paging information for the search
+     * @return all the matching S-125 AtoN services currently registered
+     */
+    public List<SearchObjectResult> getAtonServices(@NotNull Pageable pageable) {
+        // Create a search filter object
+        final SearchFilterObject searchFilterObject = new SearchFilterObject();
+        final SearchParameters searchParameters = new SearchParameters();
+        searchParameters.setKeywords("s-125");
+        searchFilterObject.setQuery(searchParameters);
+        // Return the retrieved list
+        return this.discoveryService.searchService(
+                        searchFilterObject,
+                        pageable.isUnpaged()? 0 : pageable.getPageNumber(),
+                        pageable.isUnpaged()? MAX_UNPAGED_RESULTS_NO : pageable.getPageSize())
+                .map(ResponseSearchObject::getSearchServiceResult)
+                .orElse(Collections.emptyList())
+                .stream()
+//                .filter(not(result -> result.getName().toLowerCase().contains("client")))
+                .toList();
+    }
 
+    /**
+     * For a selected S-125 AtoN service based on its MRN this function will
+     * return the list of available datasets using the summary SECOM interface.
+     * Note that this function will return the actual SECOM summary objects
+     * list.
+     *
+     * @param mrn the MRN of the service to get the list of datasets for
+     * @param pageable the paging information for the search
+     * @return the list of the dataset summary information
+     */
+    public List<SummaryObject>  getAtonDatasets(@NotNull String mrn, @NotNull Pageable pageable) {
+        // Access the SECOM client based on the MRN
+        SecomClient secomClient = this.getClient(mrn);
+
+        // Request the available datasets using the summary interface
+        return secomClient.getSummary(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                pageable.isUnpaged()? 0 : pageable.getPageNumber(),
+                pageable.isUnpaged()? MAX_UNPAGED_RESULTS_NO : pageable.getPageSize())
+                .map(GetSummaryResponseObject::getSummaryObject)
+                .orElse(Collections.emptyList());
+    }
 }

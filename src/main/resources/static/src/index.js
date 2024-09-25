@@ -32,6 +32,7 @@ var satelliteIconAvail = L.icon({
 /**
  * API Libraries
  */
+atonServiceApi = new AtonServiceApi();
 subscriptionApi = new SubscriptionApi();
 
 /**
@@ -74,12 +75,20 @@ $(() => {
         unsubscribe();
     });
 
+    // Load the selected AtoN service dataset list
+    loadAtonDatasets();
+    $('input:radio').change(function() {
+       if (this.checked) {
+         loadAtonDatasets();
+       };
+    });
+
     // Finally also initialise the search map before we need it
     if($('#subscriptionMap').length) {
         subscriptionMap = L.map('subscriptionMap', {
-            //noWrap: true,
-            center: bounds.getCenter(),
-            zoom: 2,
+            noWrap: true,
+            center: new L.LatLng(51.94194, 1.28437), // Put Harwich as the centre of the world :)
+            zoom: 6,
             maxBounds: bounds,
             maxBoundsViscosity: 1.0
         })
@@ -150,11 +159,11 @@ function clearForm() {
  */
 function subscribe() {
     // Get the AtoN Service MRN to subscribe to
-    var atonServiceMrn = trimToNull($("#atonServiceMrnInput").val());
+    var atonServiceMrn = $('input[name="serviceSelection"]:checked').attr('id');;
 
     // Create the subscription request
     var subscriptionRequestObject = {
-        containerType: trimToNull($("#containerTypeInput").val()),
+        containerType: 0, //trimToNull($("#containerTypeInput").val()),
         dataProductType: trimToNull($("#dataProductTypeInput").val()),
         dataReference: trimToNull($("#dataReferenceInput").val()),
         productVersion: trimToNull($("#productVersionInput").val()),
@@ -183,7 +192,7 @@ function subscribe() {
  */
 function unsubscribe() {
     // Get the AtoN Service MRN to subscribe to
-    var atonServiceMrn = trimToNull($("#atonServiceMrnInput").val());
+    var atonServiceMrn = $('input[name="serviceSelection"]:checked').attr('id');;
 
     // Create the remove subscription request
     var removeSubscriptionObject = {
@@ -200,6 +209,26 @@ function unsubscribe() {
     }, (response, status, more, errorCallback) => {
         console.error(response);
         showError(response.statusText);
+    });
+}
+
+/**
+ * This function will load the AtoN service datasets currently present in the
+ * selected S-125 AtoN service into the data reference dropdown option list.
+ */
+function loadAtonDatasets() {
+    // Get the AtoN Service MRN to load the datasets from
+    var atonServiceMrn = $('input[name="serviceSelection"]:checked').attr('id');;
+
+    // Call the AtoN Service API and load the dataset options
+    atonServiceApi.getAtonDatasets(atonServiceMrn, function(result) {
+        var options = $("#dataReferenceInput");
+        //Clear previous entries
+        options.empty();
+        //don't forget error handling!
+        $.each(result, function(item) {
+            options.append($("<option />").val(result[item].dataReference).text(result[item].info_name));
+        });
     });
 }
 

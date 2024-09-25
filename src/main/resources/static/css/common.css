@@ -84,9 +84,8 @@
 }
 
 .map-container {
-    width: 100%;
-    height: calc(100vh - 150px);
-    min-height: 680px;
+    width: 75%;
+    height: 100%;
     z-index: 1;
     position: relative;
 }

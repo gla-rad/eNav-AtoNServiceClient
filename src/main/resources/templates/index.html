@@ -32,134 +32,169 @@
     <div class="d-flex flex-column vh-100 sky-bg">
         <div th:replace="~{fragments/general.html :: navbar}"></div>
         <div class="flex-fill">
-            <div class="container-fluid">
-                <div class="row">
-                    <div sec:authorize="isAuthenticated()" class="container-fluid col-lg-3 pt-2">
-                        <div class="card shadow">
-                            <div class="card-header">
-                                <span class="h5">AtoN Client Subscription Configuration</span>
-                            </div>
-                            <div class="card-body">
-                                <form id="subscriptionForm">
-                                    <div class="mb-3">
-                                        <label for="atonServiceMrnInput" class="form-label">AtoN Service MRN</label>
-                                        <input id="atonServiceMrnInput" class="form-control form-control-sm" aria-label="AtoN Service MRN"
-                                               placeholder="AtoN Service MRN" th:value="${secomServiceMrn}" required>
+            <div class="container-fluid p-0 d-flex h-100">
+                <div sec:authorize="isAuthenticated()" class="bg-white p-3" style="width:33%;">
+                    <ul class="nav nav-tabs" id="controlTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="services-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab" aria-controls="home" aria-selected="true">
+                                Services
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="subscription-tab" data-bs-toggle="tab" data-bs-target="#subscription" type="button" role="tab" aria-controls="profile" aria-selected="false">
+                                Subscription
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="tabContent">
+                        <div class="tab-pane fade show active mt-2" id="services" role="tabpanel" aria-labelledby="subscription-tab">
+                            <table class="table table-condensed table-hover table-striped table-condensed">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Subscribe</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">MRN</th>
+                                    <th scope="col">Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="" th:each="s125Service, iStat : ${s125Services}">
+                                        <td>
+                                            <input class="form-check-input"
+                                                   type="radio"
+                                                   name="serviceSelection"
+                                                   th:id="${s125Service.instanceId}"
+                                                   th:checked="${s125Service.instanceId} == ${secomServiceMrn} ? 'checked'"
+                                                   aria-label="Checkbox for selecting this service"/>
+                                        </td>
+                                        <td th:text="${s125Service.name}" />
+                                        <td style="word-break:break-word;" th:text="${s125Service.instanceId}" />
+                                        <td>
+                                            <span class="badge bg-danger">Live</span>
+                                            <span class="badge bg-success">Online</span>
+                                            <span class="badge bg-secondary" th:class="${true}?d-none">Offline</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade form-control mt-2" id="subscription" role="tabpanel" aria-labelledby="services-tab">
+                            <form id="subscriptionForm">
+                                <!-- Only datasets (0) are supported here -->
+                                <!--
+                                <div class="mb-3">
+                                    <label for="containerTypeInput" class="form-label">Container Type</label>
+                                    <input id="containerTypeInput" type="number" class="form-control form-control-sm" aria-label="Container Type"
+                                           placeholder="Container Type"
+                                           step="1"
+                                           min="0"
+                                           max="1">
+                                </div>
+                                -->
+                                <div class="mb-3">
+                                    <label for="dataProductTypeInput" class="form-label">Data Product Type</label>
+                                    <select id="dataProductTypeInput" class="form-select" aria-label="Data Product Type">
+                                        <option disabled selected value> -- select an option -- </option>
+                                        <option value="OTHER">OTHER</option>
+                                        <option value="S57">S57</option>
+                                        <option value="S101">S101</option>
+                                        <option value="S102">S102</option>
+                                        <option value="S104">S104</option>
+                                        <option value="S111">S111</option>
+                                        <option value="S122">S122</option>
+                                        <option value="S123">S123</option>
+                                        <option value="S124">S124</option>
+                                        <option value="S125">S125</option>
+                                        <option value="S126">S126</option>
+                                        <option value="S127">S127</option>
+                                        <option value="S128">S128</option>
+                                        <option value="S129">S129</option>
+                                        <option value="S131">S131</option>
+                                        <option value="S210">S210</option>
+                                        <option value="S211">S211</option>
+                                        <option value="S212">S212</option>
+                                        <option value="S401">S401</option>
+                                        <option value="S402">S402</option>
+                                        <option value="S411">S411</option>
+                                        <option value="S412">S412</option>
+                                        <option value="S413">S413</option>
+                                        <option value="S414">S414</option>
+                                        <option value="S421">S421</option>
+                                        <option value="RTZ">RTZ</option>
+                                        <option value="EPC">EPC</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="dataReferenceInput" class="form-label">Data Reference</label>
+                                    <select id="dataReferenceInput" class="form-select" aria-label="Data Reference">
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="productVersionInput" class="form-label">Product Version</label>
+                                    <input id="productVersionInput" class="form-control form-control-sm" aria-label="Product Version"
+                                           placeholder="Product Version">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="geometryInput" class="form-label">Geometry (WKT)</label>
+                                    <input id="geometryInput" class="form-control form-control-sm" aria-label="Geometry"
+                                           placeholder="Geometry">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="unlocodeInput" class="form-label">UN/LOCODE</label>
+                                    <input id="unlocodeInput" class="form-control form-control-sm" aria-label="UN/LOCODE"
+                                           placeholder="UN/LOCODE"
+                                           pattern="^[A-Z]{5}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="subscriptionPeriodStartInput" class="form-label">Subscription Period Start</label>
+                                    <input id="subscriptionPeriodStartInput" type="datetime-local" class="form-range">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="subscriptionPeriodEndInput" class="form-label">Subscription Period End</label>
+                                    <input id="subscriptionPeriodEndInput" type="datetime-local" class="form-range">
+                                </div>
+                            </form>
+                            <div class="row">
+                                <div class="col-6 animation-container-sm">
+                                    <div id="subscriptionInProcessSpinner" class="spinner-grow bg-primary animation-sm" role="status" style="display: none;">
+                                        <span class="visually-hidden">Loading...</span>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="containerTypeInput" class="form-label">Container Type</label>
-                                        <input id="containerTypeInput" type="number" class="form-control form-control-sm" aria-label="Container Type"
-                                            placeholder="Container Type"
-                                            step="1"
-                                            min="0"
-                                            max="1">
+                                    <div id="subscriptionSuccess" class="resultmark-wrapper animation-sm" style="display: none;">
+                                        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                                            <title>RAIM is available</title>
+                                            <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                                            <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                                        </svg>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="dataProductTypeInput" class="form-label">Data Product Type</label>
-                                        <select id="dataProductTypeInput" class="form-select" aria-label="Data Product Type">
-                                            <option disabled selected value> -- select an option -- </option>
-                                            <option value="OTHER">OTHER</option>
-                                            <option value="S57">S57</option>
-                                            <option value="S101">S101</option>
-                                            <option value="S102">S102</option>
-                                            <option value="S104">S104</option>
-                                            <option value="S111">S111</option>
-                                            <option value="S122">S122</option>
-                                            <option value="S123">S123</option>
-                                            <option value="S124">S124</option>
-                                            <option value="S125">S125</option>
-                                            <option value="S126">S126</option>
-                                            <option value="S127">S127</option>
-                                            <option value="S128">S128</option>
-                                            <option value="S129">S129</option>
-                                            <option value="S131">S131</option>
-                                            <option value="S210">S210</option>
-                                            <option value="S211">S211</option>
-                                            <option value="S212">S212</option>
-                                            <option value="S401">S401</option>
-                                            <option value="S402">S402</option>
-                                            <option value="S411">S411</option>
-                                            <option value="S412">S412</option>
-                                            <option value="S413">S413</option>
-                                            <option value="S414">S414</option>
-                                            <option value="S421">S421</option>
-                                            <option value="RTZ">RTZ</option>
-                                            <option value="EPC">EPC</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="dataReferenceInput" class="form-label">Data Reference</label>
-                                        <input id="dataReferenceInput" class="form-control form-control-sm" aria-label="Data Reference"
-                                               placeholder="Data Reference"
-                                               pattern="^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="productVersionInput" class="form-label">Product Version</label>
-                                        <input id="productVersionInput" class="form-control form-control-sm" aria-label="Product Version"
-                                               placeholder="Product Version">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="geometryInput" class="form-label">Geometry (WKT)</label>
-                                        <input id="geometryInput" class="form-control form-control-sm" aria-label="Geometry"
-                                               placeholder="Geometry">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="unlocodeInput" class="form-label">UN/LOCODE</label>
-                                        <input id="unlocodeInput" class="form-control form-control-sm" aria-label="UN/LOCODE"
-                                               placeholder="UN/LOCODE"
-                                               pattern="^[A-Z]{5}">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="subscriptionPeriodStartInput" class="form-label">Subscription Period Start</label>
-                                        <input id="subscriptionPeriodStartInput" type="datetime-local" class="form-range">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="subscriptionPeriodEndInput" class="form-label">Subscription Period End</label>
-                                        <input id="subscriptionPeriodEndInput" type="datetime-local" class="form-range">
-                                    </div>
-                                </form>
-                                <div class="row">
-                                    <div class="col-6 animation-container-sm">
-                                        <div id="subscriptionInProcessSpinner" class="spinner-grow bg-primary animation-sm" role="status" style="display: none;">
-                                            <span class="visually-hidden">Loading...</span>
-                                        </div>
-                                        <div id="subscriptionSuccess" class="resultmark-wrapper animation-sm" style="display: none;">
-                                            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                                                <title>RAIM is available</title>
-                                                <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
-                                                <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
-                                            </svg>
-                                        </div>
-                                        <div id="subscriptionFail" class="resultmark-wrapper animation-sm" style="display: none;">
-                                            <svg class="crossmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                                                <title>RAIM is NOT available</title>
-                                                <circle class="crossmark__circle" cx="26" cy="26" r="25" fill="none"/>
-                                                <path class="crossmark__check" fill="none" d="M 16,16 l 22,22 M 37,16 l -22,22" />
-                                            </svg>
+                                    <div id="subscriptionFail" class="resultmark-wrapper animation-sm" style="display: none;">
+                                        <svg class="crossmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                                            <title>RAIM is NOT available</title>
+                                            <circle class="crossmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                                            <path class="crossmark__check" fill="none" d="M 16,16 l 22,22 M 37,16 l -22,22" />
+                                        </svg>
 
-                                        </div>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="d-flex flex-row justify-content-end align-items-center h-100">
-                                            <button id="clearButton" class="btn btn-warning me-2" title="Subscribe">Clear</button>
-                                            <button id="subscribeButton" class="btn btn-primary" th:data-subscriptionId="${subscriptionId}" title="Subscribe">Subscribe</button>
-                                            <button id="unsubscribeButton" class="btn btn-danger" title="Unsubscribe">Unsubscribe</button>
-                                        </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="d-flex flex-row justify-content-end align-items-center h-100">
+                                        <button id="clearButton" class="btn btn-warning me-2" title="Subscribe">Clear</button>
+                                        <button id="subscribeButton" class="btn btn-primary" th:data-subscriptionId="${subscriptionId}" title="Subscribe">Subscribe</button>
+                                        <button id="unsubscribeButton" class="btn btn-danger" title="Unsubscribe">Unsubscribe</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="container-fluid col-lg-9 pt-2">
-                        <div class="map-container">
-                            <div id="subscriptionMap" class="h-100 border shadow rounded"></div>
-                        </div>
-                    </div>
-
+                <div class="flex-column flex-grow-1">
+                    <div id="subscriptionMap" class="w-100 h-100"></div>
                 </div>
 
             </div>
+
+
+
         </div>
         <div th:replace="~{fragments/general.html :: footer}"></div>
     </div>
@@ -170,6 +205,7 @@
     <script th:src="@{webjars/stomp-websocket/stomp.min.js}"></script>
     <script th:src="@{webjars/leaflet/dist/leaflet.js}"></script>
     <script th:src="@{src/common.js}"></script>
+    <script th:src="@{src/api.aton_service.js}"></script>
     <script th:src="@{src/api.subscription.js}"></script>
     <script th:src="@{src/index.js}"></script>
 </body>

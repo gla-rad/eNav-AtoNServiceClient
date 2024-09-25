@@ -16,6 +16,7 @@
 
 package org.grad.eNav.atonServiceClient.controllers;
 
+import org.grad.eNav.atonServiceClient.services.SecomService;
 import org.grad.eNav.atonServiceClient.services.SubscriptionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,12 @@ class HTMLViewerControllerTest {
      */
     @Autowired
     MockMvc mockMvc;
+
+    /**
+     * The SECOM Service.
+     */
+    @MockBean
+    SecomService secomService;
 
     /**
      * The Subscription Service.
