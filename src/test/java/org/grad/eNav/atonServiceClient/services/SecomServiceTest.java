@@ -16,11 +16,9 @@
 
 package org.grad.eNav.atonServiceClient.services;
 
+import _int.iho.s125.s100.gml.profiles._5_0.AbstractGMLType;
 import org.grad.secom.core.exceptions.SecomValidationException;
-import org.grad.secom.core.models.GetSummaryResponseObject;
-import org.grad.secom.core.models.ResponseSearchObject;
-import org.grad.secom.core.models.SearchObjectResult;
-import org.grad.secom.core.models.SummaryObject;
+import org.grad.secom.core.models.*;
 import org.grad.secom.core.models.enums.ContainerTypeEnum;
 import org.grad.secom.springboot3.components.SecomClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,10 +31,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -65,12 +62,14 @@ class SecomServiceTest {
     ResponseSearchObject responseSearchObject;
     List<SummaryObject> summaryObjects;
     GetSummaryResponseObject summaryResponseObject;
+    GetResponseObject getResponseObject;
+    DataResponseObject dataResponseObject;
 
     /**
      * Common setup for all the tests.
      */
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
         // Set the discovery service URL variable
         this.secomService.discoveryServiceUrl = "http://localhost:8444/v1/searchService";
 
@@ -103,6 +102,18 @@ class SecomServiceTest {
         // Create the summary response object
         this.summaryResponseObject = new GetSummaryResponseObject();
         summaryResponseObject.setSummaryObject(this.summaryObjects);
+
+        // Load the S-125 dataset file
+        final InputStream in = ClassLoader.getSystemResourceAsStream("s125-msg.xml");
+        assert in != null;
+
+        // Create the data reponse object
+        this.dataResponseObject = new DataResponseObject();
+        this.dataResponseObject.setData(in.readAllBytes());
+
+        // Create the get response object
+        this.getResponseObject = new GetResponseObject();
+        this.getResponseObject.setDataResponseObject(Collections.singletonList(this.dataResponseObject));
     }
 
     /**
@@ -223,6 +234,62 @@ class SecomServiceTest {
             assertNotNull(result.get(i));
             assertEquals(this.summaryObjects.get(i).getDataReference(), result.get(i).getDataReference());
             assertEquals(this.summaryObjects.get(i).getInfo_name(), result.get(i).getInfo_name());
+        }
+    }
+
+    /**
+     * Test that we can retrieve the content of the available datasets from a
+     *  SECOM service using its get interface and an unpaged query.
+     */
+    @Test
+    void testGetAtonDatasetContentUnpaged() {
+        // First select a UUID
+        UUID uuid = UUID.randomUUID();
+
+        // Mock the S-125 AtoN service response
+        SecomClient secomClient = mock(SecomClient.class);
+        doReturn(Optional.of(this.getResponseObject)).when(secomClient).get(eq(uuid), any(), any(), any(), any(), any(), any(), any(), any(), any());
+        doReturn(secomClient).when(this.secomService).getClient(eq("mrn"));
+
+        // Perform the service call
+        List<? extends AbstractGMLType> result = this.secomService.getAtonDatasetContent("mrn", uuid, null, null, null, null, null, null, Pageable.unpaged());
+
+        // Make sure the client seems OK
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        // Check all returned instances
+        for(int i=0; i<result.size(); i++) {
+            assertNotNull(result.get(i));
+            assertNotNull(result.get(i).getId());
+            assertTrue(result.get(i).getId().startsWith("ID"));
+        }
+    }
+
+    /**
+     * Test that we can retrieve the content of the available datasets from a
+     *  SECOM service using its get interface and a paged query.
+     */
+    @Test
+    void testGetAtonDatasetContentPaged() {
+        // First select a UUID
+        UUID uuid = UUID.randomUUID();
+
+        // Mock the S-125 AtoN service response
+        SecomClient secomClient = mock(SecomClient.class);
+        doReturn(Optional.of(this.getResponseObject)).when(secomClient).get(eq(uuid), any(), any(), any(), any(), any(), any(), any(), any(), any());
+        doReturn(secomClient).when(this.secomService).getClient(eq("mrn"));
+
+        // Perform the service call
+        List<? extends AbstractGMLType> result = this.secomService.getAtonDatasetContent("mrn", uuid, null, null, null, null, null, null, PageRequest.of(10,1));
+
+        // Make sure the client seems OK
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        // Check all returned instances
+        for(int i=0; i<result.size(); i++) {
+            assertNotNull(result.get(i));
+            assertNotNull(result.get(i).getId());
+            assertTrue(result.get(i).getId().startsWith("ID"));
         }
     }
 
