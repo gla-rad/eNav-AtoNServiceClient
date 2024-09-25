@@ -16,14 +16,19 @@
 
 package org.grad.eNav.atonServiceClient.services;
 
+import _int.iho.s125.s100.gml.profiles._5_0.AbstractGMLType;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.validation.constraints.NotNull;
+import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.grad.eNav.s125.utils.S125Utils;
 import org.grad.secom.core.exceptions.SecomNotFoundException;
 import org.grad.secom.core.exceptions.SecomValidationException;
 import org.grad.secom.core.models.*;
+import org.grad.secom.core.models.enums.ContainerTypeEnum;
+import org.grad.secom.core.models.enums.SECOM_DataProductType;
 import org.grad.secom.springboot3.components.SecomClient;
 import org.grad.secom.springboot3.components.SecomConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +39,13 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.time.LocalDateTime;
 import java.util.*;
-
-import static java.util.function.Predicate.not;
 
 /**
  * The SECOM Service Class
@@ -200,7 +205,8 @@ public class SecomService {
      * @param pageable the paging information for the search
      * @return the list of the dataset summary information
      */
-    public List<SummaryObject>  getAtonDatasets(@NotNull String mrn, @NotNull Pageable pageable) {
+    public List<SummaryObject>  getAtonDatasets(@NotNull String mrn,
+                                                @NotNull Pageable pageable) {
         // Access the SECOM client based on the MRN
         SecomClient secomClient = this.getClient(mrn);
 
@@ -217,5 +223,63 @@ public class SecomService {
                 pageable.isUnpaged()? MAX_UNPAGED_RESULTS_NO : pageable.getPageSize())
                 .map(GetSummaryResponseObject::getSummaryObject)
                 .orElse(Collections.emptyList());
+    }
+
+    /**
+     * For a selected S-125 AtoN service based on its MRN this function will
+     * return the content of the seleected datasets using the Get SECOM
+     * interface. Note that this function will return the actual SECOM data
+     * response objects list/
+     *
+     * @param mrn the MRN of the service to get the list of dataset content for
+     * @param dataReference the object data reference
+     * @param dataProductType the object data product type
+     * @param productVersion the object data product version
+     * @param geometry the object geometry
+     * @param unlocode the object UNLOCODE
+     * @param validFrom the object valid from time
+     * @param validTo the object valid to time
+     * @param pageable the paging information for the action
+     * @return
+     */
+    public List<? extends AbstractGMLType> getAtonDatasetContent(@NotNull String mrn,
+                                                       UUID dataReference,
+                                                       SECOM_DataProductType dataProductType,
+                                                       String productVersion,
+                                                       String geometry,
+                                                       String unlocode,
+                                                       LocalDateTime validFrom,
+                                                       LocalDateTime validTo,
+                                                       @NotNull Pageable pageable) {
+        // Access the SECOM client based on the MRN
+        SecomClient secomClient = this.getClient(mrn);
+
+        // Request the available dataset contents using the summary interface
+        return secomClient.get(
+                        dataReference,
+                        ContainerTypeEnum.S100_DataSet,
+                        dataProductType,
+                        productVersion,
+                        geometry,
+                        unlocode,
+                        validFrom,
+                        validTo,
+                        pageable.isUnpaged() ? 0 : pageable.getPageNumber(),
+                        pageable.isUnpaged() ? MAX_UNPAGED_RESULTS_NO : pageable.getPageSize())
+                .map(GetResponseObject::getDataResponseObject)
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(DataResponseObject::getData)
+                .map(data -> {
+                    try {
+                        return S125Utils.getDatasetMembers(new String(data, StandardCharsets.UTF_8));
+                    } catch (JAXBException e) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
+                .flatMap(List::stream)
+                .toList();
+
     }
 }

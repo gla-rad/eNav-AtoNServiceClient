@@ -39,18 +39,23 @@ subscriptionApi = new SubscriptionApi();
  * The jquery document ready function.
  */
 $(() => {
-    // Connect the clear button
-    $("#clearButton").click(function() {
-        clearForm();
-    });
-
-    // Check for an active subscription
+// Check for an active subscription
     var subscriptionId = $("#subscribeButton").attr("data-subscriptionId");
     if(subscriptionId) {
         $("#subscribeButton").hide();
     } else {
         $("#unsubscribeButton").hide();
     }
+
+    // Connect the clear button
+    $("#clearButton").click(function() {
+        clearForm();
+    });
+
+    // Connect the get button
+    $("#getButton").click(function() {
+        get();
+    });
 
     // Connect the subscribe button
     $("#subscribeButton").click(function() {
@@ -154,12 +159,42 @@ function clearForm() {
 }
 
 /**
+ * Provided that the user has made some selections for retrieving the S-125
+ * AtoN datasets, this function will ask the backend to use the SECOM Get
+ * interface to directly retrieve the data and present it to the GUI.
+ */
+function get() {
+    // Get the AtoN Service MRN to subscribe to
+    var atonServiceMrn = $('input[name="serviceSelection"]:checked').attr('id');
+
+    // Sanity check
+    if(!atonServiceMrn) {
+        return;
+    }
+
+    // Perform the Subscription API request
+    atonServiceApi.getAtonDatasetContent(atonServiceMrn,
+        trimToNull($("#dataReferenceInput").val()),
+        (getResponse) => {
+            console.info("AtoN information received")
+        }, (response, status, more, errorCallback) => {
+            console.error(response);
+            showError(response.statusText);
+        });
+}
+
+/**
  * Generates a new subscription based on the populated information in the
  * web form.
  */
 function subscribe() {
     // Get the AtoN Service MRN to subscribe to
-    var atonServiceMrn = $('input[name="serviceSelection"]:checked').attr('id');;
+    var atonServiceMrn = $('input[name="serviceSelection"]:checked').attr('id');
+
+    // Sanity check
+    if(!atonServiceMrn) {
+        return;
+    }
 
     // Create the subscription request
     var subscriptionRequestObject = {
@@ -194,6 +229,11 @@ function unsubscribe() {
     // Get the AtoN Service MRN to subscribe to
     var atonServiceMrn = $('input[name="serviceSelection"]:checked').attr('id');;
 
+    // Sanity check
+    if(!atonServiceMrn) {
+        return;
+    }
+
     // Create the remove subscription request
     var removeSubscriptionObject = {
         subscriptionIdentifier: trimToNull(subscriptionIdentifier)
@@ -220,6 +260,11 @@ function loadAtonDatasets() {
     // Get the AtoN Service MRN to load the datasets from
     var atonServiceMrn = $('input[name="serviceSelection"]:checked').attr('id');;
 
+    // Sanity check
+    if(!atonServiceMrn) {
+        return;
+    }
+
     // Call the AtoN Service API and load the dataset options
     atonServiceApi.getAtonDatasets(atonServiceMrn, function(result) {
         var options = $("#dataReferenceInput");
@@ -229,6 +274,9 @@ function loadAtonDatasets() {
         $.each(result, function(item) {
             options.append($("<option />").val(result[item].dataReference).text(result[item].info_name));
         });
+    }, (response, status, more, errorCallback) => {
+       console.error(response);
+       showError(response.statusText);
     });
 }
 

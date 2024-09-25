@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -49,7 +50,13 @@ class AtonServiceControllerTest {
     ObjectMapper objectMapper;
 
     /**
-     * The Subscription Service mock.
+     * The Web-Socket mock.
+     */
+    @MockBean
+    SimpMessagingTemplate webSocket;
+
+    /**
+     * The Secom Service mock.
      */
     @MockBean
     SecomService secomService;
