@@ -388,7 +388,6 @@ function computeAtonIconUrl(type, aton) {
         url = this.addParam(url, 'seamark:' + type + ':category', categoryOfSpecialPurposeMark);
     }
     else if(aton.categoryOfLateralMark) {
-        // Format the category
         // Choose one of the four types
         if(aton.categoryOfLateralMark == 'PORT_HAND_LATERAL_MARK') {
             url = this.addParam(url, 'seamark:' + type + ':category', 'port');
@@ -416,6 +415,36 @@ function computeAtonIconUrl(type, aton) {
     // Add the shape seamark entry if that is available
     if(aton.shape) {
         url = this.addParam(url, 'seamark:' + type + ':shape', aton.shape.toLowerCase());
+    } else if(aton.buoyShape) {
+        // Choose one of the multiple types
+        if(aton.buoyShape == 'CONICAL_NUN_OGIVAL') {
+            url = this.addParam(url, 'seamark:' + type + ':shape', 'conical');
+        } else if(aton.buoyShape == 'CAN_CYLINDRICAL') {
+            url = this.addParam(url, 'seamark:' + type + ':shape', 'can');
+        } else if(aton.buoyShape == 'SPHERICAL') {
+            url = this.addParam(url, 'seamark:' + type + ':shape', 'spherical');
+        } else if(aton.buoyShape == 'SUPER_BUOY') {
+            url = this.addParam(url, 'seamark:' + type + ':shape', 'super-buoy');
+        } else if(aton.buoyShape == 'PILLAR') {
+            url = this.addParam(url, 'seamark:' + type + ':shape', 'pillar');
+        } else if(aton.buoyShape == 'SPAR_SPINDLE') {
+            url = this.addParam(url, 'seamark:' + type + ':shape', 'spar');
+        } else if(aton.buoyShape == 'BARREL_TUN') {
+            url = this.addParam(url, 'seamark:' + type + ':shape', 'barrel');
+        } else if(aton.buoyShape == 'ICE_BUOY') {
+            url = this.addParam(url, 'seamark:' + type + ':shape', 'ice-buoy');
+        }
+    } else if(aton.beaconShape) {
+        // Choose one of the multiple types
+        if(aton.beaconShape == 'STAKE_POLE_PERCH_POST') {
+            url = this.addParam(url, 'seamark:' + type + ':shape', 'stake');
+        } else if(aton.beaconShape == 'BEACON_TOWER') {
+            url = this.addParam(url, 'seamark:' + type + ':shape', 'stake');
+        } else if(aton.beaconShape == 'LATTICE_BEACON') {
+            url = this.addParam(url, 'seamark:' + type + ':shape', 'lattice');
+        } else if(aton.beaconShape == 'PILE_BEACON') {
+            url = this.addParam(url, 'seamark:' + type + ':shape', 'pile');
+        }
     }
 
     // Add the colour seamark entry if that is available
