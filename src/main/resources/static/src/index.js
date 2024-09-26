@@ -389,8 +389,16 @@ function computeAtonIconUrl(type, aton) {
     }
     else if(aton.categoryOfLateralMark) {
         // Format the category
-        var categoryOfLateralMark = aton.categoryOfLateralMark.replace('_TO','').replace('_LATERAL_MARK','').toLowerCase();
-        url = this.addParam(url, 'seamark:' + type + ':category', categoryOfLateralMark);
+        // Choose one of the four types
+        if(aton.categoryOfLateralMark == 'PORT_HAND_LATERAL_MARK') {
+            url = this.addParam(url, 'seamark:' + type + ':category', 'port');
+        } else if(aton.categoryOfLateralMark == 'STARBOARD_HAND_LATERAL_MARK') {
+            url = this.addParam(url, 'seamark:' + type + ':category', 'starboard');
+        } else if(aton.categoryOfLateralMark == 'PREFERRED_CHANNEL_TO_PORT_LATERAL_MARK') {
+            url = this.addParam(url, 'seamark:' + type + ':category', 'preferred_channel_port');
+        } else if(aton.categoryOfLateralMark == 'PREFERRED_CHANNEL_TO_STARBOARD_LATERAL_MARK') {
+            url = this.addParam(url, 'seamark:' + type + ':category', 'preferred_channel_starboard');
+        }
     }
     else if(aton.categoryOfCardinalMark) {
         // Format the category
