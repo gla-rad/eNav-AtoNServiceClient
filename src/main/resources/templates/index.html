@@ -34,10 +34,10 @@
         <div class="flex-fill">
 
             <div class="container-fluid h-100 g-0">
+                <div class="disclaimer">DO NOT USE FOR NAVIGATION - DATA MIGHT BE INCORRECT/INCOMPLETE</div>
+                <div class="row flex-column flex-md-row h-100 g-0">
 
-                <div class="row h-100 g-0">
-
-                    <div sec:authorize="isAuthenticated()" class="bg-white col-12 col-md-4">
+                    <div sec:authorize="isAuthenticated()" class="bg-white col-12 col-md-4 flex-shrink-1">
                         <ul class="nav nav-tabs" id="controlTabs" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="services-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab" aria-controls="home" aria-selected="true">
@@ -203,10 +203,10 @@
                         </div>
                     </div>
 
-                    <div sec:authorize="isAuthenticated()" class="col-md-8 h-100">
+                    <div sec:authorize="isAuthenticated()" class="col-md-8 flex-grow-1">
                         <div id="subscriptionMap" class="w-100 h-100"></div>
                     </div>
-                    <div sec:authorize="!isAuthenticated()" class="col-12 h-100">
+                    <div sec:authorize="!isAuthenticated()" class="col-12 flex-grow-1">
                         <div id="subscriptionMap" class="w-100 h-100"></div>
                     </div>
 

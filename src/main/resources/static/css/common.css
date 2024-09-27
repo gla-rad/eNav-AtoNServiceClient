@@ -1,3 +1,16 @@
+/** Disclaimer **/
+
+.disclaimer {
+  color: red;
+  position: absolute;
+  bottom: 50px;
+  text-align: center;
+  font-size: large;
+  font-weight: bold;
+  z-index: 10000000000000;
+  width: 100%;
+}
+
 /** Footer Panel **/
 
 .footer {
@@ -79,22 +92,12 @@
 /*****************************
  *           Maps            *
  *****************************/
-.map {
-    height: 650px;
-}
 
 .map-container {
     width: 75%;
     height: 100%;
     z-index: 1;
     position: relative;
-}
-
-@media (max-width: 768px) {
-    .map-container {
-        max-height: 400px;
-        margin-bottom: 10px;
-    }
 }
 
 /*****************************

@@ -448,9 +448,6 @@ function computeAtonIconUrl(type, aton) {
     }
 
     // Add the colour seamark entry if that is available
-    if(aton.colour) {
-        url = this.addParam(url, 'seamark:' + type + ':colour', aton.colours.join(';').toLowerCase());
-    }
     if(aton.colours) {
         url = this.addParam(url, 'seamark:' + type + ':colour', aton.colours.join(';').toLowerCase());
     }
