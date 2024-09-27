@@ -37,7 +37,44 @@
                 <div class="disclaimer">DO NOT USE FOR NAVIGATION - DATA MIGHT BE INCORRECT/INCOMPLETE</div>
                 <div class="row flex-column flex-md-row h-100 g-0">
 
-                    <div sec:authorize="isAuthenticated()" class="bg-white col-12 col-md-4 flex-shrink-1">
+                    <div sec:authorize="isAuthenticated()" class="bg-white col-12 col-md-4 flex-shrink-1 p-1">
+                        <div class="row">
+                            <div class="col-auto">
+                            <label for="dataProductTypeInput" class="col-form-label">Data Product Type</label>
+                            </div>
+                            <div class="col">
+                            <select id="dataProductTypeInput" class="form-select" onChange="loadServices()" aria-label="Data Product Type">
+                                <option disabled selected value> -- select an option -- </option>
+                                <option value="OTHER">OTHER</option>
+                                <option value="S57" data-keyword="s-57">S57</option>
+                                <option value="S101" data-keyword="s-101">S101</option>
+                                <option value="S102" data-keyword="s-102">S102</option>
+                                <option value="S104" data-keyword="s-104">S104</option>
+                                <option value="S111" data-keyword="s-111">S111</option>
+                                <option value="S122" data-keyword="s-122">S122</option>
+                                <option value="S123" data-keyword="s-123">S123</option>
+                                <option value="S124" data-keyword="s-124">S124</option>
+                                <option value="S125" data-keyword="s-125" selected="true">S125</option>
+                                <option value="S126" data-keyword="s-126">S126</option>
+                                <option value="S127" data-keyword="s-127">S127</option>
+                                <option value="S128" data-keyword="s-1287">S128</option>
+                                <option value="S129" data-keyword="s-129">S129</option>
+                                <option value="S131" data-keyword="s-131">S131</option>
+                                <option value="S210" data-keyword="s-210">S210</option>
+                                <option value="S211" data-keyword="s-211">S211</option>
+                                <option value="S212" data-keyword="s-212">S212</option>
+                                <option value="S401" data-keyword="s-401">S401</option>
+                                <option value="S402" data-keyword="s-402">S402</option>
+                                <option value="S411" data-keyword="s-411">S411</option>
+                                <option value="S412" data-keyword="s-412">S412</option>
+                                <option value="S413" data-keyword="s-413">S413</option>
+                                <option value="S414" data-keyword="s-414">S414</option>
+                                <option value="S421" data-keyword="s-421">S421</option>
+                                <option value="RTZ" data-keyword="rtz">RTZ</option>
+                                <option value="EPC" data-keyword="epc">EPC</option>
+                            </select>
+                            </div>
+                        </div>
                         <ul class="nav nav-tabs" id="controlTabs" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="services-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab" aria-controls="home" aria-selected="true">
@@ -46,13 +83,13 @@
                             </li>
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="subscription-tab" data-bs-toggle="tab" data-bs-target="#subscription" type="button" role="tab" aria-controls="profile" aria-selected="false">
-                                    Subscription
+                                    Data
                                 </button>
                             </li>
                         </ul>
                         <div class="tab-content" id="tabContent">
                             <div class="tab-pane fade show active mt-2" id="services" role="tabpanel" aria-labelledby="subscription-tab">
-                                <table class="table table-condensed table-hover table-striped table-condensed">
+                                <table class="table table-condensed table-hover table-striped table-condensed" id="serviceTable">
                                     <thead>
                                     <tr>
                                         <th scope="col">Subscribe</th>
@@ -87,7 +124,7 @@
                                     <div class="accordion-item">
                                         <h2 class="accordion-header" id="headingOne">
                                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                Subscription Controls
+                                                Data Controls
                                             </button>
                                         </h2>
                                         <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#subscriptionControlsAccordion">
@@ -102,39 +139,6 @@
                                                                min="0"
                                                                max="1">
                                                     </div>-->
-                                                    <div class="mb-3">
-                                                        <label for="dataProductTypeInput" class="form-label">Data Product Type</label>
-                                                        <select id="dataProductTypeInput" class="form-select" aria-label="Data Product Type">
-                                                            <option disabled selected value> -- select an option -- </option>
-                                                            <option value="OTHER">OTHER</option>
-                                                            <option value="S57">S57</option>
-                                                            <option value="S101">S101</option>
-                                                            <option value="S102">S102</option>
-                                                            <option value="S104">S104</option>
-                                                            <option value="S111">S111</option>
-                                                            <option value="S122">S122</option>
-                                                            <option value="S123">S123</option>
-                                                            <option value="S124">S124</option>
-                                                            <option value="S125">S125</option>
-                                                            <option value="S126">S126</option>
-                                                            <option value="S127">S127</option>
-                                                            <option value="S128">S128</option>
-                                                            <option value="S129">S129</option>
-                                                            <option value="S131">S131</option>
-                                                            <option value="S210">S210</option>
-                                                            <option value="S211">S211</option>
-                                                            <option value="S212">S212</option>
-                                                            <option value="S401">S401</option>
-                                                            <option value="S402">S402</option>
-                                                            <option value="S411">S411</option>
-                                                            <option value="S412">S412</option>
-                                                            <option value="S413">S413</option>
-                                                            <option value="S414">S414</option>
-                                                            <option value="S421">S421</option>
-                                                            <option value="RTZ">RTZ</option>
-                                                            <option value="EPC">EPC</option>
-                                                        </select>
-                                                    </div>
                                                     <div class="mb-3">
                                                         <label for="dataReferenceInput" class="form-label">Data Reference</label>
                                                         <select id="dataReferenceInput" class="form-select" aria-label="Data Reference">
@@ -225,6 +229,7 @@
     <script th:src="@{webjars/leaflet/dist/leaflet.js}"></script>
     <script th:src="@{src/common.js}"></script>
     <script th:src="@{src/api.aton_service.js}"></script>
+    <script th:src="@{src/api.data_product.js}"></script>
     <script th:src="@{src/api.subscription.js}"></script>
     <script th:src="@{src/index.js}"></script>
 </body>

@@ -5,17 +5,14 @@ import _int.iho.s125.gml.cs0._1.impl.AidsToNavigationTypeImpl;
 import _int.iho.s125.gml.cs0._1.impl.VirtualAISAidToNavigationImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.grad.eNav.atonServiceClient.services.SecomService;
-import org.grad.eNav.atonServiceClient.services.SubscriptionService;
 import org.grad.secom.core.models.*;
 import org.grad.secom.core.models.enums.ContainerTypeEnum;
-import org.grad.secom.core.models.enums.SECOM_DataProductType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.ActiveProfiles;
@@ -23,7 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,7 +28,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -106,34 +101,6 @@ class AtonServiceControllerTest {
         this.atons = Arrays.asList(aton1, aton2);
 
 
-    }
-
-    /**
-     * Test that the AtoN Service Client REST interface can be successfully used
-     * to get the list of S-125 AtoN services currently registered with the
-     * associated MSR.
-     */
-    @Test
-    void testGetAtonServices() throws Exception {
-        // Mock the subscription service to return a fixed result on an MRN
-        doReturn(this.instances).when(this.secomService).getAtonServices(any());
-
-        // Perform the MVC request
-        MvcResult mvcResult = this.mockMvc.perform(get("/api/aton_service")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andReturn();
-
-        // Parse and validate the response
-        SearchObjectResult[] result = this.objectMapper.readValue(mvcResult.getResponse().getContentAsString(), SearchObjectResult[].class);
-        assertNotNull(result);
-        assertEquals(this.instances.size(), result.length);
-        // Check all returned instances
-        for(int i=0; i<result.length; i++) {
-            assertNotNull(result[i]);
-            assertEquals(this.instances.get(i).getName(), result[i].getName());
-        }
     }
 
     /**

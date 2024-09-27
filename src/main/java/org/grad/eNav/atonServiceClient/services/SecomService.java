@@ -47,6 +47,8 @@ import java.security.cert.CertificateException;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static java.util.function.Predicate.not;
+
 /**
  * The SECOM Service Class
  * <p/>
@@ -170,18 +172,18 @@ public class SecomService {
 
     /**
      * Searches the connected discovery client to identify all the registered
-     * services that seems to provide AtoN information encoded in S-125. It
+     * services that seems to provide AtoN information encoded in S-100. It
      * supports a paged search and the complete SECOM search result will be
      * returned.
      *
      * @param pageable the paging information for the search
      * @return all the matching S-125 AtoN services currently registered
      */
-    public List<SearchObjectResult> getAtonServices(@NotNull Pageable pageable) {
+    public List<SearchObjectResult> getRegisteredServices(@NotNull String keyword, @NotNull Pageable pageable) {
         // Create a search filter object
         final SearchFilterObject searchFilterObject = new SearchFilterObject();
         final SearchParameters searchParameters = new SearchParameters();
-        searchParameters.setKeywords("s-125");
+        searchParameters.setKeywords(keyword);
         searchFilterObject.setQuery(searchParameters);
         // Return the retrieved list
         return this.discoveryService.searchService(
@@ -191,7 +193,7 @@ public class SecomService {
                 .map(ResponseSearchObject::getSearchServiceResult)
                 .orElse(Collections.emptyList())
                 .stream()
-//                .filter(not(result -> result.getName().toLowerCase().contains("client")))
+                .filter(not(result -> result.getName().toLowerCase().contains("client")))
                 .toList();
     }
 

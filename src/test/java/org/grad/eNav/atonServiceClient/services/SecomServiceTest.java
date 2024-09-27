@@ -148,12 +148,12 @@ class SecomServiceTest {
      * AtoN services using an unpaged search.
      */
     @Test
-    void testGetAtonServicesUnPaged() {
+    void testGetRegisteredServicesUnPaged() {
         // Mock the search service response
         doReturn(Optional.of(this.responseSearchObject)).when(this.discoveryService).searchService(any(), eq(0), eq(SecomService.MAX_UNPAGED_RESULTS_NO));
 
         // Perform the service call
-        List<SearchObjectResult> result = this.secomService.getAtonServices(Pageable.unpaged());
+        List<SearchObjectResult> result = this.secomService.getRegisteredServices("test", Pageable.unpaged());
 
         // Make sure the client seems OK
         assertNotNull(result);
@@ -170,12 +170,12 @@ class SecomServiceTest {
      * AtoN services using a paged search.
      */
     @Test
-    void testGetAtonServicesPaged() {
+    void testGetRegisteredServicesPaged() {
         // Mock the search service response
         doReturn(Optional.of(this.responseSearchObject)).when(this.discoveryService).searchService(any(), eq(10), eq(1));
 
         // Perform the service call
-        List<SearchObjectResult> result = this.secomService.getAtonServices(PageRequest.of(10,1));
+        List<SearchObjectResult> result = this.secomService.getRegisteredServices("test",PageRequest.of(10,1));
 
         // Make sure the client seems OK
         assertNotNull(result);

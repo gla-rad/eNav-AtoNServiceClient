@@ -116,7 +116,7 @@ public class HTMLViewerController {
         model.addAttribute("secomServiceMrn", this.secomServiceMrn);
 
         // Add the discovered S-125 services
-        model.addAttribute("s125Services", this.secomService.getAtonServices(Pageable.unpaged()));
+        model.addAttribute("s125Services", this.secomService.getRegisteredServices("s-125", Pageable.unpaged()));
 
         // Also get the subscription identifier if available
         model.addAttribute("subscriptionId", this.subscriptionService

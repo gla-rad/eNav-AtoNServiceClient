@@ -32,6 +32,7 @@ var satelliteIconAvail = L.icon({
 /**
  * API Libraries
  */
+dataProductApi = new DataProductApi();
 atonServiceApi = new AtonServiceApi();
 subscriptionApi = new SubscriptionApi();
 
@@ -81,10 +82,10 @@ $(() => {
     });
 
     // Load the selected AtoN service dataset list
-    loadAtonDatasets();
+    loadDatasets();
     $('input:radio').change(function() {
        if (this.checked) {
-         loadAtonDatasets();
+         loadDatasets();
        };
     });
 
@@ -253,10 +254,71 @@ function unsubscribe() {
 }
 
 /**
- * This function will load the AtoN service datasets currently present in the
- * selected S-125 AtoN service into the data reference dropdown option list.
+ * This function will load the services based on the provided data product
+ * from the selected MCP service registry so that data can be retrieved.
  */
-function loadAtonDatasets() {
+function loadServices() {
+    dataProductApi.getServices(trimToNull($("#dataProductTypeInput option:selected").data('keyword')), function(result) {
+        var serviceTable = $("#serviceTable");
+        var options = $("#dataReferenceInput");
+        //Clear previous entries
+        serviceTable.find('tbody').remove();
+        options.empty()
+        //don't forget error handling!
+        $.each(result, function(index, instance) {
+            serviceTable
+                .append($('<tbody>')
+                    .append($('<tr>')
+                        .append($('<td>')
+                            .append($('<input>')
+                               .attr('class', 'form-check-input')
+                               .attr('type', 'radio')
+                               .attr('name', 'serviceSelection')
+                               .attr('id', instance.instanceId)
+                               .attr('aria-label', 'Checkbox for selecting this service')
+                               .change(function() {
+                                  if (this.checked) {
+                                    loadDatasets();
+                                  };
+                               })
+                            )
+                        )
+                        .append($('<td>')
+                            .attr('style', 'word-break:break-word')
+                            .text(instance.name)
+                        )
+                        .append($('<td>')
+                            .attr('style', 'word-break:break-word')
+                            .text(instance.instanceId)
+                        )
+                        .append($('<td>')
+                            .append($('<span>')
+                               .attr('class', 'badge bg-danger')
+                               .text('Live')
+                            )
+                            .append($('<span>')
+                               .attr('class', 'badge bg-success')
+                               .text('Online')
+                            )
+//                            .append($('<span>')
+//                               .attr('class', 'badge bg-secondary')
+//                               .text('Offline')
+//                            )
+                        )
+                    )
+                );
+        });
+    }, (response, status, more, errorCallback) => {
+        console.error(response.responseJSON);
+        showError(response.responseJSON.message);
+    });
+}
+
+/**
+ * This function will load the S-100 service datasets currently present in the
+ * selected registered service into the data reference dropdown option list.
+ */
+function loadDatasets() {
     // Get the AtoN Service MRN to load the datasets from
     var atonServiceMrn = $('input[name="serviceSelection"]:checked').attr('id');;
 
@@ -271,6 +333,7 @@ function loadAtonDatasets() {
         //Clear previous entries
         options.empty();
         //don't forget error handling!
+        options.append($("<option />").val(undefined).text("All Datasets"));
         $.each(result, function(item) {
             options.append($("<option />").val(result[item].dataReference).text(result[item].info_name));
         });
