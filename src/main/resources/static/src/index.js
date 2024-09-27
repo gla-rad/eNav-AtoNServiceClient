@@ -178,8 +178,8 @@ function get() {
         (getResponse) => {
             console.info("AtoN information received")
         }, (response, status, more, errorCallback) => {
-            console.error(response);
-            showError(response.statusText);
+            console.error(response.responseJSON);
+            showError(response.responseJSON.message);
         });
 }
 
@@ -216,8 +216,8 @@ function subscribe() {
         $("#subscribeButton").hide();
         $("#unsubscribeButton").show();
     }, (response, status, more, errorCallback) => {
-        console.error(response);
-        showError(response.statusText);
+        console.error(response.responseJSON);
+        showError(response.responseJSON.message);
     });
 }
 
@@ -247,8 +247,8 @@ function unsubscribe() {
        $("#subscribeButton").attr("data-subscriptionId", "");
        $("#subscribeButton").show();
     }, (response, status, more, errorCallback) => {
-        console.error(response);
-        showError(response.statusText);
+        console.error(response.responseJSON);
+        showError(response.responseJSON.message);
     });
 }
 
@@ -275,8 +275,8 @@ function loadAtonDatasets() {
             options.append($("<option />").val(result[item].dataReference).text(result[item].info_name));
         });
     }, (response, status, more, errorCallback) => {
-       console.error(response);
-       showError(response.statusText);
+       console.error(response.responseJSON);
+       showError(response.responseJSON.message);
     });
 }
 
