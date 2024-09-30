@@ -1,7 +1,7 @@
 /******************************************************************************
- *                          ATON SERVICE API CALLS                            *
+ *                          SECOM SERVICE API CALLS                           *
  ******************************************************************************/
-class AtonServiceApi {
+class SecomServiceApi {
 
     /**
      * The Raim API Class Constructor.
@@ -11,15 +11,15 @@ class AtonServiceApi {
     }
 
     /**
-     * API Get Registered S-125 AtoN Services function.
+     * API Get Secom services function, currently registered in the MPC.
      *
-     * @param  {string} mrn                     The service MRN
+     * @param  {string} dataProductType         The SECOM Data Product ID
      * @param  {Function} callback              The callback to be used after the AJAX call
      * @param  {Function} errorCallback         The error callback to be used if the AJAX call fails
      */
-    getAtonServices(callback, errorCallback) {
+    getSecomServices(dataProductType, callback, errorCallback) {
         $.ajax({
-            url: `./api/aton_service`,
+            url: `./api/secom_service?` + (dataProductType?`dataProductType=${dataProductType}`:``),
             type: 'GET',
             contentType: 'application/json',
             success: callback,
@@ -28,15 +28,16 @@ class AtonServiceApi {
     }
 
     /**
-     * API Get S-125 AtoN service datasets function.
+     * API Get SECOM service datasets function.
      *
-     * @param  {string} mrn                     The AtoN service MRN
+     * @param  {string} mrn                     The SECOM service MRN
+     * @param  {string} dataProductType         The SECOM service data product type
      * @param  {Function} callback              The callback to be used after the AJAX call
      * @param  {Function} errorCallback         The error callback to be used if the AJAX call fails
      */
-    getAtonDatasets(mrn, callback, errorCallback) {
+    getSecomDatasets(mrn, dataProductType, callback, errorCallback) {
         $.ajax({
-            url: `./api/aton_service/${mrn}/summary`,
+            url: `./api/secom_service/${mrn}/summary?` + (dataProductType?`dataProductType=${dataProductType}`:``),
             type: 'GET',
             contentType: 'application/json',
             success: callback,
@@ -45,15 +46,17 @@ class AtonServiceApi {
     }
 
     /**
-     * API Get S-125 AtoN service dataset content function.
+     * API Get SECOM service dataset content function.
      *
-     * @param  {string} mrn                     The AtoN service MRN
+     * @param  {string} mrn                     The SECOM service MRN
+     * @param  {string} dataProductType         The SECOM service data product type
+     * @param  {string} uuid                    The SECOM service dataset UUID
      * @param  {Function} callback              The callback to be used after the AJAX call
      * @param  {Function} errorCallback         The error callback to be used if the AJAX call fails
      */
-    getAtonDatasetContent(mrn, uuid, callback, errorCallback) {
+    getSecomDatasetContent(mrn, dataProductType, uuid, callback, errorCallback) {
         $.ajax({
-            url: `./api/aton_service/${mrn}/content?dataReference=${uuid}`,
+            url: `./api/secom_service/${mrn}/content?` + (dataProductType?`dataProductType=${dataProductType}&`:``) + (uuid?`dataReference=${uuid}`:``),
             type: 'GET',
             contentType: 'application/json',
             success: callback,

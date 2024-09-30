@@ -29,6 +29,10 @@
 
     <repositories>
         <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+        <repository>
             <id>grad</id>
             <url>https://rnavlab.gla-rad.org/mvn/repository/grad/</url>
         </repository>

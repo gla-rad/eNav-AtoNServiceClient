@@ -33,7 +33,10 @@
     <div th:fragment="navbar">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
             <div class="container-fluid">
-                <span class="navbar-brand mb-0 h1">[[${appName}]]</span>
+                <div class="navbar-brand">
+                    <a href="#" class="pull-left"><img th:src="@{images/company-logo.png}" height="34"/></a>
+                    <span >[[${appName}]]</span>
+                </div>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
                         aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>

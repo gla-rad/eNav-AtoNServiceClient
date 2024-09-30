@@ -32,8 +32,7 @@ var satelliteIconAvail = L.icon({
 /**
  * API Libraries
  */
-dataProductApi = new DataProductApi();
-atonServiceApi = new AtonServiceApi();
+secomServiceApi = new SecomServiceApi();
 subscriptionApi = new SubscriptionApi();
 
 /**
@@ -174,14 +173,19 @@ function get() {
     }
 
     // Perform the Subscription API request
-    atonServiceApi.getAtonDatasetContent(atonServiceMrn,
-        trimToNull($("#dataReferenceInput").val()),
-        (getResponse) => {
-            console.info("AtoN information received")
-        }, (response, status, more, errorCallback) => {
-            console.error(response.responseJSON);
-            showError(response.responseJSON.message);
-        });
+    var dataProductType = trimToNull($("#dataProductTypeInput option:selected").val());
+    var dataReference = trimToNull($("#dataReferenceInput").val());
+    secomServiceApi.getSecomDatasetContent(atonServiceMrn,
+                                           dataProductType,
+                                           dataReference,
+                                           (getResponse) => {
+                                               console.info("AtoN information received")
+                                           },
+                                           (response, status, more, errorCallback) => {
+                                               console.error(response.responseJSON);
+                                               // Too many errors, don't show in the GUI
+                                               //showError(response.responseJSON.message);
+                                           });
 }
 
 /**
@@ -258,60 +262,62 @@ function unsubscribe() {
  * from the selected MCP service registry so that data can be retrieved.
  */
 function loadServices() {
-    dataProductApi.getServices(trimToNull($("#dataProductTypeInput option:selected").data('keyword')), function(result) {
-        var serviceTable = $("#serviceTable");
-        var options = $("#dataReferenceInput");
-        //Clear previous entries
-        serviceTable.find('tbody').remove();
-        options.empty()
-        //don't forget error handling!
-        $.each(result, function(index, instance) {
-            serviceTable
-                .append($('<tbody>')
-                    .append($('<tr>')
-                        .append($('<td>')
-                            .append($('<input>')
-                               .attr('class', 'form-check-input')
-                               .attr('type', 'radio')
-                               .attr('name', 'serviceSelection')
-                               .attr('id', instance.instanceId)
-                               .attr('aria-label', 'Checkbox for selecting this service')
-                               .change(function() {
-                                  if (this.checked) {
-                                    loadDatasets();
-                                  };
-                               })
-                            )
-                        )
-                        .append($('<td>')
-                            .attr('style', 'word-break:break-word')
-                            .text(instance.name)
-                        )
-                        .append($('<td>')
-                            .attr('style', 'word-break:break-word')
-                            .text(instance.instanceId)
-                        )
-                        .append($('<td>')
-                            .append($('<span>')
-                               .attr('class', 'badge bg-danger')
-                               .text('Live')
-                            )
-                            .append($('<span>')
-                               .attr('class', 'badge bg-success')
-                               .text('Online')
-                            )
-//                            .append($('<span>')
-//                               .attr('class', 'badge bg-secondary')
-//                               .text('Offline')
-//                            )
-                        )
-                    )
-                );
-        });
-    }, (response, status, more, errorCallback) => {
-        console.error(response.responseJSON);
-        showError(response.responseJSON.message);
-    });
+    var dataProductType = trimToNull($("#dataProductTypeInput option:selected").data('keyword'));
+    secomServicesApi.getSecomServices(dataProductType,
+                                     (result) => {
+                                         var serviceTable = $("#serviceTable");
+                                         var options = $("#dataReferenceInput");
+                                         //Clear previous entries
+                                         serviceTable.find('tbody').remove();
+                                         options.empty()
+                                         //don't forget error handling!
+                                         $.each(result, function(index, instance) {
+                                             serviceTable
+                                                 .append($('<tbody>')
+                                                    .append($('<tr>')
+                                                         .append($('<td>')
+                                                             .append($('<input>')
+                                                                .attr('class', 'form-check-input')
+                                                                .attr('type', 'radio')
+                                                                .attr('name', 'serviceSelection')
+                                                                .attr('id', instance.instanceId)
+                                                                .attr('aria-label', 'Checkbox for selecting this service')
+                                                                .change(function() {
+                                                                   if (this.checked) {
+                                                                     loadDatasets();
+                                                                   };
+                                                                })
+                                                             )
+                                                         )
+                                                         .append($('<td>')
+                                                             .attr('style', 'word-break:break-word')
+                                                             .text(instance.name)
+                                                         )
+                                                         .append($('<td>')
+                                                             .attr('style', 'word-break:break-word')
+                                                             .text(instance.instanceId)
+                                                         )
+                                                         .append($('<td>')
+                                                             .append($('<span>')
+                                                                .attr('class', 'badge bg-danger')
+                                                                .text('Live')
+                                                             )
+                                                             .append($('<span>')
+                                                                .attr('class', 'badge bg-success')
+                                                                .text('Online')
+                                                             )
+//                                                             .append($('<span>')
+//                                                                .attr('class', 'badge bg-secondary')
+//                                                                .text('Offline')
+//                                                             )
+                                                         )
+                                                     )
+                                                 );
+                                         });
+                                     }, (response, status, more, errorCallback) => {
+                                         console.error(response.responseJSON);
+                                         showError(response.responseJSON.message);
+                                     });
 }
 
 /**
@@ -328,19 +334,24 @@ function loadDatasets() {
     }
 
     // Call the AtoN Service API and load the dataset options
-    atonServiceApi.getAtonDatasets(atonServiceMrn, function(result) {
-        var options = $("#dataReferenceInput");
-        //Clear previous entries
-        options.empty();
-        //don't forget error handling!
-        options.append($("<option />").val(undefined).text("All Datasets"));
-        $.each(result, function(item) {
-            options.append($("<option />").val(result[item].dataReference).text(result[item].info_name));
-        });
-    }, (response, status, more, errorCallback) => {
-       console.error(response.responseJSON);
-       showError(response.responseJSON.message);
-    });
+    var dataProductType = trimToNull($("#dataProductTypeInput option:selected").val());
+    secomServiceApi.getSecomDatasets(atonServiceMrn,
+                                     dataProductType,
+                                     (result) => {
+                                         var options = $("#dataReferenceInput");
+                                         //Clear previous entries
+                                         options.empty();
+                                         //don't forget error handling!
+                                         options.append($("<option />").val(undefined).text("All Datasets"));
+                                         $.each(result, function(item) {
+                                             options.append($("<option />").val(result[item].dataReference).text(result[item].info_name));
+                                         });
+                                     },
+                                     (response, status, more, errorCallback) => {
+                                        console.error(response.responseJSON);
+                                        // Too many errors, don't show in the GUI
+                                        //showError(response.responseJSON.message);
+                                     });
 }
 
 /**

@@ -32,8 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
-@WebMvcTest(controllers = AtonServiceController.class, excludeAutoConfiguration = {SecurityAutoConfiguration.class})
-class AtonServiceControllerTest {
+@WebMvcTest(controllers = SecomServiceController.class, excludeAutoConfiguration = {SecurityAutoConfiguration.class})
+class SecomServiceControllerTest {
 
     /**
      * The Mock MVC.
@@ -99,8 +99,34 @@ class AtonServiceControllerTest {
         aton2.setId("ID1");
         aton2.setIdCode("idCode1");
         this.atons = Arrays.asList(aton1, aton2);
+    }
 
+    /**
+     * Test that the AtoN Service Client REST interface can be successfully used
+     * to get the list of S-125 AtoN services currently registered with the
+     * associated MSR.
+     */
+    @Test
+    void testGetRegisteredServices() throws Exception {
+        // Mock the subscription service to return a fixed result on an MRN
+        doReturn(this.instances).when(this.secomService).getRegisteredServices(eq("test"), any());
 
+        // Perform the MVC request
+        MvcResult mvcResult = this.mockMvc.perform(get("/api/secom_service?dataProductType=test")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn();
+
+        // Parse and validate the response
+        SearchObjectResult[] result = this.objectMapper.readValue(mvcResult.getResponse().getContentAsString(), SearchObjectResult[].class);
+        assertNotNull(result);
+        assertEquals(this.instances.size(), result.length);
+        // Check all returned instances
+        for(int i=0; i<result.length; i++) {
+            assertNotNull(result[i]);
+            assertEquals(this.instances.get(i).getName(), result[i].getName());
+        }
     }
 
     /**
@@ -109,12 +135,12 @@ class AtonServiceControllerTest {
      * AtoN service, identified by its MRN.
      */
     @Test
-    void testGetAtonDatasets() throws Exception {
+    void testGetSecomDatasets() throws Exception {
         // Mock the subscription service to return a fixed result on an MRN
         doReturn(this.summaryObjects).when(this.secomService).getAtonDatasets(eq("mrn"), any());
 
         // Perform the MVC request
-        MvcResult mvcResult = this.mockMvc.perform(get("/api/aton_service/mrn/summary")
+        MvcResult mvcResult = this.mockMvc.perform(get("/api/secom_service/mrn/summary")
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -137,15 +163,15 @@ class AtonServiceControllerTest {
      * S-125 AtoN service, identified by its MRN.
      */
     @Test
-    void testGetAtonDatasetContent() throws Exception {
+    void testGetSecomDatasetContent() throws Exception {
         // First select a UUID
         UUID uuid = UUID.randomUUID();
 
         // Mock the subscription service to return a fixed result on an MRN
-        doReturn(this.atons).when(this.secomService).getAtonDatasetContent(eq("mrn"), eq(uuid), any(), any(), any(), any(), any(), any(), any());
+        doReturn(this.atons).when(this.secomService).getAtonDatasetContent(eq("mrn"), eq(uuid.toString()), any(), any(), any(), any(), any(), any(), any());
 
         // Perform the MVC request
-        MvcResult mvcResult = this.mockMvc.perform(get("/api/aton_service/mrn/content?dataReference=" + uuid)
+        MvcResult mvcResult = this.mockMvc.perform(get("/api/secom_service/mrn/content?dataReference=" + uuid)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andReturn();

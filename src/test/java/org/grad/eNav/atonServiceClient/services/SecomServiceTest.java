@@ -252,7 +252,7 @@ class SecomServiceTest {
         doReturn(secomClient).when(this.secomService).getClient(eq("mrn"));
 
         // Perform the service call
-        List<? extends AbstractGMLType> result = this.secomService.getAtonDatasetContent("mrn", uuid, null, null, null, null, null, null, Pageable.unpaged());
+        List<? extends AbstractGMLType> result = this.secomService.getAtonDatasetContent("mrn", uuid.toString(), null, null, null, null, null, null, Pageable.unpaged());
 
         // Make sure the client seems OK
         assertNotNull(result);
@@ -280,7 +280,7 @@ class SecomServiceTest {
         doReturn(secomClient).when(this.secomService).getClient(eq("mrn"));
 
         // Perform the service call
-        List<? extends AbstractGMLType> result = this.secomService.getAtonDatasetContent("mrn", uuid, null, null, null, null, null, null, PageRequest.of(10,1));
+        List<? extends AbstractGMLType> result = this.secomService.getAtonDatasetContent("mrn", uuid.toString(), null, null, null, null, null, null, PageRequest.of(10,1));
 
         // Make sure the client seems OK
         assertNotNull(result);

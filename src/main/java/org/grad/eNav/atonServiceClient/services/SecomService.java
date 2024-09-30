@@ -245,7 +245,7 @@ public class SecomService {
      * @return
      */
     public List<? extends AbstractGMLType> getAtonDatasetContent(@NotNull String mrn,
-                                                       UUID dataReference,
+                                                       String dataReference,
                                                        SECOM_DataProductType dataProductType,
                                                        String productVersion,
                                                        String geometry,
@@ -258,7 +258,7 @@ public class SecomService {
 
         // Request the available dataset contents using the summary interface
         return secomClient.get(
-                        dataReference,
+                        Optional.ofNullable(dataReference).map(UUID::fromString).orElse(null),
                         ContainerTypeEnum.S100_DataSet,
                         dataProductType,
                         productVersion,

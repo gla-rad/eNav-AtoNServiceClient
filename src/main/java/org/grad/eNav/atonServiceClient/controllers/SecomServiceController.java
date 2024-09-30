@@ -18,17 +18,16 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 /**
- * The REST Controller for managing AtoN Services registered on the MSR.
+ * The REST Controller for managing SECOM Services registered on the MSR.
  *
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
 @RestController
-@RequestMapping("/api/aton_service")
+@RequestMapping("/api/secom_service")
 @Slf4j
-public class AtonServiceController {
+public class SecomServiceController {
 
     /**
      * Attach the web-socket as a simple messaging template
@@ -43,6 +42,20 @@ public class AtonServiceController {
     SecomService secomService;
 
     /**
+     * GET /api/secom_service: Retrieves a list of all suitable SECOM services
+     * based on a data product type that have been registered into the associated
+     * MCP Service Registry.
+     *
+     * @param dataProductType the SECOM data product type
+     * @param pageable the paging information for the request
+     * @return A list of all MCP Service Registry resutls
+     */
+    @GetMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<SearchObjectResult> getRegisteredServices(String dataProductType, Pageable pageable) {
+        return this.secomService.getRegisteredServices(dataProductType, pageable);
+    }
+
+    /**
      * GET /api/aton_service/{mrn}/summary: Retrieves a list of all available
      * S-125 datasets for the S-125 AtoN service defined by the provided MRN.
      *
@@ -51,7 +64,7 @@ public class AtonServiceController {
      * @return A list of all MCP Service Registry resutls
      */
     @GetMapping(value="/{mrn}/summary", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<SummaryObject> getAtonDatasets(@PathVariable("mrn") String mrn, Pageable pageable) {
+    public List<SummaryObject> getSecomDatasets(@PathVariable("mrn") String mrn, Pageable pageable) {
         return this.secomService.getAtonDatasets(mrn, pageable);
     }
 
@@ -72,15 +85,15 @@ public class AtonServiceController {
      * @return A list of all MCP Service Registry resutls
      */
     @GetMapping(value="/{mrn}/content", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> getAtonDatasetContent(@PathVariable("mrn") String mrn,
-                                                      UUID dataReference,
-                                                      SECOM_DataProductType dataProductType,
-                                                      String productVersion,
-                                                      String geometry,
-                                                      String unlocode,
-                                                      LocalDateTime validFrom,
-                                                      LocalDateTime validTo,
-                                                      Pageable pageable) {
+    public ResponseEntity<Void> getSecomDatasetContent(@PathVariable("mrn") String mrn,
+                                                       String dataReference,
+                                                       SECOM_DataProductType dataProductType,
+                                                       String productVersion,
+                                                       String geometry,
+                                                       String unlocode,
+                                                       LocalDateTime validFrom,
+                                                       LocalDateTime validTo,
+                                                       Pageable pageable) {
         // Retrieve the S-125 Aton Information and pass it down through the websocket
         this.secomService.getAtonDatasetContent(mrn,
                                                 dataReference,

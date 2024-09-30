@@ -57,7 +57,7 @@
                                 <option value="S125" data-keyword="s-125" selected="true">S125</option>
                                 <option value="S126" data-keyword="s-126">S126</option>
                                 <option value="S127" data-keyword="s-127">S127</option>
-                                <option value="S128" data-keyword="s-1287">S128</option>
+                                <option value="S128" data-keyword="s-128">S128</option>
                                 <option value="S129" data-keyword="s-129">S129</option>
                                 <option value="S131" data-keyword="s-131">S131</option>
                                 <option value="S210" data-keyword="s-210">S210</option>
@@ -219,7 +219,7 @@
             </div>
 
         </div>
-        <div th:replace="~{fragments/general.html :: footer}"></div>
+        <!--<div th:replace="~{fragments/general.html :: footer}"></div>-->
     </div>
     <div th:replace="~{fragments/general.html :: error-dialog}"></div>
     <script th:src="@{webjars/jquery/jquery.min.js}"></script>
@@ -228,8 +228,7 @@
     <script th:src="@{webjars/stomp-websocket/stomp.min.js}"></script>
     <script th:src="@{webjars/leaflet/dist/leaflet.js}"></script>
     <script th:src="@{src/common.js}"></script>
-    <script th:src="@{src/api.aton_service.js}"></script>
-    <script th:src="@{src/api.data_product.js}"></script>
+    <script th:src="@{src/api.secom_service.js}"></script>
     <script th:src="@{src/api.subscription.js}"></script>
     <script th:src="@{src/index.js}"></script>
 </body>

@@ -20,20 +20,59 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import org.grad.secom.core.models.enums.SECOM_DataProductType;
 
 import java.time.LocalDateTime;
 
 /**
- * The type Dto object.
+ * The type S-100 Exchange Object.
  *
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
-public class DtoObject {
+public class S100ExchangeObject {
 
     // Class Variables
+    SECOM_DataProductType dataProductType;
+    String xml;
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     LocalDateTime datetime;
+
+    /**
+     * Gets data product type.
+     *
+     * @return the data product type
+     */
+    public SECOM_DataProductType getDataProductType() {
+        return dataProductType;
+    }
+
+    /**
+     * Sets data product type.
+     *
+     * @param dataProductType the data product type
+     */
+    public void setDataProductType(SECOM_DataProductType dataProductType) {
+        this.dataProductType = dataProductType;
+    }
+
+    /**
+     * Gets xml.
+     *
+     * @return the xml
+     */
+    public String getXml() {
+        return xml;
+    }
+
+    /**
+     * Sets xml.
+     *
+     * @param xml the xml
+     */
+    public void setXml(String xml) {
+        this.xml = xml;
+    }
 
     /**
      * Gets datetime.
