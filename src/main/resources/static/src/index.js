@@ -15,13 +15,13 @@ var baseIconApiUrl = "https://rnavlab.gla-rad.org/niord-ng"
 
 // Define an icon for generic navigational warning parts
 const navWarnIcon = L.icon({
-    iconUrl: '/images/NavigationalWarningFeaturePart.svg',
+    iconUrl: './images/NavigationalWarningFeaturePart.svg',
     iconSize: [21, 21],
 });
 
 // Define an icon for point navigational warning parts
 const navWarnPointIcon = L.icon({
-    iconUrl: '/images/NavigationalWarningFeaturePart_point.svg',
+    iconUrl: './images/NavigationalWarningFeaturePart_point.svg',
     iconSize: [41, 27],
     iconAnchor: [20, 27],
 });
