@@ -47,9 +47,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.function.Predicate.not;
 
@@ -112,22 +110,25 @@ public class UploadSecomController implements UploadSecomInterface {
 
         // Get the upload object data
         String data = new String(uploadObject.getEnvelope().getData(), StandardCharsets.UTF_8);
-        
+
+        // Create publication headers
+        final Map<String, Object> webSocketHeaders = new HashMap<>();
+        webSocketHeaders.put("dataProductType", uploadObject.getEnvelope().getDataProductType());
+
         // Decode the data and down the web-socket
         try {
             S125Utils.getDatasetMembers(data)
                     .stream()
                     .filter(AidsToNavigationType.class::isInstance)
                     .map(AidsToNavigationType.class::cast)
-                    .forEach(aton ->
-                            this.webSocket.convertAndSend(
-                                    "/topic/secom/subscription/update",
-                                    aton,
-                                    Collections.singletonMap("aton-type", AtonTypeConverter.convertToSeamarkType(
-                                            Arrays.asList(aton.getClass().getInterfaces()).getLast())
-                                    )
-                            )
-                    );
+                    .forEach(aton -> {
+                        webSocketHeaders.put("aton-type", AtonTypeConverter.convertToSeamarkType(Arrays.asList(aton.getClass().getInterfaces()).getLast()));
+                        this.webSocket.convertAndSend(
+                                "/topic/secom/subscription/update",
+                                aton,
+                                webSocketHeaders
+                        );
+                    });
 
             // Now generate an acknowledgement to be sent back if required
             if(this.secomClient != null) {
