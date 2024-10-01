@@ -79,6 +79,10 @@ function showInfoTable(dataObjects) {
             $table.append($caption);
         }
 
+        // Create a table body element inside the table
+        const $tableBody = $('<tbody></tbody>')
+        $table.append($tableBody);
+
         // Iterate through the object keys and create table rows
         $.each(dataObject, function(key, value) {
             // Skip IDs
@@ -100,7 +104,7 @@ function showInfoTable(dataObjects) {
             $row.append($keyCell).append($valueCell);
 
             // Append the row to the table
-            $table.append($row);
+            $tableBody.append($row);
         });
 
         // Add the information to the information dialog body
