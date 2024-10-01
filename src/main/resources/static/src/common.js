@@ -87,7 +87,8 @@ function showInfoTable(dataObjects) {
             }
 
             // Skip complex objects
-            if(value instanceof Object && !(value instanceof String)) {
+            let regex = /\[object .*\]/;
+            if(value != undefined && regex.test(value.toString())) {
                 return;
             }
 
