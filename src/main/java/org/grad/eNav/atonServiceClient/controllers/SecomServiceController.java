@@ -1,9 +1,11 @@
 package org.grad.eNav.atonServiceClient.controllers;
 
 import _int.iho.s125.gml.cs0._1.AidsToNavigationType;
+import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
 import org.grad.eNav.atonServiceClient.services.SecomService;
 import org.grad.eNav.atonServiceClient.utils.AtonTypeConverter;
+import org.grad.eNav.s125.utils.S125Utils;
 import org.grad.secom.core.models.SearchObjectResult;
 import org.grad.secom.core.models.SummaryObject;
 import org.grad.secom.core.models.enums.SECOM_DataProductType;
@@ -14,10 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * The REST Controller for managing SECOM Services registered on the MSR.
@@ -65,7 +66,7 @@ public class SecomServiceController {
      */
     @GetMapping(value="/{mrn}/summary", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<SummaryObject> getSecomDatasets(@PathVariable("mrn") String mrn, Pageable pageable) {
-        return this.secomService.getAtonDatasets(mrn, pageable);
+        return this.secomService.getServiceDatasets(mrn, pageable);
     }
 
     /**
@@ -94,31 +95,74 @@ public class SecomServiceController {
                                                        LocalDateTime validFrom,
                                                        LocalDateTime validTo,
                                                        Pageable pageable) {
-        // Retrieve the S-125 Aton Information and pass it down through the websocket
-        this.secomService.getAtonDatasetContent(mrn,
-                                                dataReference,
-                                                dataProductType,
-                                                productVersion,
-                                                geometry,
-                                                unlocode,
-                                                validFrom,
-                                                validTo,
-                                                pageable)
-                .stream()
-                .filter(AidsToNavigationType.class::isInstance)
-                .map(AidsToNavigationType.class::cast)
-                .forEach(aton ->
+
+        // Create publication headers
+        final Map<String, Object> webSocketHeaders = new HashMap<>();
+        webSocketHeaders.put("dataProductType", dataProductType);
+
+        // For S-125 handle separately
+        if (dataProductType == SECOM_DataProductType.S125) {
+            // Retrieve the S-125 Aton Information and pass it down through the websocket
+            this.secomService.getServiceDatasetContent(mrn,
+                            dataReference,
+                            dataProductType,
+                            productVersion,
+                            geometry,
+                            unlocode,
+                            validFrom,
+                            validTo,
+                            pageable)
+                    .stream()
+                    .map(data -> {
+                        try {
+                            return S125Utils.getDatasetMembers(new String(data, StandardCharsets.UTF_8))
+                                    .stream()
+                                    .filter(AidsToNavigationType.class::isInstance)
+                                    .map(AidsToNavigationType.class::cast)
+                                    .toList();
+                        } catch (JAXBException e) {
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)
+                    .flatMap(List::stream)
+                    .filter(AidsToNavigationType.class::isInstance)
+                    .map(AidsToNavigationType.class::cast)
+                    .forEach(aton -> {
+                        webSocketHeaders.put("aton-type", AtonTypeConverter.convertToSeamarkType(Arrays.asList(aton.getClass().getInterfaces()).getLast()));
                         this.webSocket.convertAndSend(
                                 "/topic/secom/subscription/update",
                                 aton,
-                                Collections.singletonMap("aton-type", AtonTypeConverter.convertToSeamarkType(
-                                        Arrays.asList(aton.getClass().getInterfaces()).getLast())
-                                )
-                        )
-                );
+                                webSocketHeaders
+                        );
+                    });
+        }
+        // For everything else return the XML
+        else {
+            // Retrieve the S-125 Aton Information and pass it down through the websocket
+            this.secomService.getServiceDatasetContent(mrn,
+                                                       dataReference,
+                                                       dataProductType,
+                                                       productVersion,
+                                                       geometry,
+                                                       unlocode,
+                                                       validFrom,
+                                                       validTo,
+                                                       pageable)
+                    .stream()
+                    .map(data -> new String(data, StandardCharsets.UTF_8))
+                    .forEach(data ->
+                            this.webSocket.convertAndSend(
+                                    "/topic/secom/subscription/update",
+                                    data,
+                                    webSocketHeaders
+                            )
+                    );
+        }
 
         // Also send a success response
         return ResponseEntity.ok().build();
     }
+
 
 }

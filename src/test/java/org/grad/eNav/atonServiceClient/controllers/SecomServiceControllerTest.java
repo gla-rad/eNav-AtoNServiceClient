@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.grad.eNav.atonServiceClient.services.SecomService;
 import org.grad.secom.core.models.*;
 import org.grad.secom.core.models.enums.ContainerTypeEnum;
+import org.grad.secom.core.models.enums.SECOM_DataProductType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -137,7 +140,7 @@ class SecomServiceControllerTest {
     @Test
     void testGetSecomDatasets() throws Exception {
         // Mock the subscription service to return a fixed result on an MRN
-        doReturn(this.summaryObjects).when(this.secomService).getAtonDatasets(eq("mrn"), any());
+        doReturn(this.summaryObjects).when(this.secomService).getServiceDatasets(eq("mrn"), any());
 
         // Perform the MVC request
         MvcResult mvcResult = this.mockMvc.perform(get("/api/secom_service/mrn/summary")
@@ -158,9 +161,9 @@ class SecomServiceControllerTest {
     }
 
     /**
-     * Test that the AtoN Service Client REST interface can be successfully used
-     * to get the contents of S-125 datasets currently provided by a specific
-     * S-125 AtoN service, identified by its MRN.
+     * Test that the SECOM Service Client REST interface can be successfully used
+     * to get the contents of S-100 datasets currently provided by a generic
+     * SECOM service, identified by its MRN.
      */
     @Test
     void testGetSecomDatasetContent() throws Exception {
@@ -168,10 +171,32 @@ class SecomServiceControllerTest {
         UUID uuid = UUID.randomUUID();
 
         // Mock the subscription service to return a fixed result on an MRN
-        doReturn(this.atons).when(this.secomService).getAtonDatasetContent(eq("mrn"), eq(uuid.toString()), any(), any(), any(), any(), any(), any(), any());
+        final InputStream in = ClassLoader.getSystemResourceAsStream("s125-msg.xml");
+        doReturn(Collections.singletonList(in.readAllBytes())).when(this.secomService).getServiceDatasetContent(eq("mrn"), eq(uuid.toString()), any(), any(), any(), any(), any(), any(), any());
 
         // Perform the MVC request
         MvcResult mvcResult = this.mockMvc.perform(get("/api/secom_service/mrn/content?dataReference=" + uuid)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andReturn();
+    }
+
+    /**
+     * Test that the SECOM Service Client REST interface can be successfully used
+     * to get the contents of S-125 datasets currently provided by a specific
+     * SECOM AtoN service, identified by its MRN.
+     */
+    @Test
+    void testGetSecomDatasetContentS125() throws Exception {
+        // First select a UUID
+        UUID uuid = UUID.randomUUID();
+
+        // Mock the subscription service to return a fixed result on an MRN
+        final InputStream in = ClassLoader.getSystemResourceAsStream("s125-msg.xml");
+        doReturn(Collections.singletonList(in.readAllBytes())).when(this.secomService).getServiceDatasetContent(eq("mrn"), eq(uuid.toString()), eq(SECOM_DataProductType.S125), any(), any(), any(), any(), any(), any());
+
+        // Perform the MVC request
+        MvcResult mvcResult = this.mockMvc.perform(get("/api/secom_service/mrn/content?dataProductType=S125&dataReference=" + uuid)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andReturn();

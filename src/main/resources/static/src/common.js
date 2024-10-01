@@ -10,12 +10,6 @@ $(() => {
 
     //Load the security parameters
     mrn = $("meta[name='mrn']").attr("content");
-    //token = $("meta[name='_csrf']").attr("content");
-    //header = $("meta[name='_csrf_header']").attr("content");
-    //$(document).ajaxSend(function(e, xhr, options) {
-    //    xhr.setRequestHeader("MRN", mrn);
-    //    xhr.setRequestHeader(header, token);
-    //});
 });
 
 /**
@@ -58,6 +52,62 @@ function handleAjaxError(response, status, more, errorCallback) {
     } else {
         console.error(response);
     }
+}
+
+/**
+ * A helper function that shows the information modal dialog and accepts a
+ * table of data to be shown.
+ */
+function showInfoTable(dataObjects) {
+    // Get the information dialog body and clear it out
+    const $infoDialogBody= $('#info-dialog .modal-body');
+    $infoDialogBody.empty();
+
+    // For each of the data objects create a new table
+    $.each(dataObjects, function(index, dataObject) {
+        // Create a table element with 'table' and 'table-striped' classes and set the id to 'info-data-table-n'
+        const $table = $('<table></table>')
+            .attr('id', 'info-data-table-' + index) // Set the table id
+            .addClass('table table-striped mb-2'); // Add Bootstrap table classes
+
+        // Add the table title using the <caption> tag
+        if (dataObject.id) {
+            const $caption = $('<caption></caption>')
+                .text(dataObject.id)
+                .css('caption-side', 'top') // Ensures the caption is at the top
+                .addClass('table-caption h4'); // Add class if needed
+            $table.append($caption);
+        }
+
+        // Iterate through the object keys and create table rows
+        $.each(dataObject, function(key, value) {
+            // Skip IDs
+            if(key == 'id') {
+                return;
+            }
+
+            // Skip complex objects
+            if(value instanceof Object && !(value instanceof String)) {
+                return;
+            }
+
+            const $row = $('<tr></tr>');
+            const $keyCell = $('<td class="fw-bold"></td>').text(key);
+            const $valueCell = $('<td></td>').text(value);
+
+            // Append the cells to the row
+            $row.append($keyCell).append($valueCell);
+
+            // Append the row to the table
+            $table.append($row);
+        });
+
+        // Add the information to the information dialog body
+        $infoDialogBody.append($table);
+    });
+
+    // Finally show the dialog
+    $('#info-dialog').modal('show');
 }
 
 /**

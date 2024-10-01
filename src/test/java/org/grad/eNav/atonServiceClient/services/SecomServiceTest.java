@@ -16,10 +16,10 @@
 
 package org.grad.eNav.atonServiceClient.services;
 
-import _int.iho.s125.s100.gml.profiles._5_0.AbstractGMLType;
 import org.grad.secom.core.exceptions.SecomValidationException;
 import org.grad.secom.core.models.*;
 import org.grad.secom.core.models.enums.ContainerTypeEnum;
+import org.grad.secom.core.models.enums.SECOM_DataProductType;
 import org.grad.secom.springboot3.components.SecomClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -192,14 +192,14 @@ class SecomServiceTest {
      * using its summary interface and an unpaged query.
      */
     @Test
-    void testGetAtonDatasetsUnPaged() {
+    void testGetServiceDatasetsUnPaged() {
         // Mock the S-125 AtoN service response
         SecomClient secomClient = mock(SecomClient.class);
         doReturn(Optional.of(this.summaryResponseObject)).when(secomClient).getSummary(any(), any(), any(), any(), any(), any(), any(), any(), any());
         doReturn(secomClient).when(this.secomService).getClient(eq("mrn"));
 
         // Perform the service call
-        List<SummaryObject> result = this.secomService.getAtonDatasets("mrn", Pageable.unpaged());
+        List<SummaryObject> result = this.secomService.getServiceDatasets("mrn", Pageable.unpaged());
 
         // Make sure the client seems OK
         assertNotNull(result);
@@ -217,14 +217,14 @@ class SecomServiceTest {
      * using its summary interface and a paged query.
      */
     @Test
-    void testGetAtonDatasetsPaged() {
+    void testGetServiceDatasetsPaged() {
         // Mock the S-125 AtoN service response
         SecomClient secomClient = mock(SecomClient.class);
         doReturn(Optional.of(this.summaryResponseObject)).when(secomClient).getSummary(any(), any(), any(), any(), any(), any(), any(), any(), any());
         doReturn(secomClient).when(this.secomService).getClient(eq("mrn"));
 
         // Perform the service call
-        List<SummaryObject> result = this.secomService.getAtonDatasets("mrn", PageRequest.of(10,1));
+        List<SummaryObject> result = this.secomService.getServiceDatasets("mrn", PageRequest.of(10,1));
 
         // Make sure the client seems OK
         assertNotNull(result);
@@ -242,7 +242,7 @@ class SecomServiceTest {
      *  SECOM service using its get interface and an unpaged query.
      */
     @Test
-    void testGetAtonDatasetContentUnpaged() {
+    void testGetServiceDatasetContentUnpaged() {
         // First select a UUID
         UUID uuid = UUID.randomUUID();
 
@@ -252,16 +252,14 @@ class SecomServiceTest {
         doReturn(secomClient).when(this.secomService).getClient(eq("mrn"));
 
         // Perform the service call
-        List<? extends AbstractGMLType> result = this.secomService.getAtonDatasetContent("mrn", uuid.toString(), null, null, null, null, null, null, Pageable.unpaged());
+        List<?> result = this.secomService.getServiceDatasetContent("mrn", uuid.toString(), SECOM_DataProductType.S125, null, null, null, null, null, Pageable.unpaged());
 
         // Make sure the client seems OK
         assertNotNull(result);
-        assertEquals(2, result.size());
+        assertEquals(1, result.size());
         // Check all returned instances
         for(int i=0; i<result.size(); i++) {
             assertNotNull(result.get(i));
-            assertNotNull(result.get(i).getId());
-            assertTrue(result.get(i).getId().startsWith("ID"));
         }
     }
 
@@ -270,7 +268,7 @@ class SecomServiceTest {
      *  SECOM service using its get interface and a paged query.
      */
     @Test
-    void testGetAtonDatasetContentPaged() {
+    void testGetServiceDatasetContentPaged() {
         // First select a UUID
         UUID uuid = UUID.randomUUID();
 
@@ -280,16 +278,14 @@ class SecomServiceTest {
         doReturn(secomClient).when(this.secomService).getClient(eq("mrn"));
 
         // Perform the service call
-        List<? extends AbstractGMLType> result = this.secomService.getAtonDatasetContent("mrn", uuid.toString(), null, null, null, null, null, null, PageRequest.of(10,1));
+        List<?> result = this.secomService.getServiceDatasetContent("mrn", uuid.toString(), SECOM_DataProductType.S125, null, null, null, null, null, PageRequest.of(10,1));
 
         // Make sure the client seems OK
         assertNotNull(result);
-        assertEquals(2, result.size());
+        assertEquals(1, result.size());
         // Check all returned instances
         for(int i=0; i<result.size(); i++) {
             assertNotNull(result.get(i));
-            assertNotNull(result.get(i).getId());
-            assertTrue(result.get(i).getId().startsWith("ID"));
         }
     }
 

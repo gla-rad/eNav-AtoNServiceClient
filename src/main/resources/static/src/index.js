@@ -8,30 +8,51 @@ var southWest = L.latLng(-89.98155760646617, -180);
 var northEast = L.latLng(89.99346179538875, 180);
 var bounds = L.latLngBounds(southWest, northEast);
 var atonMarkers = [];
+var navWarnAreas = [];
+var markersByPosition = new Map();
 var subscriptionIdentifier;
 var baseIconApiUrl = "https://rnavlab.gla-rad.org/niord-ng"
 
-// Define an icon for the satellite markers
-var satelliteIcon = L.icon({
-    iconUrl: 'images/satellite-icon.png',
-
-    iconSize:     [26, 25], // size of the icon
-    iconAnchor:   [13, 12], // point of the icon which will correspond to marker's location
-    popupAnchor:  [0, 0]    // point from which the popup should open relative to the iconAnchor
+// Define an icon for generic navigational warning parts
+const navWarnIcon = L.icon({
+    iconUrl: '/images/NavigationalWarningFeaturePart.svg',
+    iconSize: [21, 21],
 });
 
-// Define an icon for the available satellite markers
-var satelliteIconAvail = L.icon({
-    iconUrl: 'images/satellite-icon-green.png',
-
-    iconSize:     [26, 25], // size of the icon
-    iconAnchor:   [13, 12], // point of the icon which will correspond to marker's location
-    popupAnchor:  [0, 0]    // point from which the popup should open relative to the iconAnchor
+// Define an icon for point navigational warning parts
+const navWarnPointIcon = L.icon({
+    iconUrl: '/images/NavigationalWarningFeaturePart_point.svg',
+    iconSize: [41, 27],
+    iconAnchor: [20, 27],
 });
+
+// Create the map drawing style for lines
+const lineStyle = {
+  fillColor: "none",
+  color: "#B05BB6",
+  weight: 4,
+  dashArray: "15, 10",
+  lineCap: "butt",
+};
+// Create the map drawing style for sufaces
+const surfaceStyle = {
+  color: "#B05BB6",
+  weight: 4,
+  dashArray: "15, 10",
+  lineCap: "butt",
+};
+// Create the map drawing style for the whole map
+const wholeMapStyle = {
+  fillColor: "none",
+  color: "blue",
+  weight: 3,
+  dashArray: "5, 10",
+};
 
 /**
  * API Libraries
  */
+navwarnParser = new NWParser();
 secomServiceApi = new SecomServiceApi();
 subscriptionApi = new SubscriptionApi();
 
@@ -132,7 +153,11 @@ function connect() {
                 $("#subscriptionFail").show();
             });
             stompClient.subscribe('/topic/secom/subscription/update', function (msg) {
-                loadAtoNGeometry(msg.headers["aton-type"], JSON.parse(msg.body));
+                if(msg.headers["dataProductType"]=="S124") {
+                    loadNavWarnGeometry(msg.body);
+                } else if(msg.headers["dataProductType"]=="S125") {
+                    loadAtoNGeometry(msg.headers["aton-type"], JSON.parse(msg.body));
+                }
             });
         });
     } else {
@@ -145,7 +170,11 @@ function connect() {
             $("#subscriptionFail").show();
         });
         stompClient.subscribe('/topic/secom/subscription/update', function (msg) {
-            loadAtoNGeometry(msg.headers["aton-type"], JSON.parse(msg.body));
+            if(msg.headers["dataProductType"]=="S124") {
+                loadNavwarnGeometry(msg.body);
+            } else if(msg.headers["dataProductType"]=="S125") {
+                loadAtoNGeometry(msg.headers["aton-type"], JSON.parse(msg.body));
+            }
         });
     }
 }
@@ -155,7 +184,7 @@ function connect() {
  */
 function clearForm() {
     $('#subscriptionForm')[0].reset();
-    clearAtonMarkers();
+    clearMapMarkers();
 }
 
 /**
@@ -263,7 +292,7 @@ function unsubscribe() {
  */
 function loadServices() {
     var dataProductType = trimToNull($("#dataProductTypeInput option:selected").data('keyword'));
-    secomServicesApi.getSecomServices(dataProductType,
+    secomServiceApi.getSecomServices(dataProductType,
                                      (result) => {
                                          var serviceTable = $("#serviceTable");
                                          var options = $("#dataReferenceInput");
@@ -355,8 +384,85 @@ function loadDatasets() {
 }
 
 /**
+ * This function will load the Navigation Warning geometry onto the drawnItems
+ * variable so that it is shown in the maps layers.
+ *
+ * @param {String}        xmlString       The Navigational Warning XML to be drawn on the map
+ */
+function loadNavWarnGeometry(xmlString) {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+    const geometries = navwarnParser.parseWarnings(xmlDoc);
+
+    for (const geometry of geometries) {
+        if (geometry.type === 'point') {
+            subscriptionMap.addLayer(this.createMarker(geometry.geometry, navWarnIcon, xmlString));
+        } else if (geometry.type === 'curve') {
+            const line = L.polyline(geometry.geometry, lineStyle);
+            navWarnAreas.push(line);
+            subscriptionMap.addLayer(line);
+            // Curve portrayal doesn't actually define a symbol, but let's use the surface symbol to have a click target.
+            subscriptionMap.addLayer(this.createMarker(line.getCenter(), navWarnPointIcon, xmlString));
+        } else if (geometry.type === 'surface') {
+            const polygon = L.polygon(geometry.geometry, surfaceStyle);
+            navWarnAreas.push(polygon);
+            subscriptionMap.addLayer(polygon);
+            subscriptionMap.addLayer(this.createMarker(polygon.getCenter(), navWarnPointIcon, xmlString));
+        }
+    }
+}
+
+//Creates a clickable marker (warning icon) and adds it to the map
+function createMarker(center, icon, xmlString, isWholeNAVAREA = false) {
+    var lat = center.lat ? center.lat : center[0];
+    var lng = center.lng ? center.lng : center[1];
+    var positionKey = lat + '_' + lng;
+
+    var newMarker = L.marker([lat, lng], { icon: icon });
+    if (isWholeNAVAREA) {
+        newMarker = new L.Marker(center, {
+            icon: new L.DivIcon({
+                className: 'my-div-icon',
+                html: '<div style="text-align: center; margin: 0; padding: 0; background: transparent;">' +
+                    '<img src="warning.png" style="width: 64px; height: 64px; margin: 0; padding: 0; border: none;"/>' +
+                    '<div style="text-align: center; width: 100%; margin-top: 5px; padding: 0; border: none; background: transparent; line-height: 1.2; white-space: nowrap; font-weight: bold;">NAVAREA X</div>' +
+                    '</div>',
+                iconAnchor: [32, 32]
+            }),
+        });
+    }
+
+    if (!markersByPosition.has(positionKey)) {
+        markersByPosition.set(positionKey, []);
+    }
+
+    markersByPosition.get(positionKey).push({ marker: newMarker, data: xmlString });
+
+    newMarker.on('click', () => {
+        var markers = markersByPosition.get(positionKey);
+
+        if (markers.length === 1) {
+            var dataObject = navwarnParser.parseDataToTable(markers[0].data)
+            // And show the info
+            showInfoTable([dataObject]);
+        }
+        else {
+            // If there are multiple markers at this position, show a popup with a list (OptionPopup)
+            var dataObjects = [];
+            markers.forEach((marker, index) => {
+                dataObjects.push(navwarnParser.parseDataToTable(marker.data));
+            });
+            // And show the info
+            showInfoTable(dataObjects);
+        }
+    });
+
+    return newMarker;
+}
+
+/**
  * This function will load the AtoN geometry onto the drawnItems variable
- * so that it is shown in the station maps layers.
+ * so that it is shown in the maps layers.
  *
  * @param {String}        type          The type of the AtoN objects to be drawn on the map
  * @param {Object}        aton          The AtoN objects to be drawn on the map
@@ -382,8 +488,12 @@ function loadAtoNGeometry(type, aton) {
                 aton.geometries[0].pointProperty.point.pos.value[1],
                 aton.geometries[0].pointProperty.point.pos.value[0]
             ], {icon: atonIcon})
-            .addTo(subscriptionMap)
-            .bindPopup(displayName ? displayName.name : "unknown");
+            .addTo(subscriptionMap);
+
+    // Show the AtoN information on click
+    atonMarker.on('click', () => {
+        showInfoTable([aton]);
+    });
 
     // And add the new marker in the satellite position markers
     atonMarkers.push(atonMarker);
@@ -392,19 +502,41 @@ function loadAtoNGeometry(type, aton) {
 /**
  * Clears all the AtoN markers from the GUI map.
  */
-function clearAtonMarkers() {
+function clearMapMarkers() {
     // First check that we have a map
     if(subscriptionMap == undefined) {
         return;
     }
 
-    // Clear the markers that have already been added
+    // Clear the AtoN markers that have already been added
     if (atonMarkers != undefined) {
         for(var i=atonMarkers.length-1; i >= 0; i--) {
             subscriptionMap.removeLayer(atonMarkers[i]);
             atonMarkers.splice(i, 1);
         }
     };
+
+    // Clear the Navigational Warning areas that have already been added
+    if (navWarnAreas != undefined) {
+        for(var i=navWarnAreas.length-1; i >= 0; i--) {
+            subscriptionMap.removeLayer(navWarnAreas[i]);
+            navWarnAreas.splice(i, 1);
+        }
+    };
+
+    // Clear the Navigational Warning markers
+    if(markersByPosition != undefined) {
+        var keys = markersByPosition.keys();
+        // For each key we can have multiple markers
+        while(markersByPosition.size > 0) {
+            var pos = keys.next().value;
+            var markers = markersByPosition.get(pos);
+            for(var i=markers.length-1; i >= 0; i--) {
+                subscriptionMap.removeLayer(markers[i].marker);
+            }
+            markersByPosition.delete(pos)
+        }
+    }
 }
 
 /**

@@ -40,7 +40,7 @@
                     <div sec:authorize="isAuthenticated()" class="bg-white col-12 col-md-4 flex-shrink-1 p-1">
                         <div class="row">
                             <div class="col-auto">
-                            <label for="dataProductTypeInput" class="col-form-label">Data Product Type</label>
+                            <label for="dataProductTypeInput" class="col-form-label fw-bold">Data Product Type</label>
                             </div>
                             <div class="col">
                             <select id="dataProductTypeInput" class="form-select" onChange="loadServices()" aria-label="Data Product Type">
@@ -221,6 +221,7 @@
         </div>
         <!--<div th:replace="~{fragments/general.html :: footer}"></div>-->
     </div>
+    <div th:replace="~{fragments/general.html :: info-dialog}"></div>
     <div th:replace="~{fragments/general.html :: error-dialog}"></div>
     <script th:src="@{webjars/jquery/jquery.min.js}"></script>
     <script th:src="@{webjars/bootstrap/js/bootstrap.min.js}"></script>
@@ -228,6 +229,7 @@
     <script th:src="@{webjars/stomp-websocket/stomp.min.js}"></script>
     <script th:src="@{webjars/leaflet/dist/leaflet.js}"></script>
     <script th:src="@{src/common.js}"></script>
+    <script th:src="@{src/nw_parser.js}"></script>
     <script th:src="@{src/api.secom_service.js}"></script>
     <script th:src="@{src/api.subscription.js}"></script>
     <script th:src="@{src/index.js}"></script>

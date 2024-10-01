@@ -16,6 +16,7 @@
 
 package org.grad.eNav.atonServiceClient.services;
 
+import _int.iho.s125.gml.cs0._1.AidsToNavigationType;
 import _int.iho.s125.s100.gml.profiles._5_0.AbstractGMLType;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -207,8 +208,8 @@ public class SecomService {
      * @param pageable the paging information for the search
      * @return the list of the dataset summary information
      */
-    public List<SummaryObject>  getAtonDatasets(@NotNull String mrn,
-                                                @NotNull Pageable pageable) {
+    public List<SummaryObject> getServiceDatasets(@NotNull String mrn,
+                                                  @NotNull Pageable pageable) {
         // Access the SECOM client based on the MRN
         SecomClient secomClient = this.getClient(mrn);
 
@@ -229,7 +230,7 @@ public class SecomService {
 
     /**
      * For a selected S-125 AtoN service based on its MRN this function will
-     * return the content of the seleected datasets using the Get SECOM
+     * return the content of the selected datasets using the Get SECOM
      * interface. Note that this function will return the actual SECOM data
      * response objects list/
      *
@@ -244,15 +245,15 @@ public class SecomService {
      * @param pageable the paging information for the action
      * @return
      */
-    public List<? extends AbstractGMLType> getAtonDatasetContent(@NotNull String mrn,
-                                                       String dataReference,
-                                                       SECOM_DataProductType dataProductType,
-                                                       String productVersion,
-                                                       String geometry,
-                                                       String unlocode,
-                                                       LocalDateTime validFrom,
-                                                       LocalDateTime validTo,
-                                                       @NotNull Pageable pageable) {
+    public List<byte[]> getServiceDatasetContent(@NotNull String mrn,
+                                                                    String dataReference,
+                                                                    SECOM_DataProductType dataProductType,
+                                                                    String productVersion,
+                                                                    String geometry,
+                                                                    String unlocode,
+                                                                    LocalDateTime validFrom,
+                                                                    LocalDateTime validTo,
+                                                                    @NotNull Pageable pageable) {
         // Access the SECOM client based on the MRN
         SecomClient secomClient = this.getClient(mrn);
 
@@ -272,15 +273,6 @@ public class SecomService {
                 .orElse(Collections.emptyList())
                 .stream()
                 .map(DataResponseObject::getData)
-                .map(data -> {
-                    try {
-                        return S125Utils.getDatasetMembers(new String(data, StandardCharsets.UTF_8));
-                    } catch (JAXBException e) {
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                .flatMap(List::stream)
                 .toList();
 
     }
