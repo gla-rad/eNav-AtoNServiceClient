@@ -485,8 +485,8 @@ function loadAtoNGeometry(type, aton) {
 
     // Generate the map marker
     var atonMarker = L.marker([
-                aton.geometries[0].pointProperty.point.pos.value[1],
-                aton.geometries[0].pointProperty.point.pos.value[0]
+                aton.geometries[0].pointProperty.point.pos.value[0],
+                aton.geometries[0].pointProperty.point.pos.value[1]
             ], {icon: atonIcon})
             .addTo(subscriptionMap);
 
