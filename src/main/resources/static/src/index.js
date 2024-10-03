@@ -358,6 +358,9 @@ function loadDatasets() {
     // Get the AtoN Service MRN to load the datasets from
     var atonServiceMrn = $('input[name="serviceSelection"]:checked').attr('id');;
 
+    //Clear previous entries
+    $("#dataReferenceInput").empty();
+
     // Sanity check
     if(!atonServiceMrn) {
         return;
@@ -368,10 +371,8 @@ function loadDatasets() {
     secomServiceApi.getSecomDatasets(atonServiceMrn,
                                      dataProductType,
                                      (result) => {
+                                         //Append the new options
                                          var options = $("#dataReferenceInput");
-                                         //Clear previous entries
-                                         options.empty();
-                                         //don't forget error handling!
                                          options.append($("<option />").val(undefined).text("All Datasets"));
                                          $.each(result, function(item) {
                                              options.append($("<option />").val(result[item].dataReference).text(result[item].info_name));
