@@ -53,6 +53,7 @@ const wholeMapStyle = {
  * API Libraries
  */
 navwarnParser = new NWParser();
+atonParser = new AtonParser();
 secomServiceApi = new SecomServiceApi();
 subscriptionApi = new SubscriptionApi();
 
@@ -492,7 +493,7 @@ function loadAtoNGeometry(type, aton) {
 
     // Show the AtoN information on click
     atonMarker.on('click', () => {
-        showInfoTable([aton]);
+        showInfoTable([atonParser.parseDataToTable(aton)]);
     });
 
     // And add the new marker in the satellite position markers
@@ -537,28 +538,6 @@ function clearMapMarkers() {
             markersByPosition.delete(pos)
         }
     }
-}
-
-/**
- * We want to format the date in a format that is compatible with the
- * SECOM date-time format which looks a bit like this:
- * FORMAT:  yyyyMMddTHHmmss
- * EXAMPLE: 19850412T101530
- */
-function dateToSecomFormat(date) {
-    // Sanity Check
-    var nullCheckedDate = trimToNull(date)
-    if(nullCheckedDate == null || nullCheckedDate == undefined) {
-        return null;
-    }
-
-    // To achieve out goal the easier way is to get the ISO date format
-    // and remove the bits we don't like
-    var isoDateTimeString = new Date(date);
-    return isoDateTimeString.toISOString()
-            .replaceAll("-","")
-            .replaceAll(":","")
-            .split(".")[0] + "Z";
 }
 
 /**

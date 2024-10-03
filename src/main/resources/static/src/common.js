@@ -128,3 +128,25 @@ function showError(errorMsg) {
     $('#error-dialog').modal('show');
     $('#error-dialog .modal-body').html(`<p class="text-danger">${errorMsg}</p>`);
 }
+
+/**
+ * We want to format the date in a format that is compatible with the
+ * SECOM date-time format which looks a bit like this:
+ * FORMAT:  yyyyMMddTHHmmss
+ * EXAMPLE: 19850412T101530
+ */
+function dateToSecomFormat(date) {
+    // Sanity Check
+    var nullCheckedDate = trimToNull(date)
+    if(nullCheckedDate == null || nullCheckedDate == undefined) {
+        return null;
+    }
+
+    // To achieve out goal the easier way is to get the ISO date format
+    // and remove the bits we don't like
+    var isoDateTimeString = new Date(date);
+    return isoDateTimeString.toISOString()
+            .replaceAll("-","")
+            .replaceAll(":","")
+            .split(".")[0] + "Z";
+}
