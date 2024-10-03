@@ -184,7 +184,7 @@ public class SecomService {
         // Create a search filter object
         final SearchFilterObject searchFilterObject = new SearchFilterObject();
         final SearchParameters searchParameters = new SearchParameters();
-        searchParameters.setKeywords(keyword);
+        searchParameters.setKeywords(keyword.replace("-","*"));
         searchFilterObject.setQuery(searchParameters);
         // Return the retrieved list
         return this.discoveryService.searchService(
