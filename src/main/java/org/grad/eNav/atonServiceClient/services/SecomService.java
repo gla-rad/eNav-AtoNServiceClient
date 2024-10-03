@@ -267,8 +267,8 @@ public class SecomService {
                         unlocode,
                         validFrom,
                         validTo,
-                        pageable.isUnpaged() ? 0 : pageable.getPageNumber(),
-                        pageable.isUnpaged() ? MAX_UNPAGED_RESULTS_NO : pageable.getPageSize())
+                        pageable.isUnpaged() ? null : pageable.getPageNumber(),
+                        pageable.isUnpaged() ? null : pageable.getPageSize())
                 .map(GetResponseObject::getDataResponseObject)
                 .orElse(Collections.emptyList())
                 .stream()

@@ -87,14 +87,14 @@ public class SecomServiceController {
      */
     @GetMapping(value="/{mrn}/content", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> getSecomDatasetContent(@PathVariable("mrn") String mrn,
-                                                       String dataReference,
-                                                       SECOM_DataProductType dataProductType,
-                                                       String productVersion,
-                                                       String geometry,
-                                                       String unlocode,
-                                                       LocalDateTime validFrom,
-                                                       LocalDateTime validTo,
-                                                       Pageable pageable) {
+                                                       @RequestParam(required = false) String dataReference,
+                                                       @RequestParam(required = false) SECOM_DataProductType dataProductType,
+                                                       @RequestParam(required = false) String productVersion,
+                                                       @RequestParam(required = false) String geometry,
+                                                       @RequestParam(required = false) String unlocode,
+                                                       @RequestParam(required = false) LocalDateTime validFrom,
+                                                       @RequestParam(required = false) LocalDateTime validTo,
+                                                       @RequestParam(required = false) Pageable pageable) {
 
         // Create publication headers
         final Map<String, Object> webSocketHeaders = new HashMap<>();
@@ -111,7 +111,7 @@ public class SecomServiceController {
                             unlocode,
                             validFrom,
                             validTo,
-                            pageable)
+                            Optional.ofNullable(pageable).orElse(Pageable.unpaged()))
                     .stream()
                     .map(data -> {
                         try {
@@ -148,7 +148,7 @@ public class SecomServiceController {
                                                        unlocode,
                                                        validFrom,
                                                        validTo,
-                                                       pageable)
+                                                       Optional.ofNullable(pageable).orElse(Pageable.unpaged()))
                     .stream()
                     .map(data -> new String(data, StandardCharsets.UTF_8))
                     .forEach(data ->
