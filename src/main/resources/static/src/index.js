@@ -155,9 +155,9 @@ function connect() {
             });
             stompClient.subscribe('/topic/secom/subscription/update', function (msg) {
                 if(msg.headers["dataProductType"]=="S124") {
-                    loadNavWarnGeometry(msg.body);
+                    loadNavWarnGeometry(msg.headers, msg.body);
                 } else if(msg.headers["dataProductType"]=="S125") {
-                    loadAtoNGeometry(msg.headers["aton-type"], JSON.parse(msg.body));
+                    loadAtoNGeometry(msg.headers, JSON.parse(msg.body));
                 }
             });
         });
@@ -172,9 +172,9 @@ function connect() {
         });
         stompClient.subscribe('/topic/secom/subscription/update', function (msg) {
             if(msg.headers["dataProductType"]=="S124") {
-                loadNavwarnGeometry(msg.body);
+                loadNavWarnGeometry(msg.headers, msg.body);
             } else if(msg.headers["dataProductType"]=="S125") {
-                loadAtoNGeometry(msg.headers["aton-type"], JSON.parse(msg.body));
+                loadAtoNGeometry(msg.headers, JSON.parse(msg.body));
             }
         });
     }
@@ -390,31 +390,36 @@ function loadDatasets() {
  *
  * @param {String}        xmlString       The Navigational Warning XML to be drawn on the map
  */
-function loadNavWarnGeometry(xmlString) {
+function loadNavWarnGeometry(headers, xmlString) {
+    // Parse the Navigational Warning information
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xmlString, "text/xml");
     const geometries = navwarnParser.parseWarnings(xmlDoc);
 
+    // Get the signature information
+    var signedBy = headers["signed-by"]? headers["signed-by"].replaceAll('\\c', '.') : 'none';
+    var issuedBy = headers["issued-by"]? headers["issued-by"].replaceAll('\\c', '.') : 'none';
+
     for (const geometry of geometries) {
         if (geometry.type === 'point') {
-            subscriptionMap.addLayer(this.createMarker(geometry.geometry, navWarnIcon, xmlString));
+            subscriptionMap.addLayer(this.createMarker(geometry.geometry, navWarnIcon, signedBy, issuedBy, xmlString));
         } else if (geometry.type === 'curve') {
             const line = L.polyline(geometry.geometry, lineStyle);
             navWarnAreas.push(line);
             subscriptionMap.addLayer(line);
             // Curve portrayal doesn't actually define a symbol, but let's use the surface symbol to have a click target.
-            subscriptionMap.addLayer(this.createMarker(line.getCenter(), navWarnPointIcon, xmlString));
+            subscriptionMap.addLayer(this.createMarker(line.getCenter(), navWarnPointIcon, signedBy, issuedBy, xmlString));
         } else if (geometry.type === 'surface') {
             const polygon = L.polygon(geometry.geometry, surfaceStyle);
             navWarnAreas.push(polygon);
             subscriptionMap.addLayer(polygon);
-            subscriptionMap.addLayer(this.createMarker(polygon.getCenter(), navWarnPointIcon, xmlString));
+            subscriptionMap.addLayer(this.createMarker(polygon.getCenter(), navWarnPointIcon, signedBy, issuedBy, xmlString));
         }
     }
 }
 
 //Creates a clickable marker (warning icon) and adds it to the map
-function createMarker(center, icon, xmlString, isWholeNAVAREA = false) {
+function createMarker(center, icon, signedBy, issuedBy, xmlString, isWholeNAVAREA = false) {
     var lat = center.lat ? center.lat : center[0];
     var lng = center.lng ? center.lng : center[1];
     var positionKey = lat + '_' + lng;
@@ -442,6 +447,10 @@ function createMarker(center, icon, xmlString, isWholeNAVAREA = false) {
     newMarker.on('click', () => {
         var markers = markersByPosition.get(positionKey);
 
+        // Update the signature information
+        $('#signed-by').text(signedBy);
+        $('#issued-by').text(issuedBy);
+
         if (markers.length === 1) {
             var dataObject = navwarnParser.parseDataToTable(markers[0].data)
             // And show the info
@@ -468,10 +477,15 @@ function createMarker(center, icon, xmlString, isWholeNAVAREA = false) {
  * @param {String}        type          The type of the AtoN objects to be drawn on the map
  * @param {Object}        aton          The AtoN objects to be drawn on the map
  */
-function loadAtoNGeometry(type, aton) {
-    // Get the display name for the AtoN#
+function loadAtoNGeometry(headers, aton) {
+    // Get the display type and name for the AtoN
+    var type = headers["aton-type"];
     var displayName = aton.featureNames.find(f => f.displayName);
     var iconUrl = computeAtonIconUrl(type, aton);
+
+    // Get the signature information
+    var signedBy = headers["signed-by"]? headers["signed-by"].replaceAll('\\c', '.') : 'none';
+    var issuedBy = headers["issued-by"]? headers["issued-by"].replaceAll('\\c', '.') : 'none';
 
     // If this is not a top-level object skip
     if(aton.parent) {
@@ -493,6 +507,11 @@ function loadAtoNGeometry(type, aton) {
 
     // Show the AtoN information on click
     atonMarker.on('click', () => {
+        // Update the signature information
+        $('#signed-by').text(signedBy);
+        $('#issued-by').text(issuedBy);
+
+        // And show the AtoN information
         showInfoTable([atonParser.parseDataToTable(aton)]);
     });
 

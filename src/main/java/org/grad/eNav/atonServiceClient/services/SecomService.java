@@ -16,15 +16,13 @@
 
 package org.grad.eNav.atonServiceClient.services;
 
-import _int.iho.s125.gml.cs0._1.AidsToNavigationType;
-import _int.iho.s125.s100.gml.profiles._5_0.AbstractGMLType;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import jakarta.validation.constraints.NotNull;
-import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.grad.eNav.s125.utils.S125Utils;
+import org.grad.eNav.atonServiceClient.models.domain.SignedDatasetContent;
+import org.grad.eNav.atonServiceClient.utils.X509Utils;
 import org.grad.secom.core.exceptions.SecomNotFoundException;
 import org.grad.secom.core.exceptions.SecomValidationException;
 import org.grad.secom.core.models.*;
@@ -40,7 +38,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
@@ -245,15 +242,15 @@ public class SecomService {
      * @param pageable the paging information for the action
      * @return
      */
-    public List<byte[]> getServiceDatasetContent(@NotNull String mrn,
-                                                                    String dataReference,
-                                                                    SECOM_DataProductType dataProductType,
-                                                                    String productVersion,
-                                                                    String geometry,
-                                                                    String unlocode,
-                                                                    LocalDateTime validFrom,
-                                                                    LocalDateTime validTo,
-                                                                    @NotNull Pageable pageable) {
+    public List<SignedDatasetContent> getServiceDatasetContent(@NotNull String mrn,
+                                                               String dataReference,
+                                                               SECOM_DataProductType dataProductType,
+                                                               String productVersion,
+                                                               String geometry,
+                                                               String unlocode,
+                                                               LocalDateTime validFrom,
+                                                               LocalDateTime validTo,
+                                                               @NotNull Pageable pageable) {
         // Access the SECOM client based on the MRN
         SecomClient secomClient = this.getClient(mrn);
 
@@ -272,7 +269,26 @@ public class SecomService {
                 .map(GetResponseObject::getDataResponseObject)
                 .orElse(Collections.emptyList())
                 .stream()
-                .map(DataResponseObject::getData)
+                .map(dataResponseObject -> {
+                    final SignedDatasetContent signedDatasetContent = new SignedDatasetContent();
+                    
+                    Optional.of(dataResponseObject)
+                            .map(DataResponseObject::getExchangeMetadata)
+                            .map(SECOM_ExchangeMetadataObject::getDigitalSignatureValue)
+                            .map(DigitalSignatureValue::getPublicCertificate)
+                            .map(X509Utils::extractFromCertificatePem)
+                            .map(X509Utils::extractUIDFromCertificate)
+                            .ifPresent(signedDatasetContent::setSignedBy);
+                    Optional.of(dataResponseObject)
+                            .map(DataResponseObject::getExchangeMetadata)
+                            .map(SECOM_ExchangeMetadataObject::getDigitalSignatureValue)
+                            .map(DigitalSignatureValue::getPublicCertificate)
+                            .map(X509Utils::extractFromCertificatePem)
+                            .map(X509Utils::extractIssuerUIDFromCertificate)
+                            .ifPresent(signedDatasetContent::setIssuedBy);
+                    signedDatasetContent.setContent(dataResponseObject.getData());
+                    return signedDatasetContent;
+                })
                 .toList();
 
     }

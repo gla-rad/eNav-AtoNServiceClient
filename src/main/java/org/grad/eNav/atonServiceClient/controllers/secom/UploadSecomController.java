@@ -25,6 +25,7 @@ import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.grad.eNav.atonServiceClient.utils.AtonTypeConverter;
+import org.grad.eNav.atonServiceClient.utils.X509Utils;
 import org.grad.eNav.s125.utils.S125Utils;
 import org.grad.secom.core.interfaces.UploadSecomInterface;
 import org.grad.secom.core.models.*;
@@ -113,7 +114,26 @@ public class UploadSecomController implements UploadSecomInterface {
 
         // Create publication headers
         final Map<String, Object> webSocketHeaders = new HashMap<>();
-        webSocketHeaders.put("dataProductType", uploadObject.getEnvelope().getDataProductType());
+        Optional.of(uploadObject)
+                .map(UploadObject::getEnvelope)
+                .map(EnvelopeUploadObject::getDataProductType)
+                .ifPresent(dataProductType -> webSocketHeaders.put("dataProductType", dataProductType));
+        Optional.of(uploadObject)
+                .map(UploadObject::getEnvelope)
+                .map(EnvelopeUploadObject::getExchangeMetadata)
+                .map(SECOM_ExchangeMetadataObject::getDigitalSignatureValue)
+                .map(DigitalSignatureValue::getPublicCertificate)
+                .map(X509Utils::extractFromCertificatePem)
+                .map(X509Utils::extractUIDFromCertificate)
+                .ifPresent(signedBy -> webSocketHeaders.put("signed-by", signedBy));
+        Optional.of(uploadObject)
+                .map(UploadObject::getEnvelope)
+                .map(EnvelopeUploadObject::getExchangeMetadata)
+                .map(SECOM_ExchangeMetadataObject::getDigitalSignatureValue)
+                .map(DigitalSignatureValue::getPublicCertificate)
+                .map(X509Utils::extractFromCertificatePem)
+                .map(X509Utils::extractIssuerUIDFromCertificate)
+                .ifPresent(issuedBy -> webSocketHeaders.put("issued-by", issuedBy));
 
         // Decode the data and down the web-socket
         try {

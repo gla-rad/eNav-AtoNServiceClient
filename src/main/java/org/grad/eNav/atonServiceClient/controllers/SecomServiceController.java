@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -113,28 +112,25 @@ public class SecomServiceController {
                             validTo,
                             Optional.ofNullable(pageable).orElse(Pageable.unpaged()))
                     .stream()
-                    .map(data -> {
+                    .forEach(signedDatasetContent -> {
                         try {
-                            return S125Utils.getDatasetMembers(new String(data, StandardCharsets.UTF_8))
+                            S125Utils.getDatasetMembers(signedDatasetContent.getContentAsString())
                                     .stream()
                                     .filter(AidsToNavigationType.class::isInstance)
                                     .map(AidsToNavigationType.class::cast)
-                                    .toList();
-                        } catch (JAXBException e) {
-                            return null;
+                                    .forEach(aton -> {
+                                        webSocketHeaders.put("signed-by", signedDatasetContent.getSignedBy());
+                                        webSocketHeaders.put("issued-by", signedDatasetContent.getIssuedBy());
+                                        webSocketHeaders.put("aton-type", AtonTypeConverter.convertToSeamarkType(Arrays.asList(aton.getClass().getInterfaces()).getLast()));
+                                        this.webSocket.convertAndSend(
+                                                "/topic/secom/subscription/update",
+                                                aton,
+                                                webSocketHeaders
+                                        );
+                                    });
+                        } catch (JAXBException ex) {
+                            log.error(ex.getErrorCode(), ex);
                         }
-                    })
-                    .filter(Objects::nonNull)
-                    .flatMap(List::stream)
-                    .filter(AidsToNavigationType.class::isInstance)
-                    .map(AidsToNavigationType.class::cast)
-                    .forEach(aton -> {
-                        webSocketHeaders.put("aton-type", AtonTypeConverter.convertToSeamarkType(Arrays.asList(aton.getClass().getInterfaces()).getLast()));
-                        this.webSocket.convertAndSend(
-                                "/topic/secom/subscription/update",
-                                aton,
-                                webSocketHeaders
-                        );
                     });
         }
         // For everything else return the XML
@@ -150,14 +146,15 @@ public class SecomServiceController {
                                                        validTo,
                                                        Optional.ofNullable(pageable).orElse(Pageable.unpaged()))
                     .stream()
-                    .map(data -> new String(data, StandardCharsets.UTF_8))
-                    .forEach(data ->
-                            this.webSocket.convertAndSend(
-                                    "/topic/secom/subscription/update",
-                                    data,
-                                    webSocketHeaders
-                            )
-                    );
+                    .forEach(signedDatasetContent -> {
+                        webSocketHeaders.put("signed-by", signedDatasetContent.getSignedBy());
+                        webSocketHeaders.put("issued-by", signedDatasetContent.getIssuedBy());
+                        this.webSocket.convertAndSend(
+                                "/topic/secom/subscription/update",
+                                signedDatasetContent.getContentAsString(),
+                                webSocketHeaders
+                        );
+                    });
         }
 
         // Also send a success response

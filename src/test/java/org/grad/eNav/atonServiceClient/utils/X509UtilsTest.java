@@ -348,4 +348,107 @@ class X509UtilsTest {
         assertNotNull(privateKey);
     }
 
+    /**
+     * Test that we can successfully generate and parse again the PEM encoding
+     * of a certificate and that its contents will remain the same.
+     *
+     * @throws InvalidAlgorithmParameterException
+     * @throws NoSuchAlgorithmException
+     * @throws CertificateException
+     * @throws OperatorCreationException
+     * @throws IOException
+     */
+    @Test
+    void testExtractFromCertificatePem() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, CertificateException, OperatorCreationException, IOException {
+        // Yesterday
+        Date validityBeginDate = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
+        // Tomorrow
+        Date validityEndDate = new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
+
+        // Create a keypair
+        KeyPair keyPair = X509Utils.generateKeyPair(null);
+
+        // Create the certificate
+        X509Certificate certificate = X509Utils.generateX509Certificate(keyPair, "CN=Test", validityBeginDate, validityEndDate, null);
+
+        // Generate the PEM formatted string
+        String certificatePem = X509Utils.formatCertificate(certificate);
+
+        // Now extract the certificate back
+        X509Certificate resultCertificate = X509Utils.extractFromCertificatePem(certificatePem);
+
+        // Make sure everything seems OK
+        assertNotNull(resultCertificate);
+        assertEquals(certificate.getNotBefore(), resultCertificate.getNotBefore());
+        assertEquals(certificate.getNotAfter(), resultCertificate.getNotAfter());
+        assertEquals(certificate.getSigAlgName(), resultCertificate.getSigAlgName());
+        assertEquals(certificate.getBasicConstraints(), resultCertificate.getBasicConstraints());
+        assertEquals(certificate.getSubjectX500Principal(), resultCertificate.getSubjectX500Principal());
+        assertEquals(certificate.getIssuerX500Principal(), resultCertificate.getIssuerX500Principal());
+        assertEquals(certificate.getType(), resultCertificate.getType());
+        assertEquals(certificate.getSerialNumber(), resultCertificate.getSerialNumber());
+    }
+
+    /**
+     * Test that we can successfully read the correct UID value from the
+     * subject of an X.509 certificate.
+     *
+     * @throws InvalidAlgorithmParameterException
+     * @throws NoSuchAlgorithmException
+     * @throws CertificateException
+     * @throws OperatorCreationException
+     * @throws IOException
+     */
+    @Test
+    void testExtractUIDFromCertificate() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, CertificateException, OperatorCreationException, IOException {
+        // Yesterday
+        Date validityBeginDate = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
+        // Tomorrow
+        Date validityEndDate = new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
+
+        // Create a keypair
+        KeyPair keyPair = X509Utils.generateKeyPair(null);
+
+        // Create the certificate
+        X509Certificate certificate = X509Utils.generateX509Certificate(keyPair, "UID=Test", validityBeginDate, validityEndDate, null);
+
+        //Extract X.509 certificate UID
+        String uid = X509Utils.extractUIDFromCertificate(certificate);
+
+        // And make sure it seems OK
+        assertNotNull(uid);
+        assertEquals("Test", uid);
+    }
+
+    /**
+     * Test that we can successfully read the correct issuer UID value from the
+     * issuer subject of an X.509 certificate.
+     *
+     * @throws InvalidAlgorithmParameterException
+     * @throws NoSuchAlgorithmException
+     * @throws CertificateException
+     * @throws OperatorCreationException
+     * @throws IOException
+     */
+    @Test
+    void testExtractIssuerUIDFromCertificate() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, CertificateException, OperatorCreationException, IOException {
+        // Yesterday
+        Date validityBeginDate = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
+        // Tomorrow
+        Date validityEndDate = new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
+
+        // Create a keypair
+        KeyPair keyPair = X509Utils.generateKeyPair(null);
+
+        // Create the certificate
+        X509Certificate certificate = X509Utils.generateX509Certificate(keyPair, "UID=Test", validityBeginDate, validityEndDate, null);
+
+        //Extract X.509 certificate UID
+        String uid = X509Utils.extractIssuerUIDFromCertificate(certificate);
+
+        // And make sure it seems OK
+        assertNotNull(uid);
+        assertEquals("Test", uid);
+    }
+
 }

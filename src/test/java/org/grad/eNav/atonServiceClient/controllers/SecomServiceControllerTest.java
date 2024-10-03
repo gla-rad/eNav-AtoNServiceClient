@@ -4,6 +4,7 @@ import _int.iho.s125.gml.cs0._1.AidsToNavigationType;
 import _int.iho.s125.gml.cs0._1.impl.AidsToNavigationTypeImpl;
 import _int.iho.s125.gml.cs0._1.impl.VirtualAISAidToNavigationImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.grad.eNav.atonServiceClient.models.domain.SignedDatasetContent;
 import org.grad.eNav.atonServiceClient.services.SecomService;
 import org.grad.secom.core.models.*;
 import org.grad.secom.core.models.enums.ContainerTypeEnum;
@@ -172,7 +173,9 @@ class SecomServiceControllerTest {
 
         // Mock the subscription service to return a fixed result on an MRN
         final InputStream in = ClassLoader.getSystemResourceAsStream("s125-msg.xml");
-        doReturn(Collections.singletonList(in.readAllBytes())).when(this.secomService).getServiceDatasetContent(eq("mrn"), eq(uuid.toString()), any(), any(), any(), any(), any(), any(), any());
+        final SignedDatasetContent signedDatasetContent = new SignedDatasetContent();
+        signedDatasetContent.setContent(in.readAllBytes());
+        doReturn(Collections.singletonList(signedDatasetContent)).when(this.secomService).getServiceDatasetContent(eq("mrn"), eq(uuid.toString()), any(), any(), any(), any(), any(), any(), any());
 
         // Perform the MVC request
         MvcResult mvcResult = this.mockMvc.perform(get("/api/secom_service/mrn/content?dataReference=" + uuid)
@@ -193,7 +196,9 @@ class SecomServiceControllerTest {
 
         // Mock the subscription service to return a fixed result on an MRN
         final InputStream in = ClassLoader.getSystemResourceAsStream("s125-msg.xml");
-        doReturn(Collections.singletonList(in.readAllBytes())).when(this.secomService).getServiceDatasetContent(eq("mrn"), eq(uuid.toString()), eq(SECOM_DataProductType.S125), any(), any(), any(), any(), any(), any());
+        final SignedDatasetContent signedDatasetContent = new SignedDatasetContent();
+        signedDatasetContent.setContent(in.readAllBytes());
+        doReturn(Collections.singletonList(signedDatasetContent)).when(this.secomService).getServiceDatasetContent(eq("mrn"), eq(uuid.toString()), eq(SECOM_DataProductType.S125), any(), any(), any(), any(), any(), any());
 
         // Perform the MVC request
         MvcResult mvcResult = this.mockMvc.perform(get("/api/secom_service/mrn/content?dataProductType=S125&dataReference=" + uuid)

@@ -36,17 +36,20 @@ import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 
 import javax.security.auth.x500.X500Principal;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
@@ -277,6 +280,83 @@ public class X509Utils {
         //ECPrivateKeySpec ecPrivateKeySpec = new ECPrivateKeySpec(new BigInteger(1, pemObject.getContent()), spec);
         final PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(pemObject.getContent());
         return factory.generatePrivate(pkcs8EncodedKeySpec);
+    }
+
+    /**
+     * This helper function extracts the X509 certificate from a PEM encoding
+     * and returns it as a Java security object.
+     *
+     * @param x509CertificatePem the X509 PEM encoded string
+     * @return the Java X509 certificate object
+     */
+    public static X509Certificate extractFromCertificatePem(String x509CertificatePem) {
+        try {
+            // Remove the PEM headers and footers, and extract the base64-encoded content
+            String pem = x509CertificatePem
+                    .replace("-----BEGIN CERTIFICATE-----", "")
+                    .replace("-----END CERTIFICATE-----", "")
+                    .replaceAll("\\s+", "");  // Remove any whitespaces or line breaks
+
+            // Decode the base64 content
+            byte[] decoded = Base64.getDecoder().decode(pem);
+
+            // Create a CertificateFactory for X.509 certificates
+            CertificateFactory factory = CertificateFactory.getInstance("X.509");
+
+            // Parse the certificate using the factory
+            return (X509Certificate) factory.generateCertificate(new ByteArrayInputStream(decoded));
+        } catch (Exception e) {
+            X509Utils.log.warn("Unable to extract CA from certificate: {}", e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * This helper function extracts the subject UID from the provided X509
+     * certificate and returns its value as a string.
+     *
+     * @param certificate the X509 certificate
+     * @return the subject UID name
+     */
+    public static String extractUIDFromCertificate(X509Certificate certificate) {
+        X500Principal subjectPrincipal = certificate.getSubjectX500Principal();
+        String subjectDN = subjectPrincipal.getName();
+
+        String[] dnComponents = subjectDN.split(",");
+        for (String dnComponent : dnComponents) {
+            if (dnComponent.startsWith("UID=")) {
+                String[] uidParts = dnComponent.split("=");
+                if (uidParts.length == 2) {
+                    return uidParts[1];
+                }
+            }
+        }
+
+        return null; // UID not found
+    }
+
+    /**
+     * This helper function extracts the subject issuer UID from the provided
+     * X509 certificate and returns its value as a string.
+     *
+     * @param certificate the X509 certificate
+     * @return the issuer UID name
+     */
+    public static String extractIssuerUIDFromCertificate(X509Certificate certificate) {
+        X500Principal issuerX500Principal = certificate.getIssuerX500Principal();
+        String subjectDN = issuerX500Principal.getName();
+
+        String[] dnComponents = subjectDN.split(",");
+        for (String dnComponent : dnComponents) {
+            if (dnComponent.startsWith("UID=")) {
+                String[] uidParts = dnComponent.split("=");
+                if (uidParts.length == 2) {
+                    return uidParts[1];
+                }
+            }
+        }
+
+        return null; // UID not found
     }
 
 }

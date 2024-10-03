@@ -16,6 +16,7 @@
 
 package org.grad.eNav.atonServiceClient.services;
 
+import org.grad.eNav.atonServiceClient.models.domain.SignedDatasetContent;
 import org.grad.secom.core.exceptions.SecomValidationException;
 import org.grad.secom.core.models.*;
 import org.grad.secom.core.models.enums.ContainerTypeEnum;
@@ -252,7 +253,7 @@ class SecomServiceTest {
         doReturn(secomClient).when(this.secomService).getClient(eq("mrn"));
 
         // Perform the service call
-        List<?> result = this.secomService.getServiceDatasetContent("mrn", uuid.toString(), SECOM_DataProductType.S125, null, null, null, null, null, Pageable.unpaged());
+        List<SignedDatasetContent> result = this.secomService.getServiceDatasetContent("mrn", uuid.toString(), SECOM_DataProductType.S125, null, null, null, null, null, Pageable.unpaged());
 
         // Make sure the client seems OK
         assertNotNull(result);
@@ -278,7 +279,7 @@ class SecomServiceTest {
         doReturn(secomClient).when(this.secomService).getClient(eq("mrn"));
 
         // Perform the service call
-        List<?> result = this.secomService.getServiceDatasetContent("mrn", uuid.toString(), SECOM_DataProductType.S125, null, null, null, null, null, PageRequest.of(10,1));
+        List<SignedDatasetContent> result = this.secomService.getServiceDatasetContent("mrn", uuid.toString(), SECOM_DataProductType.S125, null, null, null, null, null, PageRequest.of(10,1));
 
         // Make sure the client seems OK
         assertNotNull(result);
