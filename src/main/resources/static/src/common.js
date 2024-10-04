@@ -150,3 +150,17 @@ function dateToSecomFormat(date) {
             .replaceAll(":","")
             .split(".")[0] + "Z";
 }
+
+/**
+ * Formats the provided string into a title case string and return the output.
+ */
+function toTitleCase(str) {
+    // Sanity Check
+    if(!str) {
+        return "";
+    }
+
+    return str.toLowerCase().split(/[\s,_]+/).map((word) => {
+        return (word.charAt(0).toUpperCase() + word.slice(1));
+    }).join(' ');
+}

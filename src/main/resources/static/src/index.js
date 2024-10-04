@@ -513,7 +513,7 @@ function loadAtoNGeometry(headers, aton) {
         $('#issued-by').text(issuedBy);
 
         // And show the AtoN information
-        showInfoTable([atonParser.parseDataToTable(aton)]);
+        showInfoTable([atonParser.parseDataToTable(type, aton)]);
     });
 
     // And add the new marker in the satellite position markers
