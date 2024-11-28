@@ -155,7 +155,7 @@ class NWParser {
             }
             const chunks = [];
             for (let i = 0; i < array.length; i += chunkSize) {
-                chunks.push([array[i + 1], array[i]])
+                chunks.push([array[i], array[i+1]])
             }
             return chunks;
         }
