@@ -29,12 +29,11 @@ import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
 import org.grad.secom.core.models.SubscriptionRequestObject;
 import org.grad.secom.core.models.enums.ContainerTypeEnum;
-import org.grad.secom.core.models.enums.SECOM_DataProductType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -280,8 +279,8 @@ public class BasicSecomSubscriptionTest {
         subscriptionRequestObject.setProductVersion("0.0.1");
         subscriptionRequestObject.setGeometry("POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))");
         subscriptionRequestObject.setUnlocode("GBHRW");
-        subscriptionRequestObject.setSubscriptionPeriodStart(LocalDateTime.now());
-        subscriptionRequestObject.setSubscriptionPeriodEnd(LocalDateTime.now());
+        subscriptionRequestObject.setSubscriptionPeriodStart(Instant.now());
+        subscriptionRequestObject.setSubscriptionPeriodEnd(Instant.now());
 
         // And perform the SECOM request
         // Don't include the non-defined data product type

@@ -47,7 +47,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.*;
 
 import static java.util.function.Predicate.not;
@@ -159,7 +159,7 @@ public class UploadSecomController implements UploadSecomInterface {
                         .ifPresent(ackType -> {
                             final AcknowledgementObject acknowledgementObject = new AcknowledgementObject();
                             final EnvelopeAckObject envelopeAckObject = new EnvelopeAckObject();
-                            envelopeAckObject.setCreatedAt(LocalDateTime.now());
+                            envelopeAckObject.setCreatedAt(Instant.now());
                             envelopeAckObject.setTransactionIdentifier(uploadObject.getEnvelope().getTransactionIdentifier());
                             envelopeAckObject.setAckType(AckTypeEnum.DELIVERED_ACK);
                             acknowledgementObject.setEnvelope(envelopeAckObject);

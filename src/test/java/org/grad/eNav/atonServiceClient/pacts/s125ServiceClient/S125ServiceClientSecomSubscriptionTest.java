@@ -33,7 +33,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -280,8 +280,8 @@ public class S125ServiceClientSecomSubscriptionTest {
         subscriptionRequestObject.setProductVersion("0.0.1");
         subscriptionRequestObject.setGeometry("POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))");
         subscriptionRequestObject.setUnlocode("GBHRW");
-        subscriptionRequestObject.setSubscriptionPeriodStart(LocalDateTime.now());
-        subscriptionRequestObject.setSubscriptionPeriodEnd(LocalDateTime.now());
+        subscriptionRequestObject.setSubscriptionPeriodStart(Instant.now());
+        subscriptionRequestObject.setSubscriptionPeriodEnd(Instant.now());
 
         // And perform the SECOM request
         Response response = Request.post(mockServer.getUrl() + "/v1/subscription")

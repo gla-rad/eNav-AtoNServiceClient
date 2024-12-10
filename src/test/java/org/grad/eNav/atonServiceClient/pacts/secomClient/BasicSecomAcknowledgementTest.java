@@ -34,7 +34,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -145,13 +145,13 @@ public class BasicSecomAcknowledgementTest {
         // Create an acknowledgement object
         AcknowledgementObject acknowledgementObject = new AcknowledgementObject();
         EnvelopeAckObject envelopeAckObject = new EnvelopeAckObject();
-        envelopeAckObject.setCreatedAt(LocalDateTime.now());
+        envelopeAckObject.setCreatedAt(Instant.now());
         envelopeAckObject.setEnvelopeSignatureCertificate("ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ==");
         envelopeAckObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
         envelopeAckObject.setTransactionIdentifier(UUID.randomUUID());
         envelopeAckObject.setAckType(AckTypeEnum.DELIVERED_ACK);
         envelopeAckObject.setNackType(NackTypeEnum.XML_SCHEMA_VALIDATION_ERROR);
-        envelopeAckObject.setEnvelopeSignatureTime(LocalDateTime.now());
+        envelopeAckObject.setEnvelopeSignatureTime(Instant.now());
         acknowledgementObject.setEnvelope(envelopeAckObject);
         acknowledgementObject.setDigitalSignature("ZGlnaXRhbFNpZ25hdHVyZQ==");
 
@@ -190,12 +190,12 @@ public class BasicSecomAcknowledgementTest {
         // Create an acknowledgement object
         AcknowledgementObject acknowledgementObject = new AcknowledgementObject();
         EnvelopeAckObject envelopeAckObject = new EnvelopeAckObject();
-        envelopeAckObject.setCreatedAt(LocalDateTime.now());
+        envelopeAckObject.setCreatedAt(Instant.now());
         envelopeAckObject.setEnvelopeSignatureCertificate("ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ==");
         envelopeAckObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
         envelopeAckObject.setAckType(AckTypeEnum.DELIVERED_ACK);
         envelopeAckObject.setNackType(NackTypeEnum.XML_SCHEMA_VALIDATION_ERROR);
-        envelopeAckObject.setEnvelopeSignatureTime(LocalDateTime.now());
+        envelopeAckObject.setEnvelopeSignatureTime(Instant.now());
         acknowledgementObject.setEnvelope(envelopeAckObject);
         acknowledgementObject.setDigitalSignature("ZGlnaXRhbFNpZ25hdHVyZQ==");
 
