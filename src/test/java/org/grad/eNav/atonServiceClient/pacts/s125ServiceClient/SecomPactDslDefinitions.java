@@ -35,6 +35,13 @@ import static org.grad.secom.core.base.SecomConstants.SECOM_DATE_TIME_FORMAT;
 public class SecomPactDslDefinitions {
 
     /**
+     * SECOM Ping Response Pact Body
+     */
+    static final DslPart pingResponseDsl = new PactDslJsonBody()
+            .datetime("lastPrivateInteractionTime", SECOM_DATE_TIME_FORMAT + "XX", Instant.now(), TimeZone.getDefault())
+            .asBody();
+
+    /**
      * SECOM Capability Response Pact Body
      */
     static final DslPart capabilityResponseDsl = new PactDslJsonBody()
