@@ -22,6 +22,8 @@ class NWParser {
 
     static NS_S100 = 'http://www.iho.int/s100gml/5.0';
     static NS_S124 = 'http://www.iho.int/S124/1.0';
+    static NS_S124_1_5 = 'http://www.iho.int/S124/1.5';
+    static NS_S124_2 = 'http://www.iho.int/S124/2.0';
     static NS_GML = 'http://www.opengis.net/gml/3.2';
 
     /**
@@ -148,84 +150,110 @@ class NWParser {
         return tableData;
     }
 
+    /**
+     * Parses the geometries of S-100 GML
+     * @param {*} element the xml element
+     * @returns geometry representation that can be rendered by the Map component.
+     */
     parseGeometries(element) {
-        function chunk(array, chunkSize) {
-            if (array.length % chunkSize !== 0) {
-                throw new Error(`Unable to chunk. Array length ${array.length} not multiple of ${chunkSize}.`);
-            }
-            const chunks = [];
-            for (let i = 0; i < array.length; i += chunkSize) {
-                chunks.push([array[i], array[i+1]])
-            }
-            return chunks;
+      function chunk(array, chunkSize) {
+        if (array.length % chunkSize !== 0) {
+          console.log(element);
+
+          throw new Error(`Unable to chunk. Array length ${array.length} not multiple of ${chunkSize}.`);
         }
-
-        function postListToLatLng(posList) {
-            const numbers = posList.split(/\s+/).map(number => parseFloat(number));
-            return chunk(numbers, 2);
+        const chunks = [];
+        for (let i = 0; i < array.length; i += chunkSize) {
+          chunks.push([array[i], array[i + 1]])
         }
+        return chunks;
+      }
 
-        function posToLatLng(pos) {
-            return postListToLatLng(pos)[0];
+      function postListToLatLng(posList) {
+        let numbers = posList.split(/\s+/).filter(Boolean).map(number => parseFloat(number));
+        const latLngPairs = chunk(numbers, 2);
+        return latLngPairs.map(pair => [pair[0], pair[1]]);
+      }
+
+
+      function posToLatLng(pos) {
+        return postListToLatLng(pos)[0];
+      }
+
+      const result = [];
+
+      var geometries = element.getElementsByTagNameNS(NWParser.NS_S124, "geometry");
+      if (geometries.length === 0) {
+        // Fall back to the v1.5 namespace if the 1.0 doesn't have results
+        geometries = element.getElementsByTagNameNS(NWParser.NS_S124_1_5, "geometry");
+      }
+      if (geometries.length === 0) {
+        // Fall back to the v2.0 namespace if the 1.0 doesn't have results
+        geometries = element.getElementsByTagNameNS(NWParser.NS_S124_2, "geometry");
+      }
+
+      if (geometries.length === 0) {
+        // If no geometry was provided, return default regional polygon.
+        return {
+          type: 'surface',
+          geometry: this.navareaX,
+        };
+      }
+
+      for (const geometry of geometries) {
+        const prop = geometry.firstElementChild;
+        if (prop == null)
+          continue;
+        const tag = prop.localName;
+        if (tag === 'pointProperty') {
+          const pos = geometry.getElementsByTagNameNS(NWParser.NS_GML, 'pos')[0];
+          const coords = posToLatLng(pos.textContent);
+          result.push({
+            type: 'point',
+            geometry: coords,
+          });
+        } else if (tag === 'curveProperty') {
+          // TODO: Implement more complicated curves, and curves defined with individual pos elements.
+          const posList = geometry.getElementsByTagNameNS(NWParser.NS_GML, 'posList')[0];
+          if (!posList) {
+            console.log(element);
+            throw new Error("Could not find posList in curveProperty.");
+          }
+          const coordsList = postListToLatLng(posList.textContent);
+          result.push({
+            type: 'curve',
+            geometry: coordsList,
+          });
+        } else if (tag === 'surfaceProperty') {
+          // TODO: Implement more complicated suraces, surfaces with holes and surfaces defined with pos elements.
+          const posList = geometry.getElementsByTagNameNS(NWParser.NS_GML, 'posList')[0];
+          if (!posList) {
+            throw new Error("Could not find posList in curveProperty.");
+          }
+          const coordsList = postListToLatLng(posList.textContent);
+          result.push({
+            type: 'surface',
+            geometry: coordsList,
+          });
+        } else {
+          throw new Error(`Could not parse geometry, unknown tag ${tag}`);
         }
+      }
 
-        const result = [];
-
-        const geometries = element.getElementsByTagNameNS(NWParser.NS_S124, "geometry");
-
-        if (geometries.length === 0) {
-            // If no geometry was provided, return default regional polygon.
-            return {
-                type: 'surface',
-                geometry: this.navareaX,
-            };
-        }
-
-        for (const geometry of geometries) {
-            const prop = geometry.firstElementChild;
-            const tag = prop.localName;
-            if (tag === 'pointProperty') {
-                const pos = geometry.getElementsByTagNameNS(NWParser.NS_GML, 'pos')[0];
-                const coords = posToLatLng(pos.textContent);
-                result.push({
-                    type: 'point',
-                    geometry: coords,
-                });
-            } else if (tag === 'curveProperty') {
-                // TODO: Implement more complicated curves, and curves defined with individual pos elements.
-                const posList = geometry.getElementsByTagNameNS(NWParser.NS_GML, 'posList')[0];
-                if (!posList) {
-                    throw new Error("Could not find posList in curveProperty.");
-                }
-                const coordsList = postListToLatLng(posList.textContent);
-                result.push({
-                    type: 'curve',
-                    geometry: coordsList,
-                });
-            } else if (tag === 'surfaceProperty') {
-                // TODO: Implement more complicated suraces, surfaces with holes and surfaces defined with pos elements.
-                const posList = geometry.getElementsByTagNameNS(NWParser.NS_GML, 'posList')[0];
-                if (!posList) {
-                    throw new Error("Could not find posList in curveProperty.");
-                }
-                const coordsList = postListToLatLng(posList.textContent);
-                result.push({
-                    type: 'surface',
-                    geometry: coordsList,
-                });
-            } else {
-                throw new Error(`Could not parse geometry, unknown tag ${tag}`);
-            }
-        }
-
-        return result;
+      return result;
     }
 
     parseWarnings(xmlDoc) {
         const result = [];
-        const warnings = xmlDoc.getElementsByTagNameNS(NWParser.NS_S124, 'NAVWARNPart');
+        const nsAndVersion = this.extractNamespaceAndVersion(xmlDoc);
+        var warnings = null;
+        if (nsAndVersion.version == '1.0' || nsAndVersion.version == '1.5') {
+          warnings = xmlDoc.getElementsByTagNameNS(nsAndVersion.namespace, 'NAVWARNPart');
+        } else if (nsAndVersion.version == '2.0') {
+          warnings = xmlDoc.getElementsByTagNameNS(nsAndVersion.namespace, "NavwarnPart");
+        }
         for (const warning of warnings) {
-            result.push(...this.parseGeometries(warning));
+          result.push(...this.parseGeometries(warning));
         }
         return result;
     }
@@ -269,6 +297,42 @@ class NWParser {
                 return true;
         }
         return false;
+    }
+
+
+    extractNamespaceAndVersion(xmlDoc) {
+        // Define known namespaces and their versions
+        const knownNamespaces = {
+          [NWParser.NS_S124]: '1.0',
+          [NWParser.NS_S124_1_5]: '1.5',
+          [NWParser.NS_S124_2]: '2.0'
+        };
+
+        // Check for parser errors
+        if (xmlDoc.getElementsByTagName("parsererror").length) {
+          throw new Error("Invalid XML document");
+        }
+
+        // Extract namespace from the root element
+        let detectedNamespace = null;
+        const attributes = xmlDoc.documentElement.attributes;
+
+        for (let attr of attributes) {
+          if (attr.name === "xmlns" || attr.name.startsWith("xmlns:")) {
+            if (knownNamespaces[attr.value]) {
+              detectedNamespace = attr.value;
+              break; // Stop once a known namespace is found
+            }
+          }
+        }
+
+        // Determine version based on the detected namespace
+        const detectedVersion = detectedNamespace ? knownNamespaces[detectedNamespace] : "Unknown version";
+
+        return {
+          namespace: detectedNamespace || "Unknown namespace",
+          version: detectedVersion
+        };
     }
 
 
