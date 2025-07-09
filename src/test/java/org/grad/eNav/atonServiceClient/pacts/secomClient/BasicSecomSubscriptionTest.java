@@ -96,8 +96,8 @@ public class BasicSecomSubscriptionTest {
                                         .method("POST")
                                         .body("{\"field1\":\"bad-field\", \"field2\":\"bad-field\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
-                                        .status(200)
-                                        .body(SecomPactDslDefinitions.subscriptionResponseDsl))
+                                        .status(400)
+                                        .body(SecomPactDslDefinitions.subscriptionResponseErrorDsl))
                 )
                 .toPact();
     }
@@ -304,7 +304,7 @@ public class BasicSecomSubscriptionTest {
         Response response = Request.post(mockServer.getUrl() + "/v1/subscription")
                 .bodyString("{\"field1\":\"bad-field\", \"field2\":\"bad-field\"}", ContentType.APPLICATION_JSON)
                 .execute();
-        assertEquals(200, response.returnResponse().getCode());
+        assertEquals(400, response.returnResponse().getCode());
     }
 
     /**
