@@ -111,7 +111,7 @@ public class SecomV2PactDslDefinitions {
                             .stringMatcher("digitalSignatureReference", "^(dsa|ecdsa-256-sha2-256|ecdsa-256-sha3-256|ecdsa-384-sha2|ecdsa-384-sha3|cvc_ecdsa)$", "dsa")
                             .object("digitalSignatureValue", new PactDslJsonBody()
                                     .stringMatcher("publicRootCertificateThumbprint", "^[-A-Za-z0-9+/]*={0,3}$", "cHVibGljUm9vdENlcnRpZmljYXRlVGh1bWJwcmludA===")
-                                    .stringMatcher("publicCertificate", "^[-A-Za-z0-9+/]*={0,3}$", "cHVibGljQ2VydGlmaWNhdGU=")
+                                    .stringMatcher("publicCertificate", "^[A-Za-z0-9+/]*={0,3}$", "cHVibGljQ2VydGlmaWNhdGU=")
                                     .stringMatcher("digitalSignature", "^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ=="))
                             .booleanType("compressionFlag", false))
                     .integerMatching("ackRequest", "^[0123]$", 0)
