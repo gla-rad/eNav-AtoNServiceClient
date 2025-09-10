@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.grad.eNav.atonServiceClient.pacts.s125ServiceClient;
+package org.grad.eNav.atonServiceClient.pacts.secomV2S125ServiceClient;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.PactBuilder;
@@ -26,15 +26,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
-import org.grad.secom.core.models.AcknowledgementObject;
-import org.grad.secom.core.models.EnvelopeAckObject;
-import org.grad.secom.core.models.enums.AckTypeEnum;
-import org.grad.secom.core.models.enums.NackTypeEnum;
+import org.grad.secomv2.core.models.AcknowledgementObject;
+import org.grad.secomv2.core.models.EnvelopeAckObject;
+import org.grad.secomv2.core.models.enums.AckTypeEnum;
+import org.grad.secomv2.core.models.enums.NackTypeEnum;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,8 +52,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
 @PactConsumerTest
-@PactTestFor(providerName = "SecomS125Service")
-public class S125ServiceClientSecomAcknowledgementTest {
+@PactTestFor(providerName = "SecomV2S125Service")
+public class S125ServiceClientSecomV2AcknowledgementTest {
 
     /**
      * The test object mapper.
@@ -63,7 +64,7 @@ public class S125ServiceClientSecomAcknowledgementTest {
      * SECOM Capability Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createAcknowledgementPact(PactBuilder builder) {
         return builder
                 .given("Test SECOM Acknowledgement Interface")
@@ -71,12 +72,12 @@ public class S125ServiceClientSecomAcknowledgementTest {
                         "A valid acknowledgement request",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v1/acknowledgement")
+                                        .path("/v2/acknowledgement")
                                         .method("POST")
-                                        .body(SecomPactDslDefinitions.acknowledgementRequestDsl))
+                                        .body(SecomV2PactDslDefinitions.acknowledgementRequestDsl))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
-                                        .body(SecomPactDslDefinitions.acknowledgementResponseDsl))
+                                        .body(SecomV2PactDslDefinitions.acknowledgementResponseDsl))
                 )
                 .toPact();
     }
@@ -85,7 +86,7 @@ public class S125ServiceClientSecomAcknowledgementTest {
      * SECOM Acknowledgement With Bad Body Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createAcknowledgementPactWithBadBody(PactBuilder builder) {
         return builder
                 .given("Test SECOM Acknowledgement Interface")
@@ -93,12 +94,12 @@ public class S125ServiceClientSecomAcknowledgementTest {
                         "An acknowledgement request with badly formed body",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v1/acknowledgement")
+                                        .path("/v2/acknowledgement")
                                         .method("POST")
                                         .body("{\"envelope\":\"bad-envelope\", \"digitalSignature\":\"bad-digital-signature\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomPactDslDefinitions.acknowledgementResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.acknowledgementResponseErrorDsl))
                 )
                 .toPact();
     }
@@ -107,7 +108,7 @@ public class S125ServiceClientSecomAcknowledgementTest {
      * SECOM Acknowledgement Without Transaction Identifier Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomS125Service", consumer="SecomS125ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createAcknowledgementPactWithoutTransactionIdentifier(PactBuilder builder) {
         return builder
                     .given("Test SECOM Acknowledgement Interface")
@@ -115,12 +116,12 @@ public class S125ServiceClientSecomAcknowledgementTest {
                         "An acknowledgement request without a transaction identifier",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v1/acknowledgement")
+                                        .path("/v2/acknowledgement")
                                         .method("POST")
-                                        .body(SecomPactDslDefinitions.acknowledgementRequestWithoutTransactionIdentifierDsl))
+                                        .body(SecomV2PactDslDefinitions.acknowledgementRequestWithoutTransactionIdentifierDsl))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomPactDslDefinitions.acknowledgementResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.acknowledgementResponseErrorDsl))
                 )
                 .toPact();
     }
@@ -142,21 +143,25 @@ public class S125ServiceClientSecomAcknowledgementTest {
     @Test
     @PactTestFor(pactMethods = "createAcknowledgementPact")
     void testAcknowledgement(MockServer mockServer) throws IOException {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         // Create an acknowledgement object
         AcknowledgementObject acknowledgementObject = new AcknowledgementObject();
         EnvelopeAckObject envelopeAckObject = new EnvelopeAckObject();
         envelopeAckObject.setCreatedAt(Instant.now());
-        envelopeAckObject.setEnvelopeSignatureCertificate("ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ==");
+        envelopeAckObject.setEnvelopeSignatureCertificate(new String[] {"ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ=="});
         envelopeAckObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
         envelopeAckObject.setTransactionIdentifier(UUID.randomUUID());
         envelopeAckObject.setAckType(AckTypeEnum.DELIVERED_ACK);
         envelopeAckObject.setNackType(NackTypeEnum.XML_SCHEMA_VALIDATION_ERROR);
         envelopeAckObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeAckObject.setDigitalSignatureReference("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
+        envelopeAckObject.setDataReference(UUID.randomUUID());
         acknowledgementObject.setEnvelope(envelopeAckObject);
         acknowledgementObject.setDigitalSignature("ZGlnaXRhbFNpZ25hdHVyZQ==");
 
+        System.out.println(objectMapper.writeValueAsString(acknowledgementObject));
         // And perform the SECOM request
-        Response httpResponse = Request.post(mockServer.getUrl() + "/v1/acknowledgement")
+        Response httpResponse = Request.post(mockServer.getUrl() + "/v2/acknowledgement")
                 .bodyString(this.objectMapper.writeValueAsString(acknowledgementObject), ContentType.APPLICATION_JSON)
                 .execute();
         assertEquals(200, httpResponse.returnResponse().getCode());
@@ -171,7 +176,7 @@ public class S125ServiceClientSecomAcknowledgementTest {
     @PactTestFor(pactMethods = "createAcknowledgementPactWithBadBody")
     void testAcknowledgementWithBodBody(MockServer mockServer) throws IOException {
         // Perform the SECOM request
-        Response response = Request.post(mockServer.getUrl() + "/v1/acknowledgement")
+        Response response = Request.post(mockServer.getUrl() + "/v2/acknowledgement")
                 .bodyString("{\"envelope\":\"bad-envelope\", \"digitalSignature\":\"bad-digital-signature\"}", ContentType.APPLICATION_JSON)
                 .execute();
         assertEquals(400, response.returnResponse().getCode());
@@ -191,16 +196,18 @@ public class S125ServiceClientSecomAcknowledgementTest {
         AcknowledgementObject acknowledgementObject = new AcknowledgementObject();
         EnvelopeAckObject envelopeAckObject = new EnvelopeAckObject();
         envelopeAckObject.setCreatedAt(Instant.now());
-        envelopeAckObject.setEnvelopeSignatureCertificate("ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ==");
+        envelopeAckObject.setEnvelopeSignatureCertificate(new String[] {"ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ=="});
         envelopeAckObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
         envelopeAckObject.setAckType(AckTypeEnum.DELIVERED_ACK);
         envelopeAckObject.setNackType(NackTypeEnum.XML_SCHEMA_VALIDATION_ERROR);
         envelopeAckObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeAckObject.setDataReference(UUID.randomUUID());
+        envelopeAckObject.setDigitalSignatureReference("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
         acknowledgementObject.setEnvelope(envelopeAckObject);
         acknowledgementObject.setDigitalSignature("ZGlnaXRhbFNpZ25hdHVyZQ==");
 
         // Perform the SECOM request
-        Response response = Request.post(mockServer.getUrl() + "/v1/acknowledgement")
+        Response response = Request.post(mockServer.getUrl() + "/v2/acknowledgement")
                 .bodyString(this.objectMapper.writeValueAsString(acknowledgementObject), ContentType.APPLICATION_JSON)
                 .execute();
         assertEquals(400, response.returnResponse().getCode());
