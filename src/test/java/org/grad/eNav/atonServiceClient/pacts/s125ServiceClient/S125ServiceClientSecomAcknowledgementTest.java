@@ -178,7 +178,7 @@ public class S125ServiceClientSecomAcknowledgementTest {
     }
 
     /**
-     * est that the client cannot perform an acknowledgement update on the
+     * Test that the client cannot perform an acknowledgement update on the
      * server if no transaction identifier is present and generate the pacts to
      * be uploaded to the pacts broker.
      * @param mockServer the mocked server

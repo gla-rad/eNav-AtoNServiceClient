@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.grad.eNav.atonServiceClient.pacts.s125ServiceClientv2;
+package org.grad.eNav.atonServiceClient.pacts.secomV2Client;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.PactBuilder;
@@ -32,51 +32,51 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 /**
- * The S125 Aton client Consumer SECOM Capability Interface Contract Test Class.
+ * The basic SECOM Client Consumer Ping Interface Contract Test Class.
  * <p/>
- * This class provides the definition of the consumer-driver contracts for the
- * S125 AtoN Service Client SECOM Capability interface and generates the data
+ * This class provides the definition of the consumer-driver contracts for a
+ * basic SECOM Client Consumer Ping interface and generates the data
  * to be published to the pacts-broker. This can be done through a separate
  * maven goal, so that it doesn't conflict with the development of the service.
  *
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
 @PactConsumerTest
-@PactTestFor(providerName = "SecomS125Service-v2")
-public class S125ServiceClientSecomV2CapabilityTest {
+@PactTestFor(providerName = "SecomV2Service")
+public class BasicSecomV2PingTest {
 
     /**
-     * SECOM Capability Pact.
+     * SECOM Ping Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomS125Service-v2", consumer="SecomS125ServiceClient-v2")
-    public V4Pact createCapabilityPact(PactBuilder builder) {
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
+    public V4Pact createPingPact(PactBuilder builder) {
         return builder
-                .given("Test SECOM Capability Interface")
+                .given("Test SECOM Ping Interface")
                 .expectsToReceiveHttpInteraction(
-                        "A valid capability request",
+                        "A valid ping request",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v2/capability")
+                                        .path("/v2/ping")
                                         .method("GET"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
-                                        .body(SecomV2PactDslDefinitions.capabilityResponseDsl))
+                                        .body(SecomV2PactDslDefinitions.pingResponseDsl))
                 )
                 .toPact();
     }
 
     /**
-     * Test that the client can request the SECOM capabilities of the server
+     * Test that the client can request the SECOM ping of the server
      * and generate the pacts to be uploaded to the pacts broker.
      * @param mockServer the mocked server
      * @throws IOException the IO exception that occurred
      */
     @Test
-    @PactTestFor(pactMethods = "createCapabilityPact")
-    void testCapability(MockServer mockServer) throws IOException {
+    @PactTestFor(pactMethods = "createPingPact")
+    void testPing(MockServer mockServer) throws IOException {
         // Perform the SECOM request
-        Response response = Request.get(mockServer.getUrl() + "/v2/capability")
+        Response response = Request.get(mockServer.getUrl() + "/v2/ping")
                 .execute();
         assertEquals(200, response.returnResponse().getCode());
     }

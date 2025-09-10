@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.grad.eNav.atonServiceClient.pacts.secomClientv2;
+package org.grad.eNav.atonServiceClient.pacts.secomV2S125ServiceClient;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.PactBuilder;
@@ -42,18 +42,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 /**
- * The basic SECOM Client Consumer Acknowledgement Interface Contract Test Class.
+ * The S125 Aton client Consumer SECOM Acknowledgement Interface Contract Test Class.
  * <p/>
- * This class provides the definition of the consumer-driver contracts for a
- * basic SECOM Client Consumer Acknowledgement interface and generates the
+ * This class provides the definition of the consumer-driver contracts for the
+ * S125 AtoN Service Client SECOM Acknowledgement interface and generates the
  * data to be published to the pacts-broker. This can be done through a separate
  * maven goal, so that it doesn't conflict with the development of the service.
  *
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
 @PactConsumerTest
-@PactTestFor(providerName = "SecomService-v2")
-public class BasicSecomV2AcknowledgementTest {
+@PactTestFor(providerName = "SecomV2S125Service")
+public class S125ServiceClientSecomV2AcknowledgementTest {
 
     /**
      * The test object mapper.
@@ -64,7 +64,7 @@ public class BasicSecomV2AcknowledgementTest {
      * SECOM Capability Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createAcknowledgementPact(PactBuilder builder) {
         return builder
                 .given("Test SECOM Acknowledgement Interface")
@@ -86,7 +86,7 @@ public class BasicSecomV2AcknowledgementTest {
      * SECOM Acknowledgement With Bad Body Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createAcknowledgementPactWithBadBody(PactBuilder builder) {
         return builder
                 .given("Test SECOM Acknowledgement Interface")
@@ -108,7 +108,7 @@ public class BasicSecomV2AcknowledgementTest {
      * SECOM Acknowledgement Without Transaction Identifier Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createAcknowledgementPactWithoutTransactionIdentifier(PactBuilder builder) {
         return builder
                     .given("Test SECOM Acknowledgement Interface")
@@ -159,6 +159,7 @@ public class BasicSecomV2AcknowledgementTest {
         acknowledgementObject.setEnvelope(envelopeAckObject);
         acknowledgementObject.setDigitalSignature("ZGlnaXRhbFNpZ25hdHVyZQ==");
 
+        System.out.println(objectMapper.writeValueAsString(acknowledgementObject));
         // And perform the SECOM request
         Response httpResponse = Request.post(mockServer.getUrl() + "/v2/acknowledgement")
                 .bodyString(this.objectMapper.writeValueAsString(acknowledgementObject), ContentType.APPLICATION_JSON)
@@ -182,7 +183,7 @@ public class BasicSecomV2AcknowledgementTest {
     }
 
     /**
-     * est that the client cannot perform an acknowledgement update on the
+     * Test that the client cannot perform an acknowledgement update on the
      * server if no transaction identifier is present and generate the pacts to
      * be uploaded to the pacts broker.
      * @param mockServer the mocked server

@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package org.grad.eNav.atonServiceClient.pacts.secomClientv2;
+package org.grad.eNav.atonServiceClient.pacts.secomV2S125ServiceClient;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
-import au.com.dius.pact.consumer.dsl.PactDslJsonRootValue;
 
 import java.time.Instant;
 import java.util.TimeZone;
@@ -39,7 +38,7 @@ public class SecomV2PactDslDefinitions {
      * SECOM Ping Response Pact Body
      */
     static final DslPart pingResponseDsl = new PactDslJsonBody()
-            .datetime("lastPrivateInteractionTime", SECOM_DATE_TIME_FORMAT, Instant.now(), TimeZone.getDefault())
+            .datetime("lastPrivateInteractionTime", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
             .asBody();
 
     /**
@@ -49,6 +48,7 @@ public class SecomV2PactDslDefinitions {
             .array("capability")
                 .object()
                     .numberValue("containerType", 0)
+                    .stringValue("dataProductType", "S125")
                     .stringType("productSchemaUrl", "https://rnavlab.gla-rad.org/enav/aton-service/xsd/S125.xsd")
                     .object("implementedInterfaces", new PactDslJsonBody()
                             .booleanType("upload",  true)
@@ -70,17 +70,17 @@ public class SecomV2PactDslDefinitions {
      * SECOM GetSummary Response Pact Body
      */
      static final DslPart getSummaryResponseDsl = new PactDslJsonBody()
-            .array("informationSummaryObject")
+            .array("summaryObject")
                 .object()
                     .stringMatcher("dataReference",  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "7f000101-8ad6-1ee7-818a-d7332b920002")
                     .booleanType("dataProtection",  true)
                     .booleanType("dataCompression", true)
                     .integerMatching("containerType", "[0|1|2]", 1)
+                    .stringValue("dataProductType", "S125")
                     .stringType("info_identifier", "test")
                     .stringType("info_name", "test")
                     .stringType("info_status", "present")
-                    .stringType("info_description", "test")
-                    .datetime("info_lastModifiedDate", SECOM_DATE_TIME_FORMAT, Instant.now(), TimeZone.getDefault())
+                    .datetime("info_lastModifiedDate", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
                     .stringType("info_productVersion", "0.0.1")
                     .integerType("info_size", 12345)
                 .closeObject()
@@ -114,7 +114,8 @@ public class SecomV2PactDslDefinitions {
                                     .stringMatcher("publicRootCertificateThumbprint", "^[-A-Za-z0-9+/]*={0,3}$", "cHVibGljUm9vdENlcnRpZmljYXRlVGh1bWJwcmludA===")
                                     .stringMatcher("publicCertificate", "^[-A-Za-z0-9+/]*={0,3}$", "cHVibGljQ2VydGlmaWNhdGU=")
                                     .stringMatcher("digitalSignature", "^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ=="))
-                    .integerMatching("ackRequest", "^[0123]$", 0))
+                            .booleanType("compressionFlag", false))
+                    .integerMatching("ackRequest", "^[0123]$", 0)
                 .closeObject()
             .closeArray()
             .asBody()
@@ -136,15 +137,15 @@ public class SecomV2PactDslDefinitions {
      */
     static final DslPart acknowledgementRequestDsl = new PactDslJsonBody()
             .object("envelope")
-            .datetime("createdAt", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
-            .stringMatcher("envelopeRootCertificateThumbprint",  "^[-A-Za-z0-9+/]*$", "714fead3e2e4f0a01051bc4e26c30a306c456ef1")
-            .stringMatcher("digitalSignatureReference",  "^[-A-Za-z0-9+/]*$", "714fead3e2e4f0a01051bc4e26c30a306c456ef1")
-            .stringMatcher("transactionIdentifier",  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "3fa85f64-5717-4562-b3fc-2c963f66afa6")
-            .integerMatching("ackType", "[1|2|3]", 1)
-            .integerMatching("nackType", "[0|1|2|3|4]", 0)
-            .datetime("envelopeSignatureTime", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
-            .stringMatcher("dataReference", "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "3fa85f64-5717-4562-b3fc-2c963f66afa6")
-            .array("envelopeCertificate").stringMatcher("^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==").closeArray()
+                .datetime("createdAt", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
+                .stringMatcher("envelopeRootCertificateThumbprint",  "^[-A-Za-z0-9+/]*$", "714fead3e2e4f0a01051bc4e26c30a306c456ef1")
+                .stringMatcher("digitalSignatureReference",  "^[-A-Za-z0-9+/]*$", "714fead3e2e4f0a01051bc4e26c30a306c456ef1")
+                .stringMatcher("transactionIdentifier",  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "3fa85f64-5717-4562-b3fc-2c963f66afa6")
+                .integerMatching("ackType", "[1|2|3]", 1)
+                .integerMatching("nackType", "[0|1|2|3|4]", 0)
+                .datetime("envelopeSignatureTime", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
+                .stringMatcher("dataReference", "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "3fa85f64-5717-4562-b3fc-2c963f66afa6")
+                .array("envelopeCertificate").stringMatcher("^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==").closeArray()
             .closeObject()
             .asBody()
             .stringMatcher("digitalSignature",  "^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==");
@@ -155,15 +156,15 @@ public class SecomV2PactDslDefinitions {
      */
     static final DslPart acknowledgementRequestWithoutTransactionIdentifierDsl = new PactDslJsonBody()
             .object("envelope")
-            .datetime("createdAt", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
-            .stringMatcher("envelopeRootCertificateThumbprint",  "^[-A-Za-z0-9+/]*$", "714fead3e2e4f0a01051bc4e26c30a306c456ef1")
-            .stringMatcher("digitalSignatureReference",  "^[-A-Za-z0-9+/]*$", "714fead3e2e4f0a01051bc4e26c30a306c456ef1")
-            .nullValue("transactionIdentifier")
-            .integerMatching("ackType", "[1|2|3]", 1)
-            .integerMatching("nackType", "[0|1|2|3|4]", 0)
-            .datetime("envelopeSignatureTime", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
-            .stringMatcher("dataReference", "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "3fa85f64-5717-4562-b3fc-2c963f66afa6")
-            .array("envelopeCertificate").stringMatcher("^[-A-Za-z0-9+/]*={0,3}$", "ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ==").closeArray()
+                .datetime("createdAt", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
+                .stringMatcher("envelopeRootCertificateThumbprint",  "^[-A-Za-z0-9+/]*$", "714fead3e2e4f0a01051bc4e26c30a306c456ef1")
+                .stringMatcher("digitalSignatureReference",  "^[-A-Za-z0-9+/]*$", "714fead3e2e4f0a01051bc4e26c30a306c456ef1")
+                .nullValue("transactionIdentifier")
+                .integerMatching("ackType", "[1|2|3]", 1)
+                .integerMatching("nackType", "[0|1|2|3|4]", 0)
+                .datetime("envelopeSignatureTime", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
+                .stringMatcher("dataReference", "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "3fa85f64-5717-4562-b3fc-2c963f66afa6")
+                .array("envelopeCertificate").stringMatcher("^[-A-Za-z0-9+/]*={0,3}$", "ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ==").closeArray()
             .closeObject()
             .asBody()
             .stringMatcher("digitalSignature",  "^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==");
@@ -175,31 +176,33 @@ public class SecomV2PactDslDefinitions {
     static final DslPart acknowledgementResponseDsl = new PactDslJsonBody()
             .nullValue("SECOM_ResponseCode")
             .stringType("message",  "Acknowledgement message.");
+
     /**
      * SECOM Acknowledgement Response Error Pact Body
      */
     static final DslPart acknowledgementResponseErrorDsl = new PactDslJsonBody()
             .integerMatching("SECOM_ResponseCode", "[0|1|2|3]", 0)
-            .stringType("message",  "Bad Request");
+            .stringType("message",  "Acknowledgement message.");
 
     /**
      * SECOM Subscription Request Pact Body
      */
     static final DslPart subscriptionRequestDsl = new PactDslJsonBody()
             .object("envelope")
-            .integerMatching("containerType", "[0|1|2]", 1)
-            .stringValue("dataProductType", "S125")
-            .stringMatcher("dataReference",  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "7f000101-8ad6-1ee7-818a-d7332b920002")
-            .stringType("productVersion", "0.0.1")
-            .stringMatcher("geometry", "^([A-Z]+\\s*\\(\\(?\\s*(-?\\d+(\\.\\d+)?)\\s+-?\\d+(\\.\\d+)?(?:\\s+-?\\d+(\\.\\d+)?)?\\s*(,\\s*(-?\\d+(\\.\\d+)?)\\s+-?\\d+(\\.\\d+)?(?:\\s+-?\\d+(\\.\\d+)?)?\\s*)*\\)\\)?\\s*)+$", "POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))")
-            .stringMatcher("unlocode",  "[A-Z]{5}", "GBHRW")
-            .datetime("subscriptionPeriodStart", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
-            .datetime("subscriptionPeriodEnd", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
-            .stringMatcher("callbackEndpoint", "[(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)", "https://rnavlab.gla-rad.org")
-            .booleanType("pushAll", true)
+                .integerMatching("containerType", "[0|1|2]", 1)
+                .stringValue("dataProductType", "S125")
+                .stringMatcher("dataReference",  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "7f000101-8ad6-1ee7-818a-d7332b920002")
+                .stringType("productVersion", "0.0.1")
+                .stringMatcher("geometry", "^([A-Z]+\\s*\\(\\(?\\s*(-?\\d+(\\.\\d+)?)\\s+-?\\d+(\\.\\d+)?(?:\\s+-?\\d+(\\.\\d+)?)?\\s*(,\\s*(-?\\d+(\\.\\d+)?)\\s+-?\\d+(\\.\\d+)?(?:\\s+-?\\d+(\\.\\d+)?)?\\s*)*\\)\\)?\\s*)+$", "POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))")
+                .stringMatcher("unlocode",  "[A-Z]{5}", "GBHRW")
+                .datetime("subscriptionPeriodStart", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
+                .datetime("subscriptionPeriodEnd", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
+                .stringMatcher("callbackEndpoint", "[(http(s)?):\\/\\/(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)", "https://rnavlab.gla-rad.org")
+                .booleanType("pushAll", true)
             .closeObject()
             .asBody()
             .stringMatcher("envelopeSignature","^[-A-Za-z0-9+/]*={0,3}$", "ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ==");
+
 
     /**
      * SECOM Subscription Response Pact Body

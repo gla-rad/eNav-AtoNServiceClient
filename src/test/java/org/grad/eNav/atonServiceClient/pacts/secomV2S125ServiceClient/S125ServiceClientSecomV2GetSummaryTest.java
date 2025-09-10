@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.grad.eNav.atonServiceClient.pacts.secomClientv2;
+package org.grad.eNav.atonServiceClient.pacts.secomV2S125ServiceClient;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.PactBuilder;
@@ -38,248 +38,249 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * The basic SECOM client Consumer Get Interface Contract Test Class.
+ * The S125 Aton client Consumer SECOM Get Summary Interface Contract Test Class.
  * <p/>
- * This class provides the definition of the consumer-driver contracts for a
- * basic SECOM client Consumer Get interface and generates the data to be
- * published to the pacts-broker. This can be done through a separate maven
- * goal, so that it doesn't conflict with the development of the service.
+ * This class provides the definition of the consumer-driver contracts for the
+ * S125 AtoN Service Client SECOM Get Summary interface and generates the data
+ * to be published to the pacts-broker. This can be done through a separate
+ * maven goal, so that it doesn't conflict with the development of the service.
  *
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
 @PactConsumerTest
-@PactTestFor(providerName = "SecomService-v2")
-class BasicSecomV2GetTest {
+@PactTestFor(providerName = "SecomV2S125Service")
+public class S125ServiceClientSecomV2GetSummaryTest {
 
     /**
-     * Define a map of query parameters for the createGetPactWithParams
+     * Define a map of query parameters for the createGetSummaryPactWithParams
      * pacts. This can also be reused in the testing.
      */
     final Map<String, String> queryParamsMap = Map.of(
-            "containerType" ,"0",
-            "productVersion" ,"0.0.1",
-            "geometry" ,"POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))",
-            "unlocode" ,"GBHRW",
-            "validFrom" ,"20200101T000000",
-            "validTo" ,"20200101T235959",
-            "page" ,"0",
-            "pageSize" ,"10"
+            "containerType", "0",
+            "dataProductType", "S125",
+            "productVersion", "0.0.1",
+            "geometry", "POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))",
+            "unlocode", "GBHRW",
+            "validFrom", "20200101T000000",
+            "validTo", "20200101T235959",
+            "page", "0",
+            "pageSize", "10"
     );
 
     /**
-     * SECOM Get Pact.
+     * SECOM Get Summary Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
-    public V4Pact createGetPact(PactBuilder builder) {
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
+    public V4Pact createGetSummaryPact(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Interface")
+                .given("Test SECOM Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
-                        "A valid get request",
+                        "A valid get summary request",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v2/object")
+                                        .path("/v2/object/summary")
                                         .method("GET"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
-                                        .body(SecomV2PactDslDefinitions.getResponseDsl))
+                                        .body(SecomV2PactDslDefinitions.getSummaryResponseDsl))
                 )
                 .toPact();
     }
 
     /**
-     * SECOM Get With Parameters Pact.
+     * SECOM Get Summary With Parameters Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
-    public V4Pact createGetPactWithParams(PactBuilder builder) {
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
+    public V4Pact createGetSummaryPactWithParams(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Interface")
+                .given("Test SECOM Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
-                        "A valid get request with query parameters",
+                        "A valid get summary request with query parameters",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v2/object")
+                                        .path("/v2/object/summary")
                                         .method("GET")
                                         .queryParameters(this.queryParamsMap))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
-                                        .body(SecomV2PactDslDefinitions.getResponseDsl))
+                                        .body(SecomV2PactDslDefinitions.getSummaryResponseDsl))
                 )
                 .toPact();
     }
 
     /**
-     * SECOM Get With Parameters of Badly Formatted Container Type Pact.
+     * SECOM Get Summary With Parameters of Badly Formatted Container Type Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
-    public V4Pact createGetPactWithParamsContainerTypeBadFormat(PactBuilder builder) {
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
+    public V4Pact createGetSummaryPactWithParamsContainerTypeBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Interface")
+                .given("Test SECOM Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
-                        "A get request with query parameters but a badly formatted containerType",
+                        "A get summary request with query parameters but a badly formatted containerType",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v2/object")
+                                        .path("/v2/object/summary")
                                         .method("GET")
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "containerType", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.getResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.getSummaryResponseErrorDsl))
                 )
                 .toPact();
     }
 
     /**
-     * SECOM Get With Parameters of Badly Formatted Data Product Type Pact.
+     * SECOM Get Summary With Parameters of Badly Formatted Data Product Type
+     * Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
-    public V4Pact createGetPactWithParamsDataProductTypeBadFormat(PactBuilder builder) {
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
+    public V4Pact createGetSummaryPactWithParamsDataProductTypeBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Interface")
+                .given("Test SECOM Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
-                        "A get request with query parameters but a badly formatted dataProductType",
+                        "A get summary request with query parameters but a badly formatted dataProductType",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v2/object")
+                                        .path("/v2/object/summary")
                                         .method("GET")
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "dataProductType", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.getResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.getSummaryResponseErrorDsl))
                 )
                 .toPact();
     }
 
     /**
-     * SECOM Get With Parameters of Badly Formatted Geometry Pact.
+     * SECOM Get Summary With Parameters of Badly Formatted Geometry Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
-    public V4Pact createGetPactWithParamsGeometryBadFormat(PactBuilder builder) {
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
+    public V4Pact createGetSummaryPactWithParamsGeometryBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Interface")
+                .given("Test SECOM Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
-                        "A get request with query parameters but a badly formatted geometry",
+                        "A get summary request with query parameters but a badly formatted geometry",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v2/object")
+                                        .path("/v2/object/summary")
                                         .method("GET")
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "geometry", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.getResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.getSummaryResponseErrorDsl))
                 )
                 .toPact();
     }
 
     /**
-     * SECOM Get With Parameters of Badly Formatted UnLoCode Pact.
+     * SECOM Get Summary With Parameters of Badly Formatted UnLoCode Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
-    public V4Pact createGetPactWithParamsUnLoCodeBadFormat(PactBuilder builder) {
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
+    public V4Pact createGetSummaryPactWithParamsUnLoCodeBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Interface")
+                .given("Test SECOM Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
-                        "A get request with query parameters but a badly formatted UnLoCode",
+                        "A get summary request with query parameters but a badly formatted UnLoCode",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v2/object")
+                                        .path("/v2/object/summary")
                                         .method("GET")
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "unlocode", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.getResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.getSummaryResponseErrorDsl))
                 )
                 .toPact();
     }
 
     /**
-     * SECOM Get With Parameters of Badly Formatted validFrom Pact.
+     * SECOM Get Summary With Parameters of Badly Formatted validFrom Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
-    public V4Pact createGetPactWithParamsValidFromBadFormat(PactBuilder builder) {
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
+    public V4Pact createGetSummaryPactWithParamsValidFromBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Interface")
+                .given("Test SECOM Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
-                        "A get request with query parameters but a badly validFrom",
+                        "A get summary request with query parameters but a badly formatted validFrom",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v2/object")
+                                        .path("/v2/object/summary")
                                         .method("GET")
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "validFrom", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.getResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.getSummaryResponseErrorDsl))
                 )
                 .toPact();
     }
 
     /**
-     * SECOM Get With Parameters of Badly Formatted validTo Pact.
+     * SECOM Get Summary With Parameters of Badly Formatted validTo Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
-    public V4Pact createGetPactWithParamsValidToBadFormat(PactBuilder builder) {
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
+    public V4Pact createGetSummaryPactWithParamsValidToBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Interface")
+                .given("Test SECOM Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
-                        "A get request with query parameters but a badly validTo ",
+                        "A get summary request with query parameters but a badly validTo",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v2/object")
+                                        .path("/v2/object/summary")
                                         .method("GET")
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "validTo", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.getResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.getSummaryResponseErrorDsl))
                 )
                 .toPact();
     }
 
     /**
-     * Test that the client can request the SECOM Get of the server
+     * Test that the client can request the SECOM Get Summary of the server
      * and generate the pacts to be uploaded to the pacts broker.
      * @param mockServer the mocked server
      * @throws IOException the IO exception that occurred
      */
     @Test
-    @PactTestFor(pactMethods = "createGetPact")
-    void testGet(MockServer mockServer) throws IOException, URISyntaxException {
+    @PactTestFor(pactMethods = "createGetSummaryPact")
+    void testGetSummary(MockServer mockServer) throws IOException, URISyntaxException {
         // Perform the SECOM request
         Response response = Request.get(
-                        new URIBuilder(mockServer.getUrl() + "/v2/object")
-                                .build())
+                new URIBuilder(mockServer.getUrl() + "/v2/object/summary")
+                        .build())
                 .execute();
         assertEquals(200, response.returnResponse().getCode());
-
     }
 
     /**
-     * Test that the client can request the SECOM Get of the server
+     * Test that the client can request the SECOM Get Summary of the server
      * alongside query parameters and generate the pacts to be uploaded to the
      * pacts broker.
      * @param mockServer the mocked server
      * @throws IOException the IO exception that occurred
      */
     @Test
-    @PactTestFor(pactMethods = "createGetPactWithParams")
-    void testGetWithParams(MockServer mockServer) throws IOException, URISyntaxException {
+    @PactTestFor(pactMethods = "createGetSummaryPactWithParams")
+    void testGetSummaryWithParams(MockServer mockServer) throws IOException, URISyntaxException {
         // Perform the SECOM request
         Response response = Request.get(
-                        new URIBuilder(mockServer.getUrl() + "/v2/object")
-                                .addParameters(this.mapToNameValueParams(this.queryParamsMap))
-                                .build())
+                new URIBuilder(mockServer.getUrl() + "/v2/object/summary")
+                        .addParameters(this.mapToNameValueParams(this.queryParamsMap))
+                        .build())
                 .execute();
         assertEquals(200, response.returnResponse().getCode());
     }
 
     /**
-     * Test that the client can request the SECOM Get of the server
+     * Test that the client can request the SECOM Get Summary of the server
      * alongside query parameters, including a badly formatted container type
      * query parameter, and generate the pacts to be uploaded to the pacts
      * broker.
@@ -287,13 +288,13 @@ class BasicSecomV2GetTest {
      * @throws IOException the IO exception that occurred
      */
     @Test
-    @PactTestFor(pactMethods = "createGetPactWithParamsContainerTypeBadFormat")
-    void testGetWithParamsContainerTypeBadFormat(MockServer mockServer) throws IOException, URISyntaxException {
+    @PactTestFor(pactMethods = "createGetSummaryPactWithParamsContainerTypeBadFormat")
+    void testGetSummaryWithParamsContainerTypeBadFormat(MockServer mockServer) throws IOException, URISyntaxException {
         // Update the query params
         final Map<String, String> queryParams = this.updateMapValue(this.queryParamsMap, "containerType", "invalid");
         // Perform the SECOM request
         Response response = Request.get(
-                        new URIBuilder(mockServer.getUrl() + "/v2/object")
+                        new URIBuilder(mockServer.getUrl() + "/v2/object/summary")
                                 .addParameters(this.mapToNameValueParams(queryParams))
                                 .build())
                 .execute();
@@ -301,7 +302,7 @@ class BasicSecomV2GetTest {
     }
 
     /**
-     * Test that the client can request the SECOM Get of the server
+     * Test that the client can request the SECOM Get Summary of the server
      * alongside query parameters, including a badly formatted data product type
      * query parameter, and generate the pacts to be uploaded to the pacts
      * broker.
@@ -309,13 +310,13 @@ class BasicSecomV2GetTest {
      * @throws IOException the IO exception that occurred
      */
     @Test
-    @PactTestFor(pactMethods = "createGetPactWithParamsDataProductTypeBadFormat")
-    void testGetWithParamsDataProductTypeBadFormat(MockServer mockServer) throws IOException, URISyntaxException {
+    @PactTestFor(pactMethods = "createGetSummaryPactWithParamsDataProductTypeBadFormat")
+    void testGetSummaryWithParamsDataProductTypeBadFormat(MockServer mockServer) throws IOException, URISyntaxException {
         // Update the query params
         final Map<String, String> queryParams = this.updateMapValue(this.queryParamsMap, "dataProductType", "invalid");
         // Perform the SECOM request
         Response response = Request.get(
-                        new URIBuilder(mockServer.getUrl() + "/v2/object")
+                        new URIBuilder(mockServer.getUrl() + "/v2/object/summary")
                                 .addParameters(this.mapToNameValueParams(queryParams))
                                 .build())
                 .execute();
@@ -323,7 +324,7 @@ class BasicSecomV2GetTest {
     }
 
     /**
-     * Test that the client can request the SECOM Get of the server
+     * Test that the client can request the SECOM Get Summary of the server
      * alongside query parameters, including a badly formatted geometry
      * query parameter, and generate the pacts to be uploaded to the pacts
      * broker.
@@ -331,13 +332,13 @@ class BasicSecomV2GetTest {
      * @throws IOException the IO exception that occurred
      */
     @Test
-    @PactTestFor(pactMethods = "createGetPactWithParamsGeometryBadFormat")
-    void testGetWithParamsGeometryBadFormat(MockServer mockServer) throws IOException, URISyntaxException {
+    @PactTestFor(pactMethods = "createGetSummaryPactWithParamsGeometryBadFormat")
+    void testGetSummaryWithParamsGeometryBadFormat(MockServer mockServer) throws IOException, URISyntaxException {
         // Update the query params
         final Map<String, String> queryParams = this.updateMapValue(this.queryParamsMap, "geometry", "invalid");
         // Perform the SECOM request
         Response response = Request.get(
-                        new URIBuilder(mockServer.getUrl() + "/v2/object")
+                        new URIBuilder(mockServer.getUrl() + "/v2/object/summary")
                                 .addParameters(this.mapToNameValueParams(queryParams))
                                 .build())
                 .execute();
@@ -345,7 +346,7 @@ class BasicSecomV2GetTest {
     }
 
     /**
-     * Test that the client can request the SECOM Get of the server
+     * Test that the client can request the SECOM Get Summary of the server
      * alongside query parameters, including a badly formatted UnLoCode
      * query parameter, and generate the pacts to be uploaded to the pacts
      * broker.
@@ -353,13 +354,13 @@ class BasicSecomV2GetTest {
      * @throws IOException the IO exception that occurred
      */
     @Test
-    @PactTestFor(pactMethods = "createGetPactWithParamsUnLoCodeBadFormat")
-    void testGetWithParamsUnLoCodeBadFormat(MockServer mockServer) throws IOException, URISyntaxException {
+    @PactTestFor(pactMethods = "createGetSummaryPactWithParamsUnLoCodeBadFormat")
+    void testGetSummaryWithParamsUnLoCodeBadFormat(MockServer mockServer) throws IOException, URISyntaxException {
         // Update the query params
         final Map<String, String> queryParams = this.updateMapValue(this.queryParamsMap, "unlocode", "invalid");
         // Perform the SECOM request
         Response response = Request.get(
-                        new URIBuilder(mockServer.getUrl() + "/v2/object")
+                        new URIBuilder(mockServer.getUrl() + "/v2/object/summary")
                                 .addParameters(this.mapToNameValueParams(queryParams))
                                 .build())
                 .execute();
@@ -367,7 +368,7 @@ class BasicSecomV2GetTest {
     }
 
     /**
-     * Test that the client can request the SECOM Get of the server
+     * Test that the client can request the SECOM Get Summary of the server
      * alongside query parameters, including a badly formatted validFrom
      * query parameter, and generate the pacts to be uploaded to the pacts
      * broker.
@@ -375,13 +376,13 @@ class BasicSecomV2GetTest {
      * @throws IOException the IO exception that occurred
      */
     @Test
-    @PactTestFor(pactMethods = "createGetPactWithParamsValidFromBadFormat")
-    void testGetWithParamsValidFromBadFormat(MockServer mockServer) throws IOException, URISyntaxException {
+    @PactTestFor(pactMethods = "createGetSummaryPactWithParamsValidFromBadFormat")
+    void testGetSummaryWithParamsValidFromBadFormat(MockServer mockServer) throws IOException, URISyntaxException {
         // Update the query params
         final Map<String, String> queryParams = this.updateMapValue(this.queryParamsMap, "validFrom", "invalid");
         // Perform the SECOM request
         Response response = Request.get(
-                        new URIBuilder(mockServer.getUrl() + "/v2/object")
+                        new URIBuilder(mockServer.getUrl() + "/v2/object/summary")
                                 .addParameters(this.mapToNameValueParams(queryParams))
                                 .build())
                 .execute();
@@ -389,7 +390,7 @@ class BasicSecomV2GetTest {
     }
 
     /**
-     * Test that the client can request the SECOM Get of the server
+     * Test that the client can request the SECOM Get Summary of the server
      * alongside query parameters, including a badly formatted validTo
      * query parameter, and generate the pacts to be uploaded to the pacts
      * broker.
@@ -397,13 +398,13 @@ class BasicSecomV2GetTest {
      * @throws IOException the IO exception that occurred
      */
     @Test
-    @PactTestFor(pactMethods = "createGetPactWithParamsValidToBadFormat")
-    void testGetWithParamsValidToBadFormat(MockServer mockServer) throws IOException, URISyntaxException {
+    @PactTestFor(pactMethods = "createGetSummaryPactWithParamsValidToBadFormat")
+    void testGetSummaryWithParamsValidToBadFormat(MockServer mockServer) throws IOException, URISyntaxException {
         // Update the query params
         final Map<String, String> queryParams = this.updateMapValue(this.queryParamsMap, "validTo", "invalid");
         // Perform the SECOM request
         Response response = Request.get(
-                        new URIBuilder(mockServer.getUrl() + "/v2/object")
+                        new URIBuilder(mockServer.getUrl() + "/v2/object/summary")
                                 .addParameters(this.mapToNameValueParams(queryParams))
                                 .build())
                 .execute();

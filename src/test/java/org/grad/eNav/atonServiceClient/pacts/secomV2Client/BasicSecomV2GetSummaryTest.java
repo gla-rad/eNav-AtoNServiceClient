@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.grad.eNav.atonServiceClient.pacts.secomClientv2;
+package org.grad.eNav.atonServiceClient.pacts.secomV2Client;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.PactBuilder;
@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
 @PactConsumerTest
-@PactTestFor(providerName = "SecomService-v2")
+@PactTestFor(providerName = "SecomV2Service")
 public class BasicSecomV2GetSummaryTest {
 
     /**
@@ -70,7 +70,7 @@ public class BasicSecomV2GetSummaryTest {
      * SECOM Get Summary Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetSummaryPact(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Summary Interface")
@@ -91,7 +91,7 @@ public class BasicSecomV2GetSummaryTest {
      * SECOM Get Summary With Parameters Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetSummaryPactWithParams(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Summary Interface")
@@ -113,7 +113,7 @@ public class BasicSecomV2GetSummaryTest {
      * SECOM Get Summary With Parameters of Badly Formatted Container Type Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetSummaryPactWithParamsContainerTypeBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Summary Interface")
@@ -136,7 +136,7 @@ public class BasicSecomV2GetSummaryTest {
      * Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetSummaryPactWithParamsDataProductTypeBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Summary Interface")
@@ -158,7 +158,7 @@ public class BasicSecomV2GetSummaryTest {
      * SECOM Get Summary With Parameters of Badly Formatted Geometry Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetSummaryPactWithParamsGeometryBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Summary Interface")
@@ -180,7 +180,7 @@ public class BasicSecomV2GetSummaryTest {
      * SECOM Get Summary With Parameters of Badly Formatted UnLoCode Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetSummaryPactWithParamsUnLoCodeBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Summary Interface")
@@ -202,7 +202,7 @@ public class BasicSecomV2GetSummaryTest {
      * SECOM Get Summary With Parameters of Badly Formatted validFrom Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetSummaryPactWithParamsValidFromBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Summary Interface")
@@ -224,7 +224,7 @@ public class BasicSecomV2GetSummaryTest {
      * SECOM Get Summary With Parameters of Badly Formatted validTo Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetSummaryPactWithParamsValidToBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Summary Interface")

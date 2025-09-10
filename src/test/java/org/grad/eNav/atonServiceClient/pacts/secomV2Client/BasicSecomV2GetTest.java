@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.grad.eNav.atonServiceClient.pacts.s125ServiceClientv2;
+package org.grad.eNav.atonServiceClient.pacts.secomV2Client;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.PactBuilder;
@@ -38,18 +38,18 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * The S125 Aton client Consumer SECOM Get Interface Contract Test Class.
+ * The basic SECOM client Consumer Get Interface Contract Test Class.
  * <p/>
- * This class provides the definition of the consumer-driver contracts for the
- * S125 AtoN Service Client SECOM Get interface and generates the data to be
+ * This class provides the definition of the consumer-driver contracts for a
+ * basic SECOM client Consumer Get interface and generates the data to be
  * published to the pacts-broker. This can be done through a separate maven
  * goal, so that it doesn't conflict with the development of the service.
  *
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
 @PactConsumerTest
-@PactTestFor(providerName = "SecomS125Service-v2")
-class S125ServiceClientSecomV2GetTest {
+@PactTestFor(providerName = "SecomV2Service")
+class BasicSecomV2GetTest {
 
     /**
      * Define a map of query parameters for the createGetPactWithParams
@@ -57,7 +57,6 @@ class S125ServiceClientSecomV2GetTest {
      */
     final Map<String, String> queryParamsMap = Map.of(
             "containerType" ,"0",
-            "dataProductType" ,"S125",
             "productVersion" ,"0.0.1",
             "geometry" ,"POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))",
             "unlocode" ,"GBHRW",
@@ -71,7 +70,7 @@ class S125ServiceClientSecomV2GetTest {
      * SECOM Get Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomS125Service-v2", consumer="SecomS125ServiceClient-v2")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetPact(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Interface")
@@ -92,7 +91,7 @@ class S125ServiceClientSecomV2GetTest {
      * SECOM Get With Parameters Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomS125Service-v2", consumer="SecomS125ServiceClient-v2")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetPactWithParams(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Interface")
@@ -114,7 +113,7 @@ class S125ServiceClientSecomV2GetTest {
      * SECOM Get With Parameters of Badly Formatted Container Type Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomS125Service-v2", consumer="SecomS125ServiceClient-v2")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetPactWithParamsContainerTypeBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Interface")
@@ -136,7 +135,7 @@ class S125ServiceClientSecomV2GetTest {
      * SECOM Get With Parameters of Badly Formatted Data Product Type Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomS125Service-v2", consumer="SecomS125ServiceClient-v2")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetPactWithParamsDataProductTypeBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Interface")
@@ -158,7 +157,7 @@ class S125ServiceClientSecomV2GetTest {
      * SECOM Get With Parameters of Badly Formatted Geometry Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomS125Service-v2", consumer="SecomS125ServiceClient-v2")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetPactWithParamsGeometryBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Interface")
@@ -180,7 +179,7 @@ class S125ServiceClientSecomV2GetTest {
      * SECOM Get With Parameters of Badly Formatted UnLoCode Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomS125Service-v2", consumer="SecomS125ServiceClient-v2")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetPactWithParamsUnLoCodeBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Interface")
@@ -202,7 +201,7 @@ class S125ServiceClientSecomV2GetTest {
      * SECOM Get With Parameters of Badly Formatted validFrom Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomS125Service-v2", consumer="SecomS125ServiceClient-v2")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetPactWithParamsValidFromBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Interface")
@@ -224,7 +223,7 @@ class S125ServiceClientSecomV2GetTest {
      * SECOM Get With Parameters of Badly Formatted validTo Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomS125Service-v2", consumer="SecomS125ServiceClient-v2")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetPactWithParamsValidToBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Interface")

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.grad.eNav.atonServiceClient.pacts.secomClientv2;
+package org.grad.eNav.atonServiceClient.pacts.secomV2S125ServiceClient;
 
 import au.com.dius.pact.consumer.MockServer;
 import au.com.dius.pact.consumer.dsl.PactBuilder;
@@ -32,24 +32,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 /**
- * The basic SECOM Client Consumer Ping Interface Contract Test Class.
+ * The S125 Aton client Consumer SECOM Ping Interface Contract Test Class.
  * <p/>
- * This class provides the definition of the consumer-driver contracts for a
- * basic SECOM Client Consumer Ping interface and generates the data
+ * This class provides the definition of the consumer-driver contracts for the
+ * S125 AtoN Service Client SECOM Ping interface and generates the data
  * to be published to the pacts-broker. This can be done through a separate
  * maven goal, so that it doesn't conflict with the development of the service.
  *
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
 @PactConsumerTest
-@PactTestFor(providerName = "SecomService-v2")
-public class BasicSecomV2PingTest {
+@PactTestFor(providerName = "SecomV2S125Service")
+public class S125ServiceClientSecomV2PingTest {
 
     /**
      * SECOM Ping Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomService-v2", consumer="SecomServiceClient-v2")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createPingPact(PactBuilder builder) {
         return builder
                 .given("Test SECOM Ping Interface")
