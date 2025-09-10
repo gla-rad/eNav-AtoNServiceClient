@@ -12,7 +12,7 @@
 
     <groupId>org.grad</groupId>
     <artifactId>aton-service-client</artifactId>
-    <version>0.0.9-SNAPSHOT</version>
+    <version>0.0.7-SNAPSHOT</version>
     <name>AtoN Service Client</name>
     <description>GRAD e-Navigation AtoN Service Client Microservice</description>
 
