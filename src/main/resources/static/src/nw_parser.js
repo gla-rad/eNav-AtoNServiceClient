@@ -23,7 +23,7 @@ class NWParser {
     static NS_S100 = 'http://www.iho.int/s100gml/5.0';
     static NS_S124 = 'http://www.iho.int/S124/1.0';
     static NS_S124_1_5 = 'http://www.iho.int/S124/1.5';
-    static NS_S124_2 = 'http://www.iho.int/S124/2.0';
+    static NS_S124_2 = 'http://www.iho.int/S124/gml/2.0';
     static NS_GML = 'http://www.opengis.net/gml/3.2';
 
     /**
