@@ -54,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
 @PactConsumerTest
-@PactTestFor(providerName = "SecomV2ServiceClient")
+@PactTestFor(providerName = "SecomV2Service")
 public class BasicSecomV2SubscriptionTest {
 
     /**
@@ -66,7 +66,7 @@ public class BasicSecomV2SubscriptionTest {
      * SECOM Subscription Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2ServiceClient", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact subscriptionPact(PactBuilder builder) {
         return builder
                 .given("Test SECOM Subscription Interface")
@@ -88,7 +88,7 @@ public class BasicSecomV2SubscriptionTest {
      * SECOM Subscription With Bad Body Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2ServiceClient", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact subscriptionPactWithBadBody(PactBuilder builder) {
         return builder
                 .given("Test SECOM Subscription Interface")
@@ -110,7 +110,7 @@ public class BasicSecomV2SubscriptionTest {
      * SECOM Subscription With Badly Formatted Container Type Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2ServiceClient", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact subscriptionPactWithContainerTypeBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Subscription Interface")
@@ -132,7 +132,7 @@ public class BasicSecomV2SubscriptionTest {
      * SECOM Subscription With Badly Formatted Data Product Type Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2ServiceClient", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact subscriptionPactWithDataProductTypeBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Subscription Interface")
@@ -154,7 +154,7 @@ public class BasicSecomV2SubscriptionTest {
      * SECOM Subscription With Badly Formatted Data Reference Type Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2ServiceClient", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact subscriptionPactWithDataReferenceBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Subscription Interface")
@@ -176,7 +176,7 @@ public class BasicSecomV2SubscriptionTest {
      * SECOM Subscription With Badly Formatted Geometry Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2ServiceClient", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact subscriptionPactWithGeometryBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Subscription Interface")
@@ -198,7 +198,7 @@ public class BasicSecomV2SubscriptionTest {
      * SECOM Subscription With Badly Formatted UnLoCode Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2ServiceClient", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact subscriptionPactWithUnLoCodeBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Subscription Interface")
@@ -220,7 +220,7 @@ public class BasicSecomV2SubscriptionTest {
      * SECOM Subscription With Badly Formatted Subscription Period Start Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2ServiceClient", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact subscriptionPactWithSubscriptionPeriodStartBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Subscription Interface")
@@ -242,7 +242,7 @@ public class BasicSecomV2SubscriptionTest {
      * SECOM Subscription With Badly Formatted Subscription Period End Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2ServiceClient", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact subscriptionPactWithSubscriptionPeriodEndBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Subscription Interface")
