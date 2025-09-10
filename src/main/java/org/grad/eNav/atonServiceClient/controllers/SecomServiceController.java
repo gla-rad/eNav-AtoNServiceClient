@@ -1,6 +1,6 @@
 package org.grad.eNav.atonServiceClient.controllers;
 
-import _int.iho.s125.gml.cs0._1.AidsToNavigationType;
+import _int.iho.s_125.gml.cs0._1.AidsToNavigationType;
 import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
 import org.grad.eNav.atonServiceClient.services.SecomService;
