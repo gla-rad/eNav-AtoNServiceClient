@@ -37,4 +37,4 @@ ENV CONFIG_DIR=/conf
 
 EXPOSE 8768
 
-CMD ["java", "-jar", "aton-service-client-0.0.6-SNAPSHOT.jar", "--spring.config.location=optional:classpath:/,optional:file:${CONFIG_DIR}/"]
+CMD ["java", "-jar", "aton-service-client-0.0.8-SNAPSHOT.jar", "--spring.config.location=optional:classpath:/,optional:file:${CONFIG_DIR}/"]
