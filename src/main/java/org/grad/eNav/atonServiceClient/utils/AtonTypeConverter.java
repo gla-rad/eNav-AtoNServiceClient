@@ -1,6 +1,6 @@
 package org.grad.eNav.atonServiceClient.utils;
 
-import _int.iho.s125.gml.cs0._1.*;
+import _int.iho.s_125.gml.cs0._1.*;
 
 import java.util.Objects;
 
@@ -14,37 +14,37 @@ public class AtonTypeConverter {
      * @return the Open-SeaMarks types
      */
     public static String convertToSeamarkType(Class<?> s125Class) {
-        if(Objects.equals(s125Class, BeaconCardinal.class)) {
+        if(Objects.equals(s125Class, CardinalBeacon.class)) {
             return "beacon_cardinal";
         }
-        else if(Objects.equals(s125Class, BeaconLateral.class)) {
+        else if(Objects.equals(s125Class, LateralBeacon.class)) {
             return "beacon_lateral";
         }
-        else if(Objects.equals(s125Class, BeaconIsolatedDanger.class)) {
+        else if(Objects.equals(s125Class, IsolatedDangerBeacon.class)) {
             return "beacon_isolated_danger";
         }
-        else if(Objects.equals(s125Class, BeaconSafeWater.class)) {
+        else if(Objects.equals(s125Class, SafeWaterBeacon.class)) {
             return "beacon_safe_water";
         }
-        else if(Objects.equals(s125Class, BeaconSpecialPurposeGeneral.class)) {
+        else if(Objects.equals(s125Class, SpecialPurposeGeneralBeacon.class)) {
             return "beacon_special_purpose";
         }
-        else if(Objects.equals(s125Class, BuoyCardinal.class)) {
+        else if(Objects.equals(s125Class, CardinalBuoy.class)) {
             return "buoy_cardinal";
         }
-        else if(Objects.equals(s125Class, BuoyLateral.class)) {
+        else if(Objects.equals(s125Class, LateralBuoy.class)) {
             return "buoy_lateral";
         }
-        else if(Objects.equals(s125Class, BuoyInstallation.class)) {
+        else if(Objects.equals(s125Class, InstallationBuoy.class)) {
             return "buoy_installation";
         }
-        else if(Objects.equals(s125Class, BuoyIsolatedDanger.class)) {
+        else if(Objects.equals(s125Class, IsolatedDangerBuoy.class)) {
             return "buoy_isolated_danger";
         }
-        else if(Objects.equals(s125Class, BuoySafeWater.class)) {
+        else if(Objects.equals(s125Class, SafeWaterBuoy.class)) {
             return "buoy_safe_water";
         }
-        else if(Objects.equals(s125Class, BuoySpecialPurposeGeneral.class)) {
+        else if(Objects.equals(s125Class, SpecialPurposeGeneralBuoy.class)) {
             return "buoy_special_purpose";
         }
         else if(Objects.equals(s125Class, Lighthouse.class)) {

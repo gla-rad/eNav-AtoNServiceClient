@@ -16,7 +16,7 @@
 
 package org.grad.eNav.atonServiceClient.controllers.secom;
 
-import _int.iho.s125.gml.cs0._1.AidsToNavigationType;
+import _int.iho.s_125.gml.cs0._1.AidsToNavigationType;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;

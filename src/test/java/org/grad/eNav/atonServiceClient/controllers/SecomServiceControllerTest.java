@@ -1,8 +1,8 @@
 package org.grad.eNav.atonServiceClient.controllers;
 
-import _int.iho.s125.gml.cs0._1.AidsToNavigationType;
-import _int.iho.s125.gml.cs0._1.impl.AidsToNavigationTypeImpl;
-import _int.iho.s125.gml.cs0._1.impl.VirtualAISAidToNavigationImpl;
+import _int.iho.s_125.gml.cs0._1.AidsToNavigationType;
+import _int.iho.s_125.gml.cs0._1.impl.AidsToNavigationTypeImpl;
+import _int.iho.s_125.gml.cs0._1.impl.VirtualAISAidToNavigationImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.grad.eNav.atonServiceClient.models.domain.SignedDatasetContent;
 import org.grad.eNav.atonServiceClient.services.SecomService;
@@ -14,10 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -54,13 +54,13 @@ class SecomServiceControllerTest {
     /**
      * The Web-Socket mock.
      */
-    @MockBean
+    @MockitoBean
     SimpMessagingTemplate webSocket;
 
     /**
      * The Secom Service mock.
      */
-    @MockBean
+    @MockitoBean
     SecomService secomService;
 
     // Test Variables
@@ -98,10 +98,10 @@ class SecomServiceControllerTest {
         // Create a list of AtoN objects
         AidsToNavigationTypeImpl aton1 = new VirtualAISAidToNavigationImpl();
         aton1.setId("ID1");
-        aton1.setIdCode("idCode1");
+        aton1.setIDCode("idCode1");
         AidsToNavigationTypeImpl aton2 = new VirtualAISAidToNavigationImpl();
         aton2.setId("ID1");
-        aton2.setIdCode("idCode1");
+        aton2.setIDCode("idCode1");
         this.atons = Arrays.asList(aton1, aton2);
     }
 
