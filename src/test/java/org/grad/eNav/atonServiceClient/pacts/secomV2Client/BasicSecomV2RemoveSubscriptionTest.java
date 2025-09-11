@@ -141,7 +141,7 @@ public class BasicSecomV2RemoveSubscriptionTest {
                                         .method("DELETE")
                                         .queryParameter("subscriptionIdentifier", randomUuid))
                                 .willRespondWith(responseBuilder -> responseBuilder
-                                        .status(400)
+                                        .status(404)
                                         .body(SecomV2PactDslDefinitions.removeSubscriptionResponseNotFoundDsl))
                 )
                 .toPact();
@@ -197,7 +197,7 @@ public class BasicSecomV2RemoveSubscriptionTest {
                                 .addParameter("subscriptionIdentifier", randomUuid)
                                 .build())
                 .execute();
-        assertEquals(400, httpResponse.returnResponse().getCode());
+        assertEquals(404, httpResponse.returnResponse().getCode());
     }
 
     /**
