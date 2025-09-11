@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -59,11 +60,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class BasicSecomV2RemoveSubscriptionTest {
 
     /**
-     * The test object mapper.
-     */
-    ObjectMapper objectMapper;
-
-    /**
      * Define a map of query parameters for the removeSubscriptionPact
      * pacts. This can also be reused in the testing.
      */
@@ -72,12 +68,18 @@ public class BasicSecomV2RemoveSubscriptionTest {
     );
 
     /**
-     * Define a map of query parameters for the removeSubscriptionPact
+     * Define a map of query parameters for the testRemoveSubscriptionPactWithBadBody
      * pacts. This can also be reused in the testing.
      */
     final Map<String, String> badQueryParamsMap = Map.of(
             "field1", "field1"
     );
+
+    /**
+     * Define a randomUuid for use in the testRemoveSubscriptionPactNotFound
+     * pacts. This can also be reused in the testing
+     */
+    final String randomUuid = UUID.randomUUID().toString();
 
     /**
      * SECOM Remove Subscription Pact.
@@ -137,20 +139,12 @@ public class BasicSecomV2RemoveSubscriptionTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v2/subscription")
                                         .method("DELETE")
-                                        .body(SecomV2PactDslDefinitions.removeSubscriptionRequestDsl))
+                                        .queryParameter("subscriptionIdentifier", randomUuid))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
                                         .body(SecomV2PactDslDefinitions.removeSubscriptionResponseNotFoundDsl))
                 )
                 .toPact();
-    }
-
-    /**
-     * Common setup for all the tests.
-     */
-    @BeforeEach
-    void setup() {
-        this.objectMapper = new ObjectMapper();
     }
 
     /**
@@ -179,7 +173,7 @@ public class BasicSecomV2RemoveSubscriptionTest {
     @Test
     @PactTestFor(pactMethods = "removeSubscriptionPactWithBadBody")
     void testRemoveSubscriptionPactWithBadBody(MockServer mockServer) throws IOException, URISyntaxException {
-        // And perform the SECOM request
+        // Perform the SECOM request with query string
         Response httpResponse = Request.delete(
                         new URIBuilder(mockServer.getUrl() + "/v2/subscription")
                                 .addParameters(this.mapToNameValueParams(this.badQueryParamsMap))
@@ -196,16 +190,14 @@ public class BasicSecomV2RemoveSubscriptionTest {
      */
     @Test
     @PactTestFor(pactMethods = "removeSubscriptionPactNotFound")
-    void testRemoveSubscriptionPactNotFound(MockServer mockServer) throws IOException {
-        // Create an subscription request object
-        RemoveSubscriptionObject removeSubscriptionObject = new RemoveSubscriptionObject();
-        removeSubscriptionObject.setSubscriptionIdentifier(UUID.randomUUID());
-
-        // And perform the SECOM request
-        Response response = Request.delete(mockServer.getUrl() + "/v2/subscription")
-                .bodyString(this.objectMapper.writeValueAsString(removeSubscriptionObject), ContentType.APPLICATION_JSON)
+    void testRemoveSubscriptionPactNotFound(MockServer mockServer) throws IOException, URISyntaxException {
+        // Perform the SECOM request with query string
+        Response httpResponse = Request.delete(
+                        new URIBuilder(mockServer.getUrl() + "/v2/subscription")
+                                .addParameter("subscriptionIdentifier", randomUuid)
+                                .build())
                 .execute();
-        assertEquals(400, response.returnResponse().getCode());
+        assertEquals(400, httpResponse.returnResponse().getCode());
     }
 
     /**

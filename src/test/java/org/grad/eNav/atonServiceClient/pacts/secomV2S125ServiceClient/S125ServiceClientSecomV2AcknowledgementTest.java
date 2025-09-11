@@ -159,7 +159,6 @@ public class S125ServiceClientSecomV2AcknowledgementTest {
         acknowledgementObject.setEnvelope(envelopeAckObject);
         acknowledgementObject.setDigitalSignature("ZGlnaXRhbFNpZ25hdHVyZQ==");
 
-        System.out.println(objectMapper.writeValueAsString(acknowledgementObject));
         // And perform the SECOM request
         Response httpResponse = Request.post(mockServer.getUrl() + "/v2/acknowledgement")
                 .bodyString(this.objectMapper.writeValueAsString(acknowledgementObject), ContentType.APPLICATION_JSON)
