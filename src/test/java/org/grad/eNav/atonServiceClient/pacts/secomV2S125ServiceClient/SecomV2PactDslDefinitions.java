@@ -70,7 +70,7 @@ public class SecomV2PactDslDefinitions {
      * SECOM GetSummary Response Pact Body
      */
      static final DslPart getSummaryResponseDsl = new PactDslJsonBody()
-            .array("summaryObject")
+            .array("informationSummaryObject")
                 .object()
                     .stringMatcher("dataReference",  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "7f000101-8ad6-1ee7-818a-d7332b920002")
                     .booleanType("dataProtection",  true)
