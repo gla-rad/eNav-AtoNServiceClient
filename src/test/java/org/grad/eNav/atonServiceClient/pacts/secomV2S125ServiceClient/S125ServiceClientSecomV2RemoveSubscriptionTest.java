@@ -118,7 +118,7 @@ public class S125ServiceClientSecomV2RemoveSubscriptionTest {
                                         .method("DELETE")
                                         .queryParameters(this.badQueryParamsMap))
                                 .willRespondWith(responseBuilder -> responseBuilder
-                                        .status(400)
+                                        .status(404)
                                         .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
                 )
                 .toPact();
@@ -179,7 +179,7 @@ public class S125ServiceClientSecomV2RemoveSubscriptionTest {
                                 .addParameters(this.mapToNameValueParams(this.badQueryParamsMap))
                                 .build())
                 .execute();
-        assertEquals(400, httpResponse.returnResponse().getCode());
+        assertEquals(404, httpResponse.returnResponse().getCode());
     }
 
     /**
