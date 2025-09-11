@@ -211,7 +211,7 @@ public class SecomV2PactDslDefinitions {
      * SECOM Subscription Response Error Pact Body
      */
     static final DslPart subscriptionResponseErrorDsl = new PactDslJsonBody()
-            .stringType("message", "Bad Request");
+            .stringType("message", "Subscription identifier not found");
 
     /**
      * SECOM Remove Subscription Request Pact Body

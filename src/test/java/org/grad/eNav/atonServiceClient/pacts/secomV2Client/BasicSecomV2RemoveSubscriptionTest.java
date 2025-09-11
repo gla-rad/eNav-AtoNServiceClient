@@ -26,11 +26,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
+import org.apache.hc.core5.net.URIBuilder;
 import org.grad.secom.core.models.RemoveSubscriptionObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,6 +64,22 @@ public class BasicSecomV2RemoveSubscriptionTest {
     ObjectMapper objectMapper;
 
     /**
+     * Define a map of query parameters for the removeSubscriptionPact
+     * pacts. This can also be reused in the testing.
+     */
+    final Map<String, String> queryParamsMap = Map.of(
+            "subscriptionIdentifier", "7f000101-8ad6-1ee7-818a-d7332b920002"
+    );
+
+    /**
+     * Define a map of query parameters for the removeSubscriptionPact
+     * pacts. This can also be reused in the testing.
+     */
+    final Map<String, String> badQueryParamsMap = Map.of(
+            "field1", "field1"
+    );
+
+    /**
      * SECOM Remove Subscription Pact.
      * @param builder The Pact Builder
      */
@@ -71,7 +93,7 @@ public class BasicSecomV2RemoveSubscriptionTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v2/subscription")
                                         .method("DELETE")
-                                        .body(SecomV2PactDslDefinitions.removeSubscriptionRequestDsl))
+                                        .queryParameters(this.queryParamsMap))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
                                         .body(SecomV2PactDslDefinitions.removeSubscriptionResponseDsl))
@@ -93,7 +115,7 @@ public class BasicSecomV2RemoveSubscriptionTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v2/subscription")
                                         .method("DELETE")
-                                        .body("{\"field1\":\"bad-field\", \"field2\":\"bad-field\"}"))
+                                        .queryParameters(this.badQueryParamsMap))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
                                         .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
@@ -117,7 +139,7 @@ public class BasicSecomV2RemoveSubscriptionTest {
                                         .method("DELETE")
                                         .body(SecomV2PactDslDefinitions.removeSubscriptionRequestDsl))
                                 .willRespondWith(responseBuilder -> responseBuilder
-                                        .status(404)
+                                        .status(400)
                                         .body(SecomV2PactDslDefinitions.removeSubscriptionResponseNotFoundDsl))
                 )
                 .toPact();
@@ -138,16 +160,14 @@ public class BasicSecomV2RemoveSubscriptionTest {
      */
     @Test
     @PactTestFor(pactMethods = "removeSubscriptionPact")
-    void testRemoveSubscription(MockServer mockServer) throws IOException {
-        // Create an subscription request object
-        RemoveSubscriptionObject removeSubscriptionObject = new RemoveSubscriptionObject();
-        removeSubscriptionObject.setSubscriptionIdentifier(UUID.randomUUID());
-
+    void testRemoveSubscription(MockServer mockServer) throws IOException, URISyntaxException {
         // And perform the SECOM request
-        Response httpResponse = Request.delete(mockServer.getUrl() + "/v2/subscription")
-                .bodyString(this.objectMapper.writeValueAsString(removeSubscriptionObject), ContentType.APPLICATION_JSON)
+        Response httpResponse = Request.delete(
+                new URIBuilder(mockServer.getUrl() + "/v2/subscription")
+                    .addParameters(this.mapToNameValueParams(this.queryParamsMap))
+                    .build())
                 .execute();
-        assertEquals(httpResponse.returnResponse().getCode(), 200);
+        assertEquals(200, httpResponse.returnResponse().getCode());
     }
 
     /**
@@ -158,16 +178,14 @@ public class BasicSecomV2RemoveSubscriptionTest {
      */
     @Test
     @PactTestFor(pactMethods = "removeSubscriptionPactWithBadBody")
-    void testRemoveSubscriptionPactWithBadBody(MockServer mockServer) throws IOException {
-        // Create an subscription request object
-        RemoveSubscriptionObject removeSubscriptionObject = new RemoveSubscriptionObject();
-        removeSubscriptionObject.setSubscriptionIdentifier(UUID.randomUUID());
-
+    void testRemoveSubscriptionPactWithBadBody(MockServer mockServer) throws IOException, URISyntaxException {
         // And perform the SECOM request
-        Response response = Request.delete(mockServer.getUrl() + "/v2/subscription")
-                .bodyString("{\"field1\":\"bad-field\", \"field2\":\"bad-field\"}", ContentType.APPLICATION_JSON)
+        Response httpResponse = Request.delete(
+                        new URIBuilder(mockServer.getUrl() + "/v2/subscription")
+                                .addParameters(this.mapToNameValueParams(this.badQueryParamsMap))
+                                .build())
                 .execute();
-        assertEquals(400, response.returnResponse().getCode());
+        assertEquals(400, httpResponse.returnResponse().getCode());
     }
 
     /**
@@ -187,7 +205,21 @@ public class BasicSecomV2RemoveSubscriptionTest {
         Response response = Request.delete(mockServer.getUrl() + "/v2/subscription")
                 .bodyString(this.objectMapper.writeValueAsString(removeSubscriptionObject), ContentType.APPLICATION_JSON)
                 .execute();
-        assertEquals(404, response.returnResponse().getCode());
+        assertEquals(400, response.returnResponse().getCode());
     }
 
+    /**
+     * A helper function that transforms all the entries of the provided string
+     * map to name-value pairs.
+     *
+     * @param map the map with the header string values
+     * @return the generated name-value pairs
+     */
+    private List<NameValuePair> mapToNameValueParams(Map<String, String> map) {
+        return map.entrySet()
+                .stream()
+                .map(e -> new BasicNameValuePair(e.getKey(), e.getValue()))
+                .map(NameValuePair.class::cast)
+                .toList();
+    }
 }
