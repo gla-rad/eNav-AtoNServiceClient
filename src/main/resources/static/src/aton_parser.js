@@ -23,7 +23,7 @@ class AtonParser {
             'Date End': dateToSecomFormat(aton.dateEnd),
             'Period Start':dateToSecomFormat(aton.periodStart),
             'Period End': dateToSecomFormat(aton.periodEnd),
-            'Radar Conspicuous': toTitleCase(aton.radarConspicuous),
+            'Radar Conspicuous': aton.radarConspicuous,
             'Status': toTitleCase(aton.statuses.join(", ")),
             'Marks Navigational System': aton.marksNavigationalSystemOf,
             'Seasonal Actions Required': toTitleCase(aton.seasonalActionRequireds.join(", "))
