@@ -503,7 +503,7 @@ function loadAtoNGeometry(headers, aton) {
     var atonMarker = L.marker([
                 aton.geometries[0].pointProperty.point.pos.value[0],
                 aton.geometries[0].pointProperty.point.pos.value[1]
-            ], {icon: atonIcon})
+            ], /*{icon: atonIcon}*/) // Disable the icons in the demo
             .addTo(subscriptionMap);
 
     // Show the AtoN information on click
