@@ -207,22 +207,10 @@ public class SecomService {
      */
     public List<SummaryObject> getServiceDatasets(@NotNull String mrn,
                                                   @NotNull Pageable pageable) {
-        // Access the SECOM client based on the MRN
-        SecomClient secomClient = this.getClient(mrn);
 
-        // Request the available datasets using the summary interface
-        return secomClient.getSummary(
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                pageable.isUnpaged()? 0 : pageable.getPageNumber(),
-                pageable.isUnpaged()? MAX_UNPAGED_RESULTS_NO : pageable.getPageSize())
-                .map(GetSummaryResponseObject::getSummaryObject)
-                .orElse(Collections.emptyList());
+        //TODO: Contact the SECOM service and get the summary of the datasets matching the arguments provided
+
+        return Collections.emptyList();
     }
 
     /**
@@ -251,45 +239,9 @@ public class SecomService {
                                                                LocalDateTime validFrom,
                                                                LocalDateTime validTo,
                                                                @NotNull Pageable pageable) {
-        // Access the SECOM client based on the MRN
-        SecomClient secomClient = this.getClient(mrn);
 
-        // Request the available dataset contents using the summary interface
-        return secomClient.get(
-                        Optional.ofNullable(dataReference).map(UUID::fromString).orElse(null),
-                        ContainerTypeEnum.S100_DataSet,
-                        dataProductType,
-                        productVersion,
-                        geometry,
-                        unlocode,
-                        validFrom,
-                        validTo,
-                        pageable.isUnpaged() ? null : pageable.getPageNumber(),
-                        pageable.isUnpaged() ? null : pageable.getPageSize())
-                .map(GetResponseObject::getDataResponseObject)
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(dataResponseObject -> {
-                    final SignedDatasetContent signedDatasetContent = new SignedDatasetContent();
-                    
-                    Optional.of(dataResponseObject)
-                            .map(DataResponseObject::getExchangeMetadata)
-                            .map(SECOM_ExchangeMetadataObject::getDigitalSignatureValue)
-                            .map(DigitalSignatureValue::getPublicCertificate)
-                            .map(X509Utils::extractFromCertificatePem)
-                            .map(X509Utils::extractUIDFromCertificate)
-                            .ifPresent(signedDatasetContent::setSignedBy);
-                    Optional.of(dataResponseObject)
-                            .map(DataResponseObject::getExchangeMetadata)
-                            .map(SECOM_ExchangeMetadataObject::getDigitalSignatureValue)
-                            .map(DigitalSignatureValue::getPublicCertificate)
-                            .map(X509Utils::extractFromCertificatePem)
-                            .map(X509Utils::extractIssuerUIDFromCertificate)
-                            .ifPresent(signedDatasetContent::setIssuedBy);
-                    signedDatasetContent.setContent(dataResponseObject.getData());
-                    return signedDatasetContent;
-                })
-                .toList();
+        //TODO: Contact the SECOM service and get the datasets matching the arguments provided
 
+        return Collections.emptyList();
     }
 }

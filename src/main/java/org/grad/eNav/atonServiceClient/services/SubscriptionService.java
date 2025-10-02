@@ -127,21 +127,15 @@ public class SubscriptionService {
                 .map(Subscription::getMrn)
                 .ifPresent(this::removeClientSubscription);
 
-        // First search for the specified MRN in the service registry
-        final SecomClient secomClient = secomService.getClient(mrn);
-
-        // Initiate the subscription
-        final SubscriptionResponseObject subscriptionResponseObject = secomClient.subscription(subscriptionRequestObject)
-                .orElseThrow(() -> new SecomNotFoundException("The client for generating the subscription was not found in the service registry."));
+        // TODO: Contact the SECOM service and ask for a subscription
 
         // Save the entry for future reference
         final Subscription subscription = new Subscription();
         subscription.setMrn(mrn);
-        subscription.setIdentifier(subscriptionResponseObject.getSubscriptionIdentifier());
         subscriptionRepo.save(subscription);
 
         // Return the response
-        return subscriptionResponseObject;
+        return null;
     }
 
     /**
@@ -158,20 +152,13 @@ public class SubscriptionService {
         final Subscription subscription = this.getActiveSubscription()
                 .orElseThrow(() -> new RuntimeException("No active subscription detected to be removed."));
 
-        // Search for the specified MRN in the service registry
-        final SecomClient secomClient = secomService.getClient(mrn);
-
-        // Terminate the subscription
-        final RemoveSubscriptionObject removeSubscriptionObject = new RemoveSubscriptionObject();
-        removeSubscriptionObject.setSubscriptionIdentifier(subscription.getIdentifier());
-        final RemoveSubscriptionResponseObject removeSubscriptionResponseObject = secomClient.removeSubscription(removeSubscriptionObject)
-                .orElseThrow(() -> new SecomNotFoundException("The client for removing the subscription was not found in the service registry."));
+        // TODO: Contact the SECOM service and remove the subscription
 
         // Inform the database about the change
         this.subscriptionRepo.delete(subscription);
 
         // And return the response
-        return removeSubscriptionResponseObject;
+        return null;
     }
 
 }
