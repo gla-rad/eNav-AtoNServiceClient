@@ -186,8 +186,8 @@ public class SecomService {
         // Return the retrieved list
         return this.discoveryService.searchService(
                         searchFilterObject,
-                        pageable.isUnpaged()? 0 : pageable.getPageNumber(),
-                        pageable.isUnpaged()? MAX_UNPAGED_RESULTS_NO : pageable.getPageSize())
+                        pageable.isUnpaged()? null : pageable.getPageNumber(),
+                        pageable.isUnpaged()? null : pageable.getPageSize())
                 .map(ResponseSearchObject::getSearchServiceResult)
                 .orElse(Collections.emptyList())
                 .stream()
@@ -219,8 +219,8 @@ public class SecomService {
                 null,
                 null,
                 null,
-                pageable.isUnpaged()? 0 : pageable.getPageNumber(),
-                pageable.isUnpaged()? MAX_UNPAGED_RESULTS_NO : pageable.getPageSize())
+                pageable.isUnpaged()? null : pageable.getPageNumber(),
+                pageable.isUnpaged()? null : pageable.getPageSize())
                 .map(GetSummaryResponseObject::getSummaryObject)
                 .orElse(Collections.emptyList());
     }
