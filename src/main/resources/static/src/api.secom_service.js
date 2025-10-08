@@ -36,8 +36,9 @@ class SecomServiceApi {
      * @param  {Function} errorCallback         The error callback to be used if the AJAX call fails
      */
     getSecomDatasets(mrn, dataProductType, callback, errorCallback) {
+        var encodedDataProductType = encodeURI(dataProductType);
         $.ajax({
-            url: `./api/secom_service/${mrn}/summary?` + (dataProductType?`dataProductType=${dataProductType}`:``),
+            url: `./api/secom_service/${mrn}/summary?` + (dataProductType?`dataProductType=${encodedDataProductType}`:``),
             type: 'GET',
             contentType: 'application/json',
             success: callback,
@@ -54,9 +55,12 @@ class SecomServiceApi {
      * @param  {Function} callback              The callback to be used after the AJAX call
      * @param  {Function} errorCallback         The error callback to be used if the AJAX call fails
      */
-    getSecomDatasetContent(mrn, dataProductType, uuid, callback, errorCallback) {
+    getSecomDatasetContent(mrn, dataProductType, uuid, geometry, callback, errorCallback) {
+        var encodedDataProductType = encodeURI(dataProductType);
+        var encodedUuid = encodeURI(uuid);
+        var encodedGeometry = encodeURI(geometry);
         $.ajax({
-            url: `./api/secom_service/${mrn}/content?` + (dataProductType?`dataProductType=${dataProductType}&`:``) + (uuid?`dataReference=${uuid}`:``),
+            url: `./api/secom_service/${mrn}/content?` + (dataProductType?`dataProductType=${encodedDataProductType}&`:``) + (uuid?`dataReference=${encodedUuid}`:``) + (geometry?`geometry=${encodedGeometry}`:``),
             type: 'GET',
             contentType: 'application/json',
             success: callback,
