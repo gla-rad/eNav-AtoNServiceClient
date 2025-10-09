@@ -205,9 +205,11 @@ function get() {
     // Perform the Subscription API request
     var dataProductType = trimToNull($("#dataProductTypeInput option:selected").val());
     var dataReference = trimToNull($("#dataReferenceInput").val());
+    var geometry = trimToNull($("#geometryInput").val());
     secomServiceApi.getSecomDatasetContent(atonServiceMrn,
                                            dataProductType,
                                            dataReference,
+                                           geometry,
                                            (getResponse) => {
                                                console.info("AtoN information received")
                                            },

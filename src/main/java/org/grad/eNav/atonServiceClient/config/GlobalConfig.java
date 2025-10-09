@@ -21,6 +21,8 @@ import org.springframework.boot.actuate.web.exchanges.InMemoryHttpExchangeReposi
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.config.PageableHandlerMethodArgumentResolverCustomizer;
 
 /**
  * The Global Configuration.
@@ -49,6 +51,16 @@ public class GlobalConfig {
     @Bean
     public HttpExchangeRepository httpTraceRepository() {
         return new InMemoryHttpExchangeRepository();
+    }
+
+    /**
+     * When no paging information is provided then revert to an unpaged selection.
+     *
+     * @return the pageable handler method argument resolver customizer
+     */
+    @Bean
+    public PageableHandlerMethodArgumentResolverCustomizer customizePageable() {
+        return resolver -> resolver.setFallbackPageable(Pageable.unpaged());
     }
 
 }
