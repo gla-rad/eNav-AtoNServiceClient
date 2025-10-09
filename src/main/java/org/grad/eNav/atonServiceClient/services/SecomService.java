@@ -63,7 +63,7 @@ public class SecomService {
     /**
      * The maximum number of results for unpaged discovery searches
      */
-    public static int MAX_UNPAGED_RESULTS_NO = 100;
+    public static int MAX_UNPAGED_RESULTS_NO = 1000;
 
     /**
      * The Service Registry URL.
@@ -187,7 +187,7 @@ public class SecomService {
         return this.discoveryService.searchService(
                         searchFilterObject,
                         pageable.isUnpaged()? null : pageable.getPageNumber(),
-                        pageable.isUnpaged()? null : pageable.getPageSize())
+                        pageable.isUnpaged()? MAX_UNPAGED_RESULTS_NO : pageable.getPageSize())
                 .map(ResponseSearchObject::getSearchServiceResult)
                 .orElse(Collections.emptyList())
                 .stream()
@@ -220,7 +220,7 @@ public class SecomService {
                 null,
                 null,
                 pageable.isUnpaged()? null : pageable.getPageNumber(),
-                pageable.isUnpaged()? null : pageable.getPageSize())
+                pageable.isUnpaged()? MAX_UNPAGED_RESULTS_NO : pageable.getPageSize())
                 .map(GetSummaryResponseObject::getSummaryObject)
                 .orElse(Collections.emptyList());
     }
@@ -265,7 +265,7 @@ public class SecomService {
                         validFrom,
                         validTo,
                         pageable.isUnpaged() ? null : pageable.getPageNumber(),
-                        pageable.isUnpaged() ? null : pageable.getPageSize())
+                        pageable.isUnpaged() ? MAX_UNPAGED_RESULTS_NO : pageable.getPageSize())
                 .map(GetResponseObject::getDataResponseObject)
                 .orElse(Collections.emptyList())
                 .stream()
