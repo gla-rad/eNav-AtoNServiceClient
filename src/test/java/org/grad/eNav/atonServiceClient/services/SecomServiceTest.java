@@ -151,7 +151,7 @@ class SecomServiceTest {
     @Test
     void testGetRegisteredServicesUnPaged() {
         // Mock the search service response
-        doReturn(Optional.of(this.responseSearchObject)).when(this.discoveryService).searchService(any(), eq(null), eq(null));
+        doReturn(Optional.of(this.responseSearchObject)).when(this.discoveryService).searchService(any(), any(), any());
 
         // Perform the service call
         List<SearchObjectResult> result = this.secomService.getRegisteredServices("test", Pageable.unpaged());
@@ -196,7 +196,7 @@ class SecomServiceTest {
     void testGetServiceDatasetsUnPaged() {
         // Mock the S-125 AtoN service response
         SecomClient secomClient = mock(SecomClient.class);
-        doReturn(Optional.of(this.summaryResponseObject)).when(secomClient).getSummary(any(), any(), any(), any(), any(), any(), any(), eq(null), eq(null));
+        doReturn(Optional.of(this.summaryResponseObject)).when(secomClient).getSummary(any(), any(), any(), any(), any(), any(), any(), any(), any());
         doReturn(secomClient).when(this.secomService).getClient(eq("mrn"));
 
         // Perform the service call
