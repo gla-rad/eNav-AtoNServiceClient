@@ -90,7 +90,7 @@ public class BasicMsrV2UploadServiceTest {
         return builder
                 .given("Test MSR Upload Service Interface")
                 .expectsToReceiveHttpInteraction(
-                        "A valid upload results request",
+                        "A request with an invalid source MSR MRN",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v2/uploadResults/" + TEST_UUID)
