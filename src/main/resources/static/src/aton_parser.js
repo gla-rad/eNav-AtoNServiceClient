@@ -17,7 +17,7 @@ class AtonParser {
             'ID Code': aton.idCode,
             'Name': toTitleCase(aton.featureNames[0].name),
             'Type': toTitleCase(type),
-            'Information': toTitleCase(aton.informations[0].text),
+            'Information': toTitleCase(aton.informations.length>0? aton.informations[0].text : ""),
             'Scale Minimum': aton.scaleMinimum,
             'Date Start': dateToSecomFormat(aton.dateStart),
             'Date End': dateToSecomFormat(aton.dateEnd),
