@@ -1,11 +1,10 @@
 /*
  * Copyright (c) 2025 GLA Research and Development Directorate
- *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,14 +33,13 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 /**
  * The basic MSR Client Search Interface Contract Test Class.
  * <p/>
  * This class provides the definition of the consumer-driver contracts for a
- * basic MSR Search Service interface and generates the
- * data to be published to the pacts-broker. This can be done through a separate
- * maven goal, so that it doesn't conflict with the development of the service.
+ * basic MSR Search Service interface and generates the data to be published to
+ * the pacts-broker. This can be done through a separate maven goal, so that
+ * it doesn't conflict with the development of the service.
  *
  * @author Lawrence Hughes (lawrence.hughes@gla-rad.org)
  */
