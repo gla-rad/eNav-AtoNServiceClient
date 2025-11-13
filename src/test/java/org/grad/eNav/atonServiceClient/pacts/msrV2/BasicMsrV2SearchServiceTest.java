@@ -26,11 +26,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.NameValuePair;
+import org.apache.hc.core5.http.message.BasicNameValuePair;
+import org.apache.hc.core5.net.URIBuilder;
 import org.grad.secomv2.core.models.SearchFilterObject;
+import org.grad.secomv2.core.models.SearchParameters;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -55,13 +63,27 @@ public class BasicMsrV2SearchServiceTest {
     ObjectMapper objectMapper;
 
     /**
-     * MSR Search Service Pact
+     * Parameter map for testing the GET
+     */
+    final Map<String, String> queryParamsMap = Map.of(
+            "geometry", "POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))",
+            "designId", "urn:mrn:",
+            "mmsi", "123456789",
+            "imo", "1234567",
+            "instanceId", "urn:mrn:mcp:service:mcc:grad:instance:aton-service-client",
+            "status", "RELEASED",
+            "localOnly", "true"
+    );
+
+    /**
+     * SECOM Search Service with a blank, valid query using POST
+     * Pact.
      * @param builder The Pact Builder
      */
     @Pact(provider="MsrV2Service", consumer="MsrV2ServiceClient")
     public V4Pact createSearchResponsePostPact(PactBuilder builder) {
         return builder
-                .given("Test MSR Search Service Interface")
+                .given("Test MSR Search Service POST Interface")
                 .expectsToReceiveHttpInteraction(
                         "A valid search service request using POST",
                         httpBuilder -> httpBuilder
@@ -76,10 +98,38 @@ public class BasicMsrV2SearchServiceTest {
                 .toPact();
     }
 
+    /**
+     * SECOM Search Service with an invalid status field in the query, using POST
+     * Pact.
+     * @param builder The Pact Builder
+     */
+    @Pact(provider="MsrV2Service", consumer="MsrV2ServiceClient")
+    public V4Pact createInvalidSearchResponsePostPact(PactBuilder builder) {
+        return builder
+                .given("Test MSR Search Service POST Interface")
+                .expectsToReceiveHttpInteraction(
+                        "A search service request using POST with invalid body",
+                        httpBuilder -> httpBuilder
+                                .withRequest(requestBuilder -> requestBuilder
+                                        .path("/v2/searchService")
+                                        .method("POST")
+                                        .body(MsrPactDslDefinitions.searchRequestObjectWithInvalidStatusDsl))
+                                .willRespondWith(responseBuilder -> responseBuilder
+                                        .status(400)
+                                        .body(MsrPactDslDefinitions.errorResponseObject))
+                )
+                .toPact();
+    }
+
+    /**
+     * SECOM Search Service with a blank, valid query using GET
+     * Pact.
+     * @param builder The Pact Builder
+     */
     @Pact(provider="MsrV2Service", consumer="MsrV2ServiceClient")
     public V4Pact createSearchResponseGetPact(PactBuilder builder) {
         return builder
-                .given("Test MSR Search Service Interface")
+                .given("Test MSR Search Service GET Interface")
                 .expectsToReceiveHttpInteraction(
                         "A valid search service request using GET",
                         httpBuilder -> httpBuilder
@@ -94,6 +144,52 @@ public class BasicMsrV2SearchServiceTest {
     }
 
     /**
+     * SECOM Search Service with all required parameters, using GET
+     * Pact.
+     * @param builder The Pact Builder
+     */
+    @Pact(provider="MsrV2Service", consumer="MsrV2ServiceClient")
+    public V4Pact createSearchResponseGetWithParamsPact(PactBuilder builder) {
+        return builder
+                .given("Test MSR Search Service GET Interface")
+                .expectsToReceiveHttpInteraction(
+                        "A valid search service request using GET with mandatory query parameters",
+                        httpBuilder -> httpBuilder
+                                .withRequest(requestBuilder -> requestBuilder
+                                        .path("/v2/searchService")
+                                        .method("GET")
+                                        .queryParameters(queryParamsMap))
+                                .willRespondWith(responseBuilder -> responseBuilder
+                                        .status(200)
+                                        .body(MsrPactDslDefinitions.searchResponseDsl))
+                )
+                .toPact();
+    }
+
+    /**
+     * SECOM Search Service with an invalid status parameter, using GET
+     * Pact.
+     * @param builder The Pact Builder
+     */
+    @Pact(provider="MsrV2Service", consumer="MsrV2ServiceClient")
+    public V4Pact createInvalidSearchResponseGetWithParamsPact(PactBuilder builder) {
+        return builder
+                .given("Test MSR Search Service GET Interface")
+                .expectsToReceiveHttpInteraction(
+                        "An invalid search service request using GET with bad query parameters",
+                        httpBuilder -> httpBuilder
+                                .withRequest(requestBuilder -> requestBuilder
+                                        .path("/v2/searchService")
+                                        .method("GET")
+                                        .queryParameters(updateMapValue(queryParamsMap, "status", "INVALID-STATUS")))
+                                .willRespondWith(responseBuilder -> responseBuilder
+                                        .status(400)
+                                        .body(MsrPactDslDefinitions.errorResponseObject))
+                )
+                .toPact();
+    }
+
+    /**
      * Common setup for all the tests.
      */
     @BeforeEach
@@ -102,7 +198,7 @@ public class BasicMsrV2SearchServiceTest {
     }
 
     /**
-     * Test the client can send perform a search request
+     * Test the client can send perform a search request using POST
      *
      * @param mockServer the mocked server
      * @throws IOException the IO exception that occurred
@@ -121,6 +217,35 @@ public class BasicMsrV2SearchServiceTest {
         assertEquals(200, httpResponse.returnResponse().getCode());
     }
 
+    /**
+     * Test the client gets a 400 error when the search parameters are incorrect, using POST
+     *
+     * @param mockServer the mocked server
+     * @throws IOException the IO exception that occurred
+     */
+    @Test
+    @PactTestFor(pactMethods = "createInvalidSearchResponsePostPact")
+    void testSearchServicePostWithInvalidParams(MockServer mockServer) throws IOException, URISyntaxException {
+        // Create a search filter object
+
+        SearchFilterObject searchFilterObject = new SearchFilterObject();
+        SearchParameters searchParameters = new SearchParameters();
+        searchParameters.setStatus("INVALID-STATUS");
+        searchFilterObject.setQuery(searchParameters);
+
+        // And perform the SearchService request
+        Response httpResponse = Request.post(mockServer.getUrl() + "/v2/searchService")
+                .bodyString(this.objectMapper.writeValueAsString(searchFilterObject), ContentType.APPLICATION_JSON)
+                .execute();
+        assertEquals(400, httpResponse.returnResponse().getCode());
+    }
+
+    /**
+     * Test the client can send perform a search request using GET
+     *
+     * @param mockServer the mocked server
+     * @throws IOException the IO exception that occurred
+     */
     @Test
     @PactTestFor(pactMethods = "createSearchResponseGetPact")
     void testSearchServiceGet(MockServer mockServer) throws IOException {
@@ -129,6 +254,76 @@ public class BasicMsrV2SearchServiceTest {
         Response httpResponse = Request.get(mockServer.getUrl() + "/v2/searchService")
                 .execute();
         assertEquals(200, httpResponse.returnResponse().getCode());
+    }
+
+    /**
+     * Test the client can send perform a search request with all required parameters, using GET
+     *
+     * @param mockServer the mocked server
+     * @throws IOException the IO exception that occurred
+     */
+    @Test
+    @PactTestFor(pactMethods = "createSearchResponseGetWithParamsPact")
+    void testSearchServiceGetWithParams(MockServer mockServer) throws IOException, URISyntaxException {
+
+        // And perform the SearchService request
+        Response httpResponse = Request.get(
+                new URIBuilder(mockServer.getUrl() + "/v2/searchService")
+                        .addParameters(this.mapToNameValueParams(queryParamsMap))
+                        .build())
+
+                .execute();
+        assertEquals(200, httpResponse.returnResponse().getCode());
+    }
+
+    /**
+     * Test the client gets a 400 error when the search parameters are incorrect, using GET
+     *
+     * @param mockServer the mocked server
+     * @throws IOException the IO exception that occurred
+     */
+    @Test
+    @PactTestFor(pactMethods = "createInvalidSearchResponseGetWithParamsPact")
+    void testSearchServiceGetWithInvalidParams(MockServer mockServer) throws IOException, URISyntaxException {
+
+        // And perform the SearchService request
+        Response httpResponse = Request.get(
+                        new URIBuilder(mockServer.getUrl() + "/v2/searchService")
+                                .addParameters(this.mapToNameValueParams(updateMapValue(queryParamsMap, "status", "INVALID-STATUS")))
+                                .build())
+
+                .execute();
+        assertEquals(400, httpResponse.returnResponse().getCode());
+    }
+
+    /**
+     * A helper function that transforms all the entries of the provided string
+     * map to name-value pairs.
+     *
+     * @param map the map with the header string values
+     * @return the generated name-value pairs
+     */
+    private List<NameValuePair> mapToNameValueParams(Map<String, String> map) {
+        return map.entrySet()
+                .stream()
+                .map(e -> new BasicNameValuePair(e.getKey(), e.getValue()))
+                .map(NameValuePair.class::cast)
+                .toList();
+    }
+
+    /**
+     * A helper function that will copy the provided map and change one of its
+     * value, without messing the original map.
+     *
+     * @param map the map to be updated
+     * @param key the key to update
+     * @param value the new value to be used
+     * @return a new map with the updated value in the respective key
+     */
+    private Map<String, String> updateMapValue(Map<String, String> map, String key, String value) {
+        final Map<String, String>  newMap = new HashMap<>(map);
+        newMap.put(key, value);
+        return newMap;
     }
 
 }

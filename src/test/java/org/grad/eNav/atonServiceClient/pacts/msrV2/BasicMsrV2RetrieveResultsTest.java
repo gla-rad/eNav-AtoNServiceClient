@@ -56,6 +56,8 @@ public class BasicMsrV2RetrieveResultsTest {
      */
     private static final String TEST_UUID = "12345678-1234-1234-1234-1234567890ab";
 
+    private static final String INVALID_UUID = "12345678-1234-1234-1234-1234567890abc";
+
     /**
      * MSR Retrieve Results Pact with valid transaction ID
      * @param builder The Pact Builder
@@ -63,9 +65,9 @@ public class BasicMsrV2RetrieveResultsTest {
     @Pact(provider="MsrV2Service", consumer="MsrV2ServiceClient")
     public V4Pact retrieveResultsPact(PactBuilder builder) {
         return builder
-                .given("Test MSR Retrieve Results Interface")
+                .given("Test MSR RetrieveResults Interface")
                 .expectsToReceiveHttpInteraction(
-                        "A valid retrieve results request",
+                        "A valid retrieve results response, with a known UUID",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v2/retrieveResults/" + TEST_UUID)
@@ -78,21 +80,43 @@ public class BasicMsrV2RetrieveResultsTest {
     }
 
     /**
+     * MSR Retrieve Results Pact with an invalid transaction ID
+     * @param builder The Pact Builder
+     */
+    @Pact(provider="MsrV2Service", consumer="MsrV2ServiceClient")
+    public V4Pact retrieveResultsInvalidUuidPact(PactBuilder builder) {
+        return builder
+                .given("Test MSR RetrieveResults Interface")
+                .expectsToReceiveHttpInteraction(
+                        "An invalid/unknown UUID request",
+                        httpBuilder -> httpBuilder
+                                .withRequest(requestBuilder -> requestBuilder
+                                        .path("/v2/retrieveResults/" + INVALID_UUID)
+                                        .method("GET"))
+                                .willRespondWith(responseBuilder -> responseBuilder
+                                        .status(404)
+                                        .body(MsrPactDslDefinitions.errorResponseObject))
+                )
+                .toPact();
+    }
+
+    /**
      * MSR Search Service Pact without a transaction ID
      * @param builder The Pact Builder
      */
     @Pact(provider="MsrV2Service", consumer="MsrV2ServiceClient")
     public V4Pact retrieveResultsWithoutTransactionIDPact(PactBuilder builder) {
         return builder
-                .given("Test MSR Retrieve Results interface without a transaction ID")
+                .given("Test MSR RetrieveResults Interface")
                 .expectsToReceiveHttpInteraction(
-                        "An incomplete retrieve results request",
+                        "A retrieve results request without a transaction Id",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v2/retrieveResults")
                                         .method("GET"))
                                 .willRespondWith(responseBuilder -> responseBuilder
-                                        .status(400))
+                                        .status(400)
+                                        .body(MsrPactDslDefinitions.errorResponseObject))
                 )
                 .toPact();
     }
@@ -135,6 +159,22 @@ public class BasicMsrV2RetrieveResultsTest {
         Response httpResponse = Request.get(mockServer.getUrl() + "/v2/retrieveResults")
                 .execute();
         assertEquals(400, httpResponse.returnResponse().getCode());
+    }
+
+    /**
+     * Test the client receives an error if the request is incorrect
+     *
+     * @param mockServer the mocked server
+     * @throws IOException the IO exception that occurred
+     */
+    @Test
+    @PactTestFor(pactMethods = "retrieveResultsInvalidUuidPact")
+    void testRetrieveResultsWithInvalidTransactionID(MockServer mockServer) throws IOException {
+
+        // And perform the SearchService request
+        Response httpResponse = Request.get(mockServer.getUrl() + "/v2/retrieveResults/" + INVALID_UUID)
+                .execute();
+        assertEquals(404, httpResponse.returnResponse().getCode());
     }
 
 }
