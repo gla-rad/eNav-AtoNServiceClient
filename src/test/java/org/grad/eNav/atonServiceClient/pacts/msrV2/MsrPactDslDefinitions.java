@@ -17,6 +17,8 @@ package org.grad.eNav.atonServiceClient.pacts.msrV2;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
+import au.com.dius.pact.consumer.dsl.PactDslResponse;
+import au.com.dius.pact.consumer.dsl.PactDslRootValue;
 
 import java.time.Instant;
 import java.util.TimeZone;
@@ -142,6 +144,27 @@ public class MsrPactDslDefinitions {
             .nullValue("unsupportedParams")
             .closeObject()
             .closeArray().asBody();
+
+    /**
+     * MSR Update Service valid request
+     */
+    static final DslPart updateSearchServiceRequestDsl = new PactDslJsonBody()
+            .array("certificates")
+            .stringMatcher("^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==")
+            .closeArray()
+            .asBody()
+            .stringMatcher("version", "^(\\d+\\.\\d+\\.?\\d?+)$", "0.1.1")
+            .stringMatcher("endpointUri", "(http|https)://.*$", "https://rnavlab.gla-rad.org/api/v1/search")
+            .stringMatcher("apiDoc", "(http|https)://.*$", "https://rnavlab.gla-rad.org/api/v1/search/api-doc")
+            .stringMatcher("statusEndpoint", "(http|https)://.*$", "https://rnavlab.gla-rad.org/api/v1/search/api-doc")
+            .asBody();
+
+
+    /**
+     * MSR Valid service update response object
+     */
+    static final DslPart validUpdateServiceResponseDsl = new PactDslJsonBody()
+            .datetime("updatedAt", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault());
 
     /**
      * MSR Valid SearchRequestObject with empty query
