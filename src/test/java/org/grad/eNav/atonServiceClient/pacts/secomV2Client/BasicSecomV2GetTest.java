@@ -61,7 +61,7 @@ class BasicSecomV2GetTest {
             "unlocode" ,"GBHRW",
             "validFrom" ,"2020-01-01T00:00:00",
             "validTo" ,"2020-01-01T23:59:59",
-            "page" ,"0",
+            "page" ,"1",
             "pageSize" ,"10"
     );
 
@@ -123,6 +123,28 @@ class BasicSecomV2GetTest {
                                         .path("/v2/object")
                                         .method("GET")
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "containerType", "invalid")))
+                                .willRespondWith(responseBuilder -> responseBuilder
+                                        .status(400)
+                                        .body(SecomV2PactDslDefinitions.getResponseErrorDsl))
+                )
+                .toPact();
+    }
+
+    /**
+     * SECOM Get With Parameters of invalid page number.
+     * @param builder The Pact Builder
+     */
+    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
+    public V4Pact createGetPactWithParamsPageNumberInvalid(PactBuilder builder) {
+        return builder
+                .given("Test SECOM Get Interface")
+                .expectsToReceiveHttpInteraction(
+                        "A get request with query parameters but an invalid page number",
+                        httpBuilder -> httpBuilder
+                                .withRequest(requestBuilder -> requestBuilder
+                                        .path("/v1/object")
+                                        .method("GET")
+                                        .queryParameters(this.updateMapValue(this.queryParamsMap, "page", "0")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
                                         .body(SecomV2PactDslDefinitions.getResponseErrorDsl))
@@ -293,6 +315,28 @@ class BasicSecomV2GetTest {
         // Perform the SECOM request
         Response response = Request.get(
                         new URIBuilder(mockServer.getUrl() + "/v2/object")
+                                .addParameters(this.mapToNameValueParams(queryParams))
+                                .build())
+                .execute();
+        assertEquals(400, response.returnResponse().getCode());
+    }
+
+    /**
+     * Test that the client can request the SECOM Get of the server
+     * alongside query parameters, including an invalid page number
+     * query parameter, and generate the pacts to be uploaded to the pacts
+     * broker.
+     * @param mockServer the mocked server
+     * @throws IOException the IO exception that occurred
+     */
+    @Test
+    @PactTestFor(pactMethods = "createGetPactWithParamsPageNumberInvalid")
+    void testGetWithParamsPageNumberInvalid(MockServer mockServer) throws IOException, URISyntaxException {
+        // Update the query params
+        final Map<String, String> queryParams = this.updateMapValue(this.queryParamsMap, "page", "0");
+        // Perform the SECOM request
+        Response response = Request.get(
+                        new URIBuilder(mockServer.getUrl() + "/v1/object")
                                 .addParameters(this.mapToNameValueParams(queryParams))
                                 .build())
                 .execute();

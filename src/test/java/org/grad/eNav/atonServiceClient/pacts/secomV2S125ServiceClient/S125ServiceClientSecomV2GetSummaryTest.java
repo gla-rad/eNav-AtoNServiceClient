@@ -62,7 +62,7 @@ public class S125ServiceClientSecomV2GetSummaryTest {
             "unlocode", "GBHRW",
             "validFrom", "2020-01-01T00:00:00",
             "validTo", "2020-01-01T23:59:59",
-            "page", "0",
+            "page", "1",
             "pageSize", "10"
     );
 
@@ -124,6 +124,28 @@ public class S125ServiceClientSecomV2GetSummaryTest {
                                         .path("/v2/object/summary")
                                         .method("GET")
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "containerType", "invalid")))
+                                .willRespondWith(responseBuilder -> responseBuilder
+                                        .status(400)
+                                        .body(SecomV2PactDslDefinitions.getSummaryResponseErrorDsl))
+                )
+                .toPact();
+    }
+
+    /**
+     * SECOM Get Summary With Parameters of invalid page number.
+     * @param builder The Pact Builder
+     */
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
+    public V4Pact createGetSummaryPactWithParamsPageNumberInvalid(PactBuilder builder) {
+        return builder
+                .given("Test SECOM Get Summary Interface")
+                .expectsToReceiveHttpInteraction(
+                        "A get summary request with query parameters but an invalid page number",
+                        httpBuilder -> httpBuilder
+                                .withRequest(requestBuilder -> requestBuilder
+                                        .path("/v1/object/summary")
+                                        .method("GET")
+                                        .queryParameters(this.updateMapValue(this.queryParamsMap, "page", "0")))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
                                         .body(SecomV2PactDslDefinitions.getSummaryResponseErrorDsl))
@@ -294,6 +316,28 @@ public class S125ServiceClientSecomV2GetSummaryTest {
         // Perform the SECOM request
         Response response = Request.get(
                         new URIBuilder(mockServer.getUrl() + "/v2/object/summary")
+                                .addParameters(this.mapToNameValueParams(queryParams))
+                                .build())
+                .execute();
+        assertEquals(400, response.returnResponse().getCode());
+    }
+
+    /**
+     * Test that the client can request the SECOM Get Summary of the server
+     * alongside query parameters, including an invalid page number
+     * query parameter, and generate the pacts to be uploaded to the pacts
+     * broker.
+     * @param mockServer the mocked server
+     * @throws IOException the IO exception that occurred
+     */
+    @Test
+    @PactTestFor(pactMethods = "createGetSummaryPactWithParamsPageNumberInvalid")
+    void testGetSummaryWithParamsPageNumberInvalid(MockServer mockServer) throws IOException, URISyntaxException {
+        // Update the query params
+        final Map<String, String> queryParams = this.updateMapValue(this.queryParamsMap, "page", "0");
+        // Perform the SECOM request
+        Response response = Request.get(
+                        new URIBuilder(mockServer.getUrl() + "/v1/object/summary")
                                 .addParameters(this.mapToNameValueParams(queryParams))
                                 .build())
                 .execute();
