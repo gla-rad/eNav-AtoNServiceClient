@@ -95,7 +95,7 @@ public class SecomV2PactDslDefinitions {
      * SECOM GetSummary Response Error Pact Body
      */
     static final DslPart getSummaryResponseErrorDsl = new PactDslJsonBody()
-            .nullValue("summaryObject")
+            .nullValue("informationSummaryObject")
             .nullValue("pagination");
 
     /**
