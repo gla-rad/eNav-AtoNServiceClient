@@ -142,7 +142,7 @@ public class BasicSecomV2GetSummaryTest {
                         "A get summary request with query parameters but an invalid page number",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v1/object/summary")
+                                        .path("/v2/object/summary")
                                         .method("GET")
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "page", "0")))
                                 .willRespondWith(responseBuilder -> responseBuilder
