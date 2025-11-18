@@ -336,7 +336,7 @@ public class BasicSecomV2GetSummaryTest {
         final Map<String, String> queryParams = this.updateMapValue(this.queryParamsMap, "page", "0");
         // Perform the SECOM request
         Response response = Request.get(
-                        new URIBuilder(mockServer.getUrl() + "/v1/object/summary")
+                        new URIBuilder(mockServer.getUrl() + "/v2/object/summary")
                                 .addParameters(this.mapToNameValueParams(queryParams))
                                 .build())
                 .execute();
