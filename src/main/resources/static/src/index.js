@@ -571,7 +571,7 @@ function clearMapMarkers() {
  */
 function computeAtonIconUrl(type, aton) {
     if (!type) {
-        return '/images/aton.png';
+        return './images/aton.png';
     }
 
     // Add the seamark type if that is available
