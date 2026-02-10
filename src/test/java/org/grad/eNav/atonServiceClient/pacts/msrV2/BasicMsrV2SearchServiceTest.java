@@ -21,13 +21,14 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTest;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.hc.core5.net.URIBuilder;
+import org.grad.secomv2.core.models.EnvelopeSearchFilterObject;
 import org.grad.secomv2.core.models.SearchFilterObject;
 import org.grad.secomv2.core.models.SearchParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -230,7 +231,9 @@ public class BasicMsrV2SearchServiceTest {
         SearchFilterObject searchFilterObject = new SearchFilterObject();
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setStatus("INVALID-STATUS");
-        searchFilterObject.setQuery(searchParameters);
+        EnvelopeSearchFilterObject envelope = new EnvelopeSearchFilterObject();
+        envelope.setQuery(searchParameters);
+        searchFilterObject.setEnvelope(envelope);
 
         // And perform the SearchService request
         Response httpResponse = Request.post(mockServer.getUrl() + "/v2/searchService")

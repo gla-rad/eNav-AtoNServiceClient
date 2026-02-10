@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.grad.secom.core.base.DigitalSignatureCertificate;
 import org.grad.secom.core.base.SecomCertificateProvider;
 import org.grad.secom.core.utils.KeyStoreUtils;
-import org.grad.secom.springboot3.components.SecomConfigProperties;
+import org.grad.secom.springboot4.components.SecomConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

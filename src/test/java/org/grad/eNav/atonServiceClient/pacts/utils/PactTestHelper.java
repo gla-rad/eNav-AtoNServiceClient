@@ -16,9 +16,10 @@
 package org.grad.eNav.atonServiceClient.pacts.utils;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.IOException;
 
@@ -40,11 +41,14 @@ public class PactTestHelper {
      * @throws IOException the IO exception the occurred
      */
     public static void testPactDtoMapping(DslPart dslPart, Class<?> dtoClass) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        ObjectMapper mapper = JsonMapper.builder()
+                .changeDefaultPropertyInclusion(incl -> incl
+                        .withContentInclusion(JsonInclude.Include.NON_NULL)
+                        .withValueInclusion(JsonInclude.Include.NON_NULL))
+                .addModule(new JavaTimeModule())
+                .build();
 
         //If there are any mapping issues, appropriate module could be the solution
-        mapper.registerModule(new JavaTimeModule());
         String pactJson = dslPart.getBody().toString();
         String dtoJson = mapper.writeValueAsString(mapper.readValue(pactJson, dtoClass));
         assertEquals(mapper.readTree(dtoJson), mapper.readTree(pactJson));

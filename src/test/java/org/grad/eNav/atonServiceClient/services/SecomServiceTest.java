@@ -20,7 +20,7 @@ import org.grad.secom.core.exceptions.SecomValidationException;
 import org.grad.secom.core.models.*;
 import org.grad.secom.core.models.enums.ContainerTypeEnum;
 import org.grad.secom.core.models.enums.SECOM_DataProductType;
-import org.grad.secom.springboot3.components.SecomClient;
+import org.grad.secom.springboot4.components.SecomClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
