@@ -56,7 +56,7 @@ public class S125ServiceClientSecomV2GetSummaryTest {
      */
     final Map<String, String> queryParamsMap = Map.of(
             "containerType", "0",
-            "dataProductType", "S125",
+            "dataProductType", "S-125",
             "productVersion", "0.0.1",
             "geometry", "POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))",
             "unlocode", "GBHRW",
