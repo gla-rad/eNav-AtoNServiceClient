@@ -17,8 +17,6 @@ package org.grad.eNav.atonServiceClient.pacts.msrV2;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
-import au.com.dius.pact.consumer.dsl.PactDslResponse;
-import au.com.dius.pact.consumer.dsl.PactDslRootValue;
 
 import java.time.Instant;
 import java.util.TimeZone;
@@ -77,7 +75,8 @@ public class MsrPactDslDefinitions {
             .nullValue("sourceMSR")
 //            .nullValue("unsupportedParams")
             .closeObject()
-            .closeArray().asBody();
+            .closeArray()
+            .asBody();
 
     /**
      * MSR Global Search Upload object
@@ -97,20 +96,30 @@ public class MsrPactDslDefinitions {
             .nullValue("endpointType")
             .nullValue("keywords")
             .nullValue("unlocode")
-            .nullValue("implementsDesign")
-            .stringMatcher("apiDoc", "^(http|https)://.*$", "https://rnavlab.gla-rad.org/api/v1/search/api-doc")
-            .array("coverageArea")
-            .stringType()
+            .object("geometry")
+            .stringType("type", "Polygon")
+            .array("coordinates")
             .closeArray()
+            .closeObject()
             .asBody()
+//            .nullValue("implementsDesign")
+//            .stringMatcher("apiDoc", "^(http|https)://.*$", "https://rnavlab.gla-rad.org/api/v1/search/api-doc")
+//            .array("coverageArea")
+//            .stringType()
+//            .closeArray()
+//            .asBody()
+            .nullValue("comment")
             .nullValue("instanceAsXml")
+            .datetime("publishedAt", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
+            .datetime("lastUpdatedAt", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
             .nullValue("imo")
             .nullValue("mmsi")
             .nullValue("certificates")
             .stringMatcher("sourceMSR", "^(urn:mrn:mcp:msr:).*$", "urn:mrn:mcp:msr:test-mst-instance")
-            .nullValue("unsupportedParams")
+//            .nullValue("unsupportedParams")
             .closeObject()
-            .closeArray().asBody();
+            .closeArray()
+            .asBody();
 
     /**
      * MSR Global Search Upload object
@@ -125,7 +134,6 @@ public class MsrPactDslDefinitions {
             .stringMatcher("status", "^(PROVISIONAL|RELEASED|DEPRECATED|DELETED)$", "RELEASED")
             .stringType("description","AtoN Service")
             .nullValue("dataProductType")
-            .stringMatcher("organizationId", "^(urn):(mrn):(mcp):.*$", "urn:mrn:mcp:grad:org:0000000000")
             .stringMatcher("endpointUri", "^(http|https)://.*$", "https://rnavlab.gla-rad.org/api/v1/search")
             .nullValue("endpointType")
             .nullValue("keywords")
@@ -143,7 +151,8 @@ public class MsrPactDslDefinitions {
             .stringMatcher("sourceMSR", "^^(?!urn:mrn:mcp:msr:).*", "ura:mrn:mcp:msr:test-mst-instance")
             .nullValue("unsupportedParams")
             .closeObject()
-            .closeArray().asBody();
+            .closeArray()
+            .asBody();
 
     /**
      * MSR Update Service valid request
@@ -170,14 +179,16 @@ public class MsrPactDslDefinitions {
      * MSR Valid SearchRequestObject with empty query
      */
     static final DslPart searchRequestObjectWithBlankQueryDsl = new PactDslJsonBody()
-            .nullValue("query")
-            .nullValue("geometry")
-            .nullValue("includeXml")
-            .nullValue("page")
-            .nullValue("pageSize")
+            .nullValue("envelope")
+            .nullValue("envelopeSignature")
             .asBody();
 
     static final DslPart searchRequestObjectWithInvalidStatusDsl = new PactDslJsonBody()
+            .object("envelope")
+            .nullValue("envelopeSignatureCertificate")
+            .nullValue("envelopeRootCertificateThumbprint")
+            .nullValue("envelopeSignatureTime")
+            .nullValue("envelopeSignatureReference")
             .object("query")
             .nullValue("name")
             .stringMatcher("status", "INVALID-STATUS")
@@ -185,11 +196,9 @@ public class MsrPactDslDefinitions {
             .nullValue("keywords")
             .nullValue("description")
             .nullValue("dataProductType")
-            .booleanType("localOnly")
             .nullValue("specificationId")
             .nullValue("designId")
             .nullValue("instanceId")
-            .nullValue("organizationId")
             .nullValue("mmsi")
             .nullValue("imo")
             .nullValue("serviceType")
@@ -199,8 +208,10 @@ public class MsrPactDslDefinitions {
             .asBody()
             .nullValue("geometry")
             .nullValue("includeXml")
-            .nullValue("page")
-            .nullValue("pageSize")
+            .nullValue("localOnly")
+            .closeObject()
+            .asBody()
+            .nullValue("envelopeSignature")
             .asBody();
 
     static final DslPart errorResponseObject = new PactDslJsonBody()

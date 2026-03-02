@@ -28,6 +28,7 @@ import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.hc.core5.net.URIBuilder;
+import org.grad.secomv2.core.models.EnvelopeSearchFilterObject;
 import org.grad.secomv2.core.models.SearchFilterObject;
 import org.grad.secomv2.core.models.SearchParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -224,13 +225,15 @@ public class BasicMsrV2SearchServiceTest {
      */
     @Test
     @PactTestFor(pactMethods = "createInvalidSearchResponsePostPact")
-    void testSearchServicePostWithInvalidParams(MockServer mockServer) throws IOException, URISyntaxException {
+    void testSearchServicePostWithInvalidParams(MockServer mockServer) throws IOException {
         // Create a search filter object
 
         SearchFilterObject searchFilterObject = new SearchFilterObject();
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setStatus("INVALID-STATUS");
-        searchFilterObject.setQuery(searchParameters);
+        EnvelopeSearchFilterObject envelopeSearchFilterObject = new EnvelopeSearchFilterObject();
+        envelopeSearchFilterObject.setQuery(searchParameters);
+        searchFilterObject.setEnvelope(envelopeSearchFilterObject);
 
         // And perform the SearchService request
         Response httpResponse = Request.post(mockServer.getUrl() + "/v2/searchService")
