@@ -119,8 +119,8 @@ $(() => {
             maxBounds: bounds,
             maxBoundsViscosity: 1.0
         })
-        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(subscriptionMap);
 
         // FeatureGroup is to store editable layers
