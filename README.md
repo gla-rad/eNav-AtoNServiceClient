@@ -107,7 +107,7 @@ You don't have to use it if you have another preference. Just make sure you
 update the *.gitignore* file appropriately.
 
 ## Build Setup
-The project is using the latest OpenJDK 21 to build, although earlier versions
+The project is using the latest OpenJDK 25 to build, although earlier versions
 should also work.
 
 To build the project you will need Maven, which usually comes along-side the
