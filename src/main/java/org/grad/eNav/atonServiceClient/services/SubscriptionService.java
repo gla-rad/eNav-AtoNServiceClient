@@ -25,7 +25,7 @@ import org.grad.secom.core.models.RemoveSubscriptionObject;
 import org.grad.secom.core.models.RemoveSubscriptionResponseObject;
 import org.grad.secom.core.models.SubscriptionRequestObject;
 import org.grad.secom.core.models.SubscriptionResponseObject;
-import org.grad.secom.springboot3.components.SecomClient;
+import org.grad.secom.springboot4.components.SecomClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

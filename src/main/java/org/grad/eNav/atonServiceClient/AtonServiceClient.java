@@ -16,6 +16,7 @@
 package org.grad.eNav.atonServiceClient;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.jboss.resteasy.springboot.ResteasyAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -26,7 +27,7 @@ import java.security.Security;
  *
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
-@SpringBootApplication
+@SpringBootApplication(exclude = ResteasyAutoConfiguration.class)
 public class AtonServiceClient {
 
 	/**

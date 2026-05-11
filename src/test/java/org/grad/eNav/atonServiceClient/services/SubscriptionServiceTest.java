@@ -21,7 +21,7 @@ import org.grad.eNav.atonServiceClient.repos.SubscriptionRepo;
 import org.grad.secom.core.models.RemoveSubscriptionResponseObject;
 import org.grad.secom.core.models.SubscriptionRequestObject;
 import org.grad.secom.core.models.SubscriptionResponseObject;
-import org.grad.secom.springboot3.components.SecomClient;
+import org.grad.secom.springboot4.components.SecomClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
