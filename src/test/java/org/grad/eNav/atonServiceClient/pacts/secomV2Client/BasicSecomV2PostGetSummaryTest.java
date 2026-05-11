@@ -66,7 +66,7 @@ public class BasicSecomV2PostGetSummaryTest {
     @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetSummaryPact(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Summary POST Interface")
+                .given("Test SECOM POST Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
                         "A valid get summary request",
                         httpBuilder -> httpBuilder
@@ -88,7 +88,7 @@ public class BasicSecomV2PostGetSummaryTest {
     @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetSummaryPactWithParams(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Summary POST Interface")
+                .given("Test SECOM POST Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
                         "A valid get summary request",
                         httpBuilder -> httpBuilder
@@ -111,7 +111,7 @@ public class BasicSecomV2PostGetSummaryTest {
     @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetSummaryPactWithParamsContainerTypeBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Summary POST Interface")
+                .given("Test SECOM POST Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
                         "A get summary request with query parameters but a badly formatted containerType",
                         httpBuilder -> httpBuilder
@@ -133,7 +133,7 @@ public class BasicSecomV2PostGetSummaryTest {
     @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetSummaryPactWithParamsPageNumberInvalid(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Summary POST Interface")
+                .given("Test SECOM POST Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
                         "A get summary request with query parameters but an invalid page number",
                         httpBuilder -> httpBuilder
@@ -275,6 +275,5 @@ public class BasicSecomV2PostGetSummaryTest {
                 .execute();
         assertEquals(400, response.returnResponse().getCode());
     }
-
 
 }

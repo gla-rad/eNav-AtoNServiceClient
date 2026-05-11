@@ -59,21 +59,6 @@ class BasicSecomV2PostGetTest {
      */
     ObjectMapper objectMapper;
 
-//    /**
-//     * Define a map of query parameters for the createGetPactWithParams
-//     * pacts. This can also be reused in the testing.
-//     */
-//    final Map<String, String> queryParamsMap = Map.of(
-//            "containerType" ,"0",
-//            "productVersion" ,"0.0.1",
-//            "geometry" ,"POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))",
-//            "unlocode" ,"GBHRW",
-//            "validFrom" ,"2020-01-01T00:00:00",
-//            "validTo" ,"2020-01-01T23:59:59",
-//            "page" ,"1",
-//            "pageSize" ,"10"
-//    );
-
     /**
      * SECOM Get Pact.
      * @param builder The Pact Builder
@@ -81,7 +66,7 @@ class BasicSecomV2PostGetTest {
     @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetPact(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get POST Interface")
+                .given("Test SECOM POST Get Interface")
                 .expectsToReceiveHttpInteraction(
                         "A valid get request",
                         httpBuilder -> httpBuilder
@@ -103,7 +88,7 @@ class BasicSecomV2PostGetTest {
     @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetPactWithParams(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get POST Interface")
+                .given("Test SECOM POST Ge Interface")
                 .expectsToReceiveHttpInteraction(
                         "A valid get request with query parameters",
                         httpBuilder -> httpBuilder
@@ -125,7 +110,7 @@ class BasicSecomV2PostGetTest {
     @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetPactWithParamsContainerTypeBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get POST Interface")
+                .given("Test SECOM POST Get Interface")
                 .expectsToReceiveHttpInteraction(
                         "A get request with query parameters but a badly formatted containerType",
                         httpBuilder -> httpBuilder
@@ -147,7 +132,7 @@ class BasicSecomV2PostGetTest {
     @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetPactWithParamsPageNumberInvalid(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get POST Interface")
+                .given("Test SECOM POST Get Interface")
                 .expectsToReceiveHttpInteraction(
                         "A get request with query parameters but an invalid page number",
                         httpBuilder -> httpBuilder
@@ -292,6 +277,5 @@ class BasicSecomV2PostGetTest {
                 .execute();
         assertEquals(400, response.returnResponse().getCode());
     }
-
 
 }
