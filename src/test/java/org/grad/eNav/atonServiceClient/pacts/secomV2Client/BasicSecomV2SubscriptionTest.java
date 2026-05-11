@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 GLA Research and Development Directorate
+ * Copyright (c) 2026 GLA Research and Development Directorate
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -287,6 +287,9 @@ public class BasicSecomV2SubscriptionTest {
         envelopeSubscriptionObject.setSubscriptionPeriodEnd(Instant.now());
         envelopeSubscriptionObject.setCallbackEndpoint(new URI("https://example.com").toURL());
         envelopeSubscriptionObject.setPushAll(Boolean.TRUE);
+        envelopeSubscriptionObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
+        envelopeSubscriptionObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
+        envelopeSubscriptionObject.setEnvelopeSignatureTime(Instant.now());
 
         // Create an subscription request object
         SubscriptionRequestObject subscriptionRequestObject = new SubscriptionRequestObject();

@@ -21,6 +21,8 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTest;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
@@ -227,7 +229,6 @@ public class BasicMsrV2SearchServiceTest {
     @PactTestFor(pactMethods = "createInvalidSearchResponsePostPact")
     void testSearchServicePostWithInvalidParams(MockServer mockServer) throws IOException {
         // Create a search filter object
-
         SearchFilterObject searchFilterObject = new SearchFilterObject();
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setStatus("INVALID-STATUS");

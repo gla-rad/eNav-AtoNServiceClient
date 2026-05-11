@@ -207,7 +207,6 @@ public class MsrPactDslDefinitions {
             .closeObject()
             .asBody()
             .nullValue("geometry")
-            .nullValue("includeXml")
             .nullValue("localOnly")
             .closeObject()
             .asBody()
