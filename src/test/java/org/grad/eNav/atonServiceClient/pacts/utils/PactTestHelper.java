@@ -19,11 +19,10 @@ import au.com.dius.pact.consumer.dsl.DslPart;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 /**
@@ -45,7 +44,6 @@ public class PactTestHelper {
                 .changeDefaultPropertyInclusion(incl -> incl
                         .withContentInclusion(JsonInclude.Include.NON_NULL)
                         .withValueInclusion(JsonInclude.Include.NON_NULL))
-                .addModule(new JavaTimeModule())
                 .build();
 
         //If there are any mapping issues, appropriate module could be the solution

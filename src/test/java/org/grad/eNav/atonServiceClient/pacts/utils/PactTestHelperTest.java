@@ -18,8 +18,8 @@ package org.grad.eNav.atonServiceClient.pacts.utils;
 import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.LambdaDsl;
 import org.grad.secom.core.models.CapabilityResponseObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -38,7 +38,7 @@ public class PactTestHelperTest {
     /**
      * Common setup for all the tests.
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         final LocalDateTime created = LocalDateTime.of(2019,12,31,12,0);
         capabilityResponseBody = LambdaDsl.newJsonBody(body ->

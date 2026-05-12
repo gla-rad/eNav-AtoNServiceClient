@@ -16,11 +16,11 @@
 package org.grad.eNav.atonServiceClient.services;
 
 import org.grad.eNav.atonServiceClient.models.domain.SignedDatasetContent;
-import org.grad.secom.core.exceptions.SecomValidationException;
-import org.grad.secom.core.models.*;
-import org.grad.secom.core.models.enums.ContainerTypeEnum;
-import org.grad.secom.core.models.enums.SECOM_DataProductType;
-import org.grad.secom.springboot4.components.SecomClient;
+import org.grad.secomv2.core.exceptions.SecomValidationException;
+import org.grad.secomv2.core.models.*;
+import org.grad.secomv2.core.models.enums.ContainerTypeEnum;
+import org.grad.secomv2.core.models.enums.SECOM_DataProductType;
+import org.grad.secomv2.springboot4.components.SecomClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,7 +58,7 @@ class SecomServiceTest {
     SecomClient discoveryService;
 
     // Test Variables
-    List<SearchObjectResult> instances;
+    List<ServiceInstanceObject> instances;
     ResponseSearchObject responseSearchObject;
     List<SummaryObject> summaryObjects;
     GetSummaryResponseObject summaryResponseObject;
@@ -74,11 +74,11 @@ class SecomServiceTest {
         this.secomService.discoveryServiceUrl = "http://localhost:8444/v1/searchService";
 
         // Create a list of retrieved instances
-        SearchObjectResult searchObjectResult1 = new SearchObjectResult();
+        ServiceInstanceObject searchObjectResult1 = new ServiceInstanceObject();
         searchObjectResult1.setName("searchResult1");
         searchObjectResult1.setVersion("0.0.1");
         searchObjectResult1.setEndpointUri("http://localhost/");
-        SearchObjectResult searchObjectResult2 = new SearchObjectResult();
+        ServiceInstanceObject searchObjectResult2 = new ServiceInstanceObject();
         searchObjectResult2.setName("searchResult2");
         searchObjectResult2.setVersion("0.0.2");
         searchObjectResult2.setEndpointUri("http://localhost/");

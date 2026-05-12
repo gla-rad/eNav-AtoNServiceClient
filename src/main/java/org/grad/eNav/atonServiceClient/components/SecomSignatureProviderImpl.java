@@ -17,10 +17,10 @@ package org.grad.eNav.atonServiceClient.components;
 
 import lombok.extern.slf4j.Slf4j;
 import org.grad.eNav.atonServiceClient.utils.X509Utils;
-import org.grad.secom.core.base.DigitalSignatureCertificate;
-import org.grad.secom.core.base.SecomSignatureProvider;
-import org.grad.secom.core.models.enums.DigitalSignatureAlgorithmEnum;
-import org.grad.secom.core.utils.SecomPemUtils;
+import org.grad.secomv2.core.base.DigitalSignatureCertificate;
+import org.grad.secomv2.core.base.SecomSignatureProvider;
+import org.grad.secomv2.core.models.enums.DigitalSignatureAlgorithmEnum;
+import org.grad.secomv2.core.utils.SecomPemUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
@@ -105,22 +105,32 @@ public class SecomSignatureProviderImpl implements SecomSignatureProvider {
      * of the message content (preferably in a Base64 format) and the signature
      * to validate the content against.
      *
-     * @param signatureCertificate  The digital signature certificate to be used for the signature generation
+     * @param signatureCertificates The array of digital signature certificate to be used for the signature generation
      * @param algorithm             The algorithm used for the signature generation
      * @param signature             The signature to validate the context against
      * @param content               The context (in Base64 format) to be validated
      * @return whether the signature validation was successful or not
      */
     @Override
-    public boolean validateSignature(String signatureCertificate, DigitalSignatureAlgorithmEnum algorithm, byte[] signature, byte[] content) {
+    public boolean validateSignature(String[] signatureCertificates, DigitalSignatureAlgorithmEnum algorithm, byte[] signature, byte[] content) {
         // Create a new signature to sign the provided content
         try {
             Signature sign = Signature.getInstance(algorithm.getValue());
-            sign.initVerify(SecomPemUtils.getCertFromPem(signatureCertificate));
-            sign.update(content);
 
-            // Sign and return the signature
-            return sign.verify(signature);
+            for (String signatureCertificate: signatureCertificates){
+                sign.initVerify(SecomPemUtils.getCertFromPem(signatureCertificate));
+                sign.update(content);
+
+                if (sign.verify(signature)) {
+                    // If verified return true
+                    return true;
+                }
+
+            }
+
+            // If no certificates verified, return false
+            return false;
+
         } catch (NoSuchAlgorithmException | CertificateException | SignatureException | InvalidKeyException ex) {
             log.error(ex.getMessage());
             return false;

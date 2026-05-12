@@ -18,23 +18,21 @@ package org.grad.eNav.atonServiceClient.controllers.secom;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.grad.eNav.atonServiceClient.services.SubscriptionService;
-import org.grad.secom.core.interfaces.SubscriptionNotificationSecomInterface;
-import org.grad.secom.core.models.SubscriptionNotificationObject;
-import org.grad.secom.core.models.SubscriptionNotificationResponseObject;
-import org.grad.secom.core.models.enums.SubscriptionEventEnum;
+import org.grad.secomv2.core.interfaces.SubscriptionNotificationServiceInterface;
+import org.grad.secomv2.core.models.*;
+import org.grad.secomv2.core.models.enums.SubscriptionEventEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 import jakarta.validation.Valid;
-import jakarta.ws.rs.Path;
 
 @Component
-@Path("/")
 @Validated
 @Slf4j
-public class SubscriptionNotificationSecomController implements SubscriptionNotificationSecomInterface {
+public class SubscriptionNotificationSecomController implements SubscriptionNotificationServiceInterface {
 
     /**
      * Attach the web-socket as a simple messaging template
@@ -49,39 +47,41 @@ public class SubscriptionNotificationSecomController implements SubscriptionNoti
     SubscriptionService subscriptionService;
 
     /**
-     * POST /v1/subscription/notification : The interface receives notifications
+     * POST /v2/subscription/notification : The interface receives notifications
      * when a subscription is created or removed by the information provider.
      *
      * @param subscriptionNotificationObject the subscription notification request object
      * @return the subscription notification response object
      */
     @Tag(name = "SECOM")
-    public SubscriptionNotificationResponseObject subscriptionNotification(@Valid SubscriptionNotificationObject subscriptionNotificationObject) {
+    public ResponseEntity<SubscriptionResponseObject> subscriptionNotification(@Valid SubscriptionNotificationObject subscriptionNotificationObject) {
+        EnvelopeSubscriptionNotificationObject envelopeSubscriptionNotificationObject = subscriptionNotificationObject.getEnvelope();
+
         log.debug("Received SECOM notification {} for subscription with identifier {}",
-                subscriptionNotificationObject.getEventEnum(),
-                subscriptionNotificationObject.getSubscriptionIdentifier());
+                envelopeSubscriptionNotificationObject.getEventEnum(),
+                envelopeSubscriptionNotificationObject.getSubscriptionIdentifier());
 
         // Initialise a response
-        SubscriptionNotificationResponseObject subscriptionNotificationResponseObject = new SubscriptionNotificationResponseObject();
+        SubscriptionResponseObject subscriptionResponseObject = new SubscriptionResponseObject();
 
         // If the subscription event is a removal, we might need to also need to
         // remove the subscription from the current active list.
-        if(subscriptionNotificationObject.getEventEnum() == SubscriptionEventEnum.SUBSCRIPTION_REMOVED) {
-            this.subscriptionService.deleteSubscription(subscriptionNotificationObject.getSubscriptionIdentifier());
-            subscriptionNotificationResponseObject.setResponseText(String.format(
+        if(envelopeSubscriptionNotificationObject.getEventEnum() == SubscriptionEventEnum.SUBSCRIPTION_REMOVED) {
+            this.subscriptionService.deleteSubscription(envelopeSubscriptionNotificationObject.getSubscriptionIdentifier());
+            subscriptionResponseObject.setMessage(String.format(
                     "The subscription with identifier %s has been removed by the service",
-                    subscriptionNotificationObject.getSubscriptionIdentifier()
+                    envelopeSubscriptionNotificationObject.getSubscriptionIdentifier()
             ));
         }
 
         // Send the subscription notification to the web-socket
         this.webSocket.convertAndSend(
-                "/topic/secom/subscription/" + (subscriptionNotificationObject.getEventEnum() == SubscriptionEventEnum.SUBSCRIPTION_CREATED ? "created" : "removed"),
-                subscriptionNotificationObject.getSubscriptionIdentifier()
+                "/topic/secom/subscription/" + (envelopeSubscriptionNotificationObject.getEventEnum() == SubscriptionEventEnum.SUBSCRIPTION_CREATED ? "created" : "removed"),
+                envelopeSubscriptionNotificationObject.getSubscriptionIdentifier()
         );
 
         // Return the response
-        return subscriptionNotificationResponseObject;
+        return ResponseEntity.ok(subscriptionResponseObject);
     }
 
 }

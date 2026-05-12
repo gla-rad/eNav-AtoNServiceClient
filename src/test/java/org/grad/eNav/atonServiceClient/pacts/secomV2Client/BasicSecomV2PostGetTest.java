@@ -23,6 +23,8 @@ import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
@@ -35,6 +37,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -169,6 +172,8 @@ class BasicSecomV2PostGetTest {
     void setup() {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     /**
@@ -185,7 +190,7 @@ class BasicSecomV2PostGetTest {
         EnvelopeGetFilterObject envelopeGetFilterObject = new EnvelopeGetFilterObject();
         envelopeGetFilterObject.setEnvelopeSignatureCertificate(new String[] {"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the filter object
         GetFilterObject getFilterObject = new GetFilterObject();
@@ -216,7 +221,7 @@ class BasicSecomV2PostGetTest {
         envelopeGetFilterObject.setUnlocode("GBHRW");
         envelopeGetFilterObject.setEnvelopeSignatureCertificate(new String[] {"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the filter object
         GetFilterObject getFilterObject = new GetFilterObject();
@@ -246,7 +251,7 @@ class BasicSecomV2PostGetTest {
         envelopeGetFilterObject.setContainerType(ContainerTypeEnum.S100_DataSet);
         envelopeGetFilterObject.setEnvelopeSignatureCertificate(new String[] {"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the filter object
         GetFilterObject getFilterObject = new GetFilterObject();
@@ -279,7 +284,7 @@ class BasicSecomV2PostGetTest {
         envelopeGetFilterObject.setPage(0);
         envelopeGetFilterObject.setEnvelopeSignatureCertificate(new String[] {"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the filter object
         GetFilterObject getFilterObject = new GetFilterObject();

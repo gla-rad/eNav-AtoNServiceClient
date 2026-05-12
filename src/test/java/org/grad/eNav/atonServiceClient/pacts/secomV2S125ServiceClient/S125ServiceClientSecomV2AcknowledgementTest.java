@@ -23,6 +23,8 @@ import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
@@ -35,6 +37,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -133,6 +136,8 @@ public class S125ServiceClientSecomV2AcknowledgementTest {
     void setup() {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     /**
@@ -148,13 +153,13 @@ public class S125ServiceClientSecomV2AcknowledgementTest {
         // Create an acknowledgement object
         AcknowledgementObject acknowledgementObject = new AcknowledgementObject();
         EnvelopeAckObject envelopeAckObject = new EnvelopeAckObject();
-        envelopeAckObject.setCreatedAt(Instant.now());
+        envelopeAckObject.setCreatedAt(Instant.now().truncatedTo(ChronoUnit.SECONDS));
         envelopeAckObject.setEnvelopeSignatureCertificate(new String[] {"ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ=="});
         envelopeAckObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
         envelopeAckObject.setTransactionIdentifier(UUID.randomUUID());
         envelopeAckObject.setAckType(AckTypeEnum.DELIVERED_ACK);
         envelopeAckObject.setNackType(NackTypeEnum.XML_SCHEMA_VALIDATION_ERROR);
-        envelopeAckObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeAckObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
         acknowledgementObject.setEnvelope(envelopeAckObject);
         acknowledgementObject.setDigitalSignature("ZGlnaXRhbFNpZ25hdHVyZQ==");
 
@@ -193,12 +198,12 @@ public class S125ServiceClientSecomV2AcknowledgementTest {
         // Create an acknowledgement object
         AcknowledgementObject acknowledgementObject = new AcknowledgementObject();
         EnvelopeAckObject envelopeAckObject = new EnvelopeAckObject();
-        envelopeAckObject.setCreatedAt(Instant.now());
+        envelopeAckObject.setCreatedAt(Instant.now().truncatedTo(ChronoUnit.SECONDS));
         envelopeAckObject.setEnvelopeSignatureCertificate(new String[] {"ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ=="});
         envelopeAckObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
         envelopeAckObject.setAckType(AckTypeEnum.DELIVERED_ACK);
         envelopeAckObject.setNackType(NackTypeEnum.XML_SCHEMA_VALIDATION_ERROR);
-        envelopeAckObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeAckObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
         acknowledgementObject.setEnvelope(envelopeAckObject);
         acknowledgementObject.setDigitalSignature("ZGlnaXRhbFNpZ25hdHVyZQ==");
 

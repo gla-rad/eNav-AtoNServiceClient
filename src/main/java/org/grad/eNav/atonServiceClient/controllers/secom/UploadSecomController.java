@@ -19,22 +19,22 @@ import _int.iho.s_125.gml.cs0._1.AidsToNavigationType;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
-import jakarta.ws.rs.Path;
 import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.grad.eNav.atonServiceClient.utils.AtonTypeConverter;
 import org.grad.eNav.atonServiceClient.utils.X509Utils;
 import org.grad.eNav.s125.utils.S125Utils;
-import org.grad.secom.core.interfaces.UploadSecomInterface;
-import org.grad.secom.core.models.*;
-import org.grad.secom.core.models.enums.AckRequestEnum;
-import org.grad.secom.core.models.enums.AckTypeEnum;
-import org.grad.secom.core.models.enums.SECOM_ResponseCodeEnum;
-import org.grad.secom.springboot4.components.SecomClient;
-import org.grad.secom.springboot4.components.SecomConfigProperties;
+import org.grad.secomv2.core.interfaces.UploadServiceInterface;
+import org.grad.secomv2.core.models.*;
+import org.grad.secomv2.core.models.enums.AckRequestEnum;
+import org.grad.secomv2.core.models.enums.AckTypeEnum;
+import org.grad.secomv2.core.models.enums.SECOM_ResponseCodeEnum;
+import org.grad.secomv2.springboot4.components.SecomClient;
+import org.grad.secomv2.springboot4.components.SecomConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -52,10 +52,9 @@ import java.util.*;
 import static java.util.function.Predicate.not;
 
 @Component
-@Path("/")
 @Validated
 @Slf4j
-public class UploadSecomController implements UploadSecomInterface {
+public class UploadSecomController implements UploadServiceInterface {
 
     /**
      * The SECOM Service URL to subscribe to.
@@ -93,17 +92,16 @@ public class UploadSecomController implements UploadSecomInterface {
     }
 
     /**
-     * POST /api/secom/v1/object : Accepts the incoming AtoN Service data in
+     * POST /api/secom/v2/object : Accepts the incoming AtoN Service data in
      * a SECOM-compliant S-125 format.
      *
      * @param uploadObject the upload object
      * @return the upload response object
      */
     @Tag(name = "SECOM")
-    public UploadResponseObject upload(@Valid UploadObject uploadObject) {
-        log.debug("Received SECOM upload transaction {} from subscription {}",
-                uploadObject.getEnvelope().getTransactionIdentifier(),
-                uploadObject.getEnvelope().getFromSubscription());
+    public ResponseEntity<UploadResponseObject> upload(@Valid UploadObject uploadObject) {
+        log.debug("Received SECOM upload transaction {}",
+                uploadObject.getEnvelope().getTransactionIdentifier());
 
         // Initialise the response
         UploadResponseObject uploadResponseObject = new UploadResponseObject();
@@ -120,19 +118,29 @@ public class UploadSecomController implements UploadSecomInterface {
         Optional.of(uploadObject)
                 .map(UploadObject::getEnvelope)
                 .map(EnvelopeUploadObject::getExchangeMetadata)
-                .map(SECOM_ExchangeMetadataObject::getDigitalSignatureValue)
-                .map(DigitalSignatureValue::getPublicCertificate)
-                .map(X509Utils::extractFromCertificatePem)
-                .map(X509Utils::extractUIDFromCertificate)
-                .ifPresent(signedBy -> webSocketHeaders.put("signed-by", signedBy));
+                .map(ExchangeMetadata::getDigitalSignatureValue)
+                .map(DigitalSignatureValueObject::getPublicCertificate)
+                .stream()
+                .flatMap(Arrays::stream)
+                .forEach(cert -> {
+                    Optional.of(cert)
+                            .map(X509Utils::extractFromCertificatePem)
+                            .map(X509Utils::extractUIDFromCertificate)
+                            .ifPresent(signedBy -> webSocketHeaders.put("signed-by", signedBy));
+                });
         Optional.of(uploadObject)
                 .map(UploadObject::getEnvelope)
                 .map(EnvelopeUploadObject::getExchangeMetadata)
-                .map(SECOM_ExchangeMetadataObject::getDigitalSignatureValue)
-                .map(DigitalSignatureValue::getPublicCertificate)
-                .map(X509Utils::extractFromCertificatePem)
-                .map(X509Utils::extractIssuerUIDFromCertificate)
-                .ifPresent(issuedBy -> webSocketHeaders.put("issued-by", issuedBy));
+                .map(ExchangeMetadata::getDigitalSignatureValue)
+                .map(DigitalSignatureValueObject::getPublicCertificate)
+                .stream()
+                .flatMap(Arrays::stream)
+                .forEach(cert -> {
+                    Optional.of(cert)
+                            .map(X509Utils::extractFromCertificatePem)
+                            .map(X509Utils::extractUIDFromCertificate)
+                            .ifPresent(signedBy -> webSocketHeaders.put("issued-by", signedBy));
+                });
 
         // Decode the data and down the web-socket
         try {
@@ -167,11 +175,11 @@ public class UploadSecomController implements UploadSecomInterface {
             }
         } catch (JAXBException ex) {
             uploadResponseObject.setSECOM_ResponseCode(SECOM_ResponseCodeEnum.SCHEMA_VALIDATION_ERROR);
-            uploadResponseObject.setResponseText("Unable to validate the provided S-125 XML schema.");
+            uploadResponseObject.setMessage("Unable to validate the provided S-125 XML schema.");
         }
 
         // Return the response
-        return uploadResponseObject;
+        return ResponseEntity.ok(uploadResponseObject);
     }
 
 }

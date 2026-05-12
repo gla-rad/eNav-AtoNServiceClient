@@ -16,10 +16,10 @@
 package org.grad.eNav.atonServiceClient.components;
 
 import lombok.extern.slf4j.Slf4j;
-import org.grad.secom.core.base.DigitalSignatureCertificate;
-import org.grad.secom.core.base.SecomCertificateProvider;
-import org.grad.secom.core.utils.KeyStoreUtils;
-import org.grad.secom.springboot4.components.SecomConfigProperties;
+import org.grad.secomv2.core.base.DigitalSignatureCertificate;
+import org.grad.secomv2.core.base.SecomCertificateProvider;
+import org.grad.secomv2.core.utils.KeyStoreUtils;
+import org.grad.secomv2.springboot4.components.SecomConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -101,8 +101,8 @@ public class SecomCertificateProviderImpl implements SecomCertificateProvider {
 
         // Build the SECOM digital certificate object
         final DigitalSignatureCertificate digitalSignatureCertificate = new DigitalSignatureCertificate();
-        digitalSignatureCertificate.setCertificateAlias(this.appName);
-        digitalSignatureCertificate.setCertificate(certificate);
+        digitalSignatureCertificate.setCertificateAlias(new String[] { this.appName });
+        digitalSignatureCertificate.setCertificate(new X509Certificate[] { certificate });
         digitalSignatureCertificate.setPublicKey(certificate.getPublicKey());
         digitalSignatureCertificate.setRootCertificate(rootCertificate);
 

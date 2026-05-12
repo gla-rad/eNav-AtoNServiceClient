@@ -23,6 +23,8 @@ import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
@@ -35,6 +37,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -155,6 +158,8 @@ public class BasicSecomV2PostGetSummaryTest {
     void setup() {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     /**
@@ -170,7 +175,7 @@ public class BasicSecomV2PostGetSummaryTest {
         EnvelopeGetSummaryFilterObject envelopeGetSummaryFilterObject = new EnvelopeGetSummaryFilterObject();
         envelopeGetSummaryFilterObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetSummaryFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the get summary filter object
         GetSummaryFilterObject getSummaryFilterObject = new GetSummaryFilterObject();
@@ -200,7 +205,7 @@ public class BasicSecomV2PostGetSummaryTest {
         envelopeGetSummaryFilterObject.setUnlocode("GBHRW");
         envelopeGetSummaryFilterObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetSummaryFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the get summary filter object
         GetSummaryFilterObject getSummaryFilterObject = new GetSummaryFilterObject();
@@ -230,7 +235,7 @@ public class BasicSecomV2PostGetSummaryTest {
         envelopeGetSummaryFilterObject.setContainerType(ContainerTypeEnum.S100_DataSet);
         envelopeGetSummaryFilterObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetSummaryFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the get summary filter object
         GetSummaryFilterObject getSummaryFilterObject = new GetSummaryFilterObject();
@@ -262,7 +267,7 @@ public class BasicSecomV2PostGetSummaryTest {
         envelopeGetSummaryFilterObject.setPage(0);
         envelopeGetSummaryFilterObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetSummaryFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the get summary filter object
         GetSummaryFilterObject getSummaryFilterObject = new GetSummaryFilterObject();
