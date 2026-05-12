@@ -17,7 +17,7 @@ package org.grad.eNav.atonServiceClient.pacts.utils;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.LambdaDsl;
-import org.grad.secom.core.models.CapabilityResponseObject;
+import org.grad.secomv2.core.models.CapabilityResponseObject;
 import org.junit.Before;
 import org.junit.Test;
 
