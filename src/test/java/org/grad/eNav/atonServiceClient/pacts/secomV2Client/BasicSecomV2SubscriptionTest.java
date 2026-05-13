@@ -278,7 +278,7 @@ public class BasicSecomV2SubscriptionTest {
         // Create the envelope subscription request
         EnvelopeSubscriptionObject envelopeSubscriptionObject = new EnvelopeSubscriptionObject();
         envelopeSubscriptionObject.setContainerType(ContainerTypeEnum.S100_DataSet);
-        envelopeSubscriptionObject.setDataProductType(SECOM_DataProductType.S201);
+        envelopeSubscriptionObject.setDataProductType(SECOM_DataProductType.S125);
         envelopeSubscriptionObject.setDataReference(UUID.randomUUID());
         envelopeSubscriptionObject.setProductVersion("0.0.1");
         envelopeSubscriptionObject.setGeometry("POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))");
