@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 GLA Research and Development Directorate
+ * Copyright (c) 2026 GLA Research and Development Directorate
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -74,10 +74,10 @@ public class S125ServiceClientSecomV2SubscriptionTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v2/subscription")
                                         .method("POST")
-                                        .body(SecomV2PactDslDefinitions.subscriptionRequestDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionRequestObjectDsl))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectDsl))
                 )
                 .toPact();
     }
@@ -99,7 +99,7 @@ public class S125ServiceClientSecomV2SubscriptionTest {
                                         .body("{\"field1\":\"bad-field\", \"field2\":\"bad-field\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -121,7 +121,7 @@ public class S125ServiceClientSecomV2SubscriptionTest {
                                         .body("{\"containerType\":\"invalid\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -143,7 +143,7 @@ public class S125ServiceClientSecomV2SubscriptionTest {
                                         .body("{\"dataProductType\":\"invalid\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -165,7 +165,7 @@ public class S125ServiceClientSecomV2SubscriptionTest {
                                         .body("{\"dataReference\":\"invalid\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -187,7 +187,7 @@ public class S125ServiceClientSecomV2SubscriptionTest {
                                         .body("{\"geometry\":\"invalid\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -209,7 +209,7 @@ public class S125ServiceClientSecomV2SubscriptionTest {
                                         .body("{\"unlocode\":\"invalid\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -231,7 +231,7 @@ public class S125ServiceClientSecomV2SubscriptionTest {
                                         .body("{\"subscriptionPeriodStart\":\"invalid\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -253,7 +253,7 @@ public class S125ServiceClientSecomV2SubscriptionTest {
                                         .body("{\"subscriptionPeriodEnd\":\"invalid\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -286,6 +286,9 @@ public class S125ServiceClientSecomV2SubscriptionTest {
         envelopeSubscriptionObject.setSubscriptionPeriodEnd(Instant.now());
         envelopeSubscriptionObject.setCallbackEndpoint(new URI("https://example.com").toURL());
         envelopeSubscriptionObject.setPushAll(Boolean.TRUE);
+        envelopeSubscriptionObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
+        envelopeSubscriptionObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
+        envelopeSubscriptionObject.setEnvelopeSignatureTime(Instant.now());
 
         // Create an subscription request object
         SubscriptionRequestObject subscriptionRequestObject = new SubscriptionRequestObject();
@@ -294,6 +297,7 @@ public class S125ServiceClientSecomV2SubscriptionTest {
 
         // And perform the SECOM request
         Response response = Request.post(mockServer.getUrl() + "/v2/subscription")
+                //.setSerializationInclusion(JsonInclude.Include.NON_NULL)
                 .bodyString(this.objectMapper.writeValueAsString(subscriptionRequestObject), ContentType.APPLICATION_JSON)
                 .execute();
         assertEquals(200, response.returnResponse().getCode());

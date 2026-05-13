@@ -227,7 +227,6 @@ public class BasicMsrV2SearchServiceTest {
     @PactTestFor(pactMethods = "createInvalidSearchResponsePostPact")
     void testSearchServicePostWithInvalidParams(MockServer mockServer) throws IOException {
         // Create a search filter object
-
         SearchFilterObject searchFilterObject = new SearchFilterObject();
         SearchParameters searchParameters = new SearchParameters();
         searchParameters.setStatus("INVALID-STATUS");

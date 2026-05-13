@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 GLA Research and Development Directorate
+ * Copyright (c) 2026 GLA Research and Development Directorate
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,15 +21,11 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTest;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
-import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.hc.core5.net.URIBuilder;
-import org.grad.secom.core.models.RemoveSubscriptionObject;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -96,7 +92,7 @@ public class S125ServiceClientSecomV2RemoveSubscriptionTest {
                                         .queryParameters(this.queryParamsMap))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
-                                        .body(SecomV2PactDslDefinitions.removeSubscriptionResponseDsl))
+                                        .body(SecomV2PactDslDefinitions.removeSubscriptionResponseObjectDsl))
                 )
                 .toPact();
     }
@@ -118,7 +114,7 @@ public class S125ServiceClientSecomV2RemoveSubscriptionTest {
                                         .queryParameters(this.badQueryParamsMap))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(404)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -140,7 +136,7 @@ public class S125ServiceClientSecomV2RemoveSubscriptionTest {
                                         .queryParameter("subscriptionIdentifier", randomUuid))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(404)
-                                        .body(SecomV2PactDslDefinitions.removeSubscriptionResponseNotFoundDsl))
+                                        .body(SecomV2PactDslDefinitions.removeSubscriptionResponseObjectNotFoundDsl))
                 )
                 .toPact();
     }

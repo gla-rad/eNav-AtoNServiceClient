@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2025 GLA Research and Development Directorate
+ * Copyright (c) 2026 GLA Research and Development Directorate
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -21,6 +21,7 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTest;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
@@ -73,10 +74,10 @@ public class BasicSecomV2AcknowledgementTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v2/acknowledgement")
                                         .method("POST")
-                                        .body(SecomV2PactDslDefinitions.acknowledgementRequestDsl))
+                                        .body(SecomV2PactDslDefinitions.acknowledgementObjectDsl))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
-                                        .body(SecomV2PactDslDefinitions.acknowledgementResponseDsl))
+                                        .body(SecomV2PactDslDefinitions.acknowledgementResponseObjectDsl))
                 )
                 .toPact();
     }
@@ -95,10 +96,10 @@ public class BasicSecomV2AcknowledgementTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v2/acknowledgement")
                                         .method("POST")
-                                        .body("{\"envelope\":\"bad-envelope\", \"digitalSignature\":\"bad-digital-signature\"}"))
+                                        .body("{\"envelope\":\"bad-envelope\", \"envelopeSignature\":\"bad-digital-signature\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.acknowledgementResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.acknowledgementResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -117,10 +118,10 @@ public class BasicSecomV2AcknowledgementTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v2/acknowledgement")
                                         .method("POST")
-                                        .body(SecomV2PactDslDefinitions.acknowledgementRequestWithoutTransactionIdentifierDsl))
+                                        .body(SecomV2PactDslDefinitions.acknowledgementObjectWithoutTransactionIdentifierDsl))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.acknowledgementResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.acknowledgementResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -131,6 +132,7 @@ public class BasicSecomV2AcknowledgementTest {
     @BeforeEach
     void setup() {
         this.objectMapper = new ObjectMapper();
+        this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
     /**
@@ -153,8 +155,6 @@ public class BasicSecomV2AcknowledgementTest {
         envelopeAckObject.setAckType(AckTypeEnum.DELIVERED_ACK);
         envelopeAckObject.setNackType(NackTypeEnum.XML_SCHEMA_VALIDATION_ERROR);
         envelopeAckObject.setEnvelopeSignatureTime(Instant.now());
-        envelopeAckObject.setDigitalSignatureReference("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeAckObject.setDataReference(UUID.randomUUID());
         acknowledgementObject.setEnvelope(envelopeAckObject);
         acknowledgementObject.setDigitalSignature("ZGlnaXRhbFNpZ25hdHVyZQ==");
 
@@ -175,7 +175,7 @@ public class BasicSecomV2AcknowledgementTest {
     void testAcknowledgementWithBodBody(MockServer mockServer) throws IOException {
         // Perform the SECOM request
         Response response = Request.post(mockServer.getUrl() + "/v2/acknowledgement")
-                .bodyString("{\"envelope\":\"bad-envelope\", \"digitalSignature\":\"bad-digital-signature\"}", ContentType.APPLICATION_JSON)
+                .bodyString("{\"envelope\":\"bad-envelope\", \"envelopeSignature\":\"bad-digital-signature\"}", ContentType.APPLICATION_JSON)
                 .execute();
         assertEquals(400, response.returnResponse().getCode());
     }
@@ -199,8 +199,6 @@ public class BasicSecomV2AcknowledgementTest {
         envelopeAckObject.setAckType(AckTypeEnum.DELIVERED_ACK);
         envelopeAckObject.setNackType(NackTypeEnum.XML_SCHEMA_VALIDATION_ERROR);
         envelopeAckObject.setEnvelopeSignatureTime(Instant.now());
-        envelopeAckObject.setDataReference(UUID.randomUUID());
-        envelopeAckObject.setDigitalSignatureReference("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
         acknowledgementObject.setEnvelope(envelopeAckObject);
         acknowledgementObject.setDigitalSignature("ZGlnaXRhbFNpZ25hdHVyZQ==");
 
