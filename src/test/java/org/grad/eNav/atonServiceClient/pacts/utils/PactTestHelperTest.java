@@ -17,7 +17,7 @@ package org.grad.eNav.atonServiceClient.pacts.utils;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.LambdaDsl;
-import org.grad.secom.core.models.CapabilityResponseObject;
+import org.grad.secomv2.core.models.CapabilityResponseObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -45,13 +45,14 @@ public class PactTestHelperTest {
                 body.arrayContaining("capability",
                         capability -> capability.object(capabilityObj -> capabilityObj
                                 .numberValue("containerType", 0)
-                                .stringValue("dataProductType", "S125")
+                                .stringValue("dataProductType", "S-125")
                                 .stringValue("productSchemaUrl", "https://rnavlab.gla-rad.org/enav/aton-service/xsd/S125.xsd")
                                 .object("implementedInterfaces", implementedInterfacesObj -> implementedInterfacesObj
                                         .booleanType("upload", false)
                                         .booleanType("uploadLink", false)
                                         .booleanType("get", false)
                                         .booleanType("getSummary", false)
+                                        .booleanType("publicKey", false)
                                         .booleanType("getByLink", false)
                                         .booleanType("subscription", false)
                                         .booleanType("access", false)

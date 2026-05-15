@@ -15,7 +15,7 @@
 
 package org.grad.eNav.atonServiceClient.services;
 
-import jakarta.ws.rs.NotFoundException;
+import org.springframework.web.server.ResponseStatusException;
 import org.grad.eNav.atonServiceClient.models.domain.Subscription;
 import org.grad.eNav.atonServiceClient.repos.SubscriptionRepo;
 import org.grad.secomv2.core.models.RemoveSubscriptionResponseObject;
@@ -140,11 +140,13 @@ class SubscriptionServiceTest {
      */
     @Test
     void testGetSubscriptionNotFound() {
+        UUID uuid = UUID.randomUUID();
+
         // Mock the repository response
-        doReturn(Optional.empty()).when(this.subscriptionRepo).findByIdentifier(any());
+        doReturn(Optional.empty()).when(this.subscriptionRepo).findByIdentifier(uuid);
 
         // Perform the service call
-        assertThrows(NotFoundException.class, () -> this.subscriptionService.getSubscription(UUID.randomUUID()));
+        assertThrows(ResponseStatusException.class, () -> this.subscriptionService.getSubscription(uuid));
     }
 
     /**

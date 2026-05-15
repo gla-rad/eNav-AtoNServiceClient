@@ -290,7 +290,7 @@ public class BasicSecomV2SubscriptionTest {
         envelopeSubscriptionObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeSubscriptionObject.setEnvelopeSignatureTime(Instant.now());
 
-        // Create an subscription request object
+        // Create a subscription request object
         SubscriptionRequestObject subscriptionRequestObject = new SubscriptionRequestObject();
         subscriptionRequestObject.setEnvelope(envelopeSubscriptionObject);
         subscriptionRequestObject.setEnvelopeSignature("ZGlnaXRhbFNpZ25hdHVyZQ==");

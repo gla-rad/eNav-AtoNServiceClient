@@ -21,14 +21,21 @@ import _int.iho.s_125.gml.cs0._1.impl.VirtualAISAidToNavigationImpl;
 import tools.jackson.databind.ObjectMapper;
 import org.grad.eNav.atonServiceClient.models.domain.SignedDatasetContent;
 import org.grad.eNav.atonServiceClient.services.SecomService;
-import org.grad.secom.core.models.*;
-import org.grad.secom.core.models.enums.ContainerTypeEnum;
-import org.grad.secom.core.models.enums.SECOM_DataProductType;
+import org.grad.secomv2.core.models.*;
+import org.grad.secomv2.core.models.enums.ContainerTypeEnum;
+import org.grad.secomv2.core.models.enums.SECOM_DataProductType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.security.autoconfigure.SecurityAutoConfiguration;
+import org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration;
+import org.springframework.boot.security.autoconfigure.web.servlet.SecurityFilterAutoConfiguration;
+import org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.ActiveProfiles;
@@ -51,7 +58,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
-@WebMvcTest(controllers = SecomServiceController.class, excludeAutoConfiguration = {SecurityAutoConfiguration.class})
+@WebMvcTest(
+        controllers = SecomServiceController.class,
+        excludeAutoConfiguration = {
+                SecurityAutoConfiguration.class,
+                SecurityFilterAutoConfiguration.class,
+                ServletWebSecurityAutoConfiguration.class,
+                UserDetailsServiceAutoConfiguration.class
+        },
+        excludeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = { EnableWebSecurity.class, EnableMethodSecurity.class })
+)
 class SecomServiceControllerTest {
 
     /**
@@ -79,7 +95,7 @@ class SecomServiceControllerTest {
     SecomService secomService;
 
     // Test Variables
-    private List<SearchObjectResult> instances;
+    private List<ServiceInstanceObject> instances;
     private List<SummaryObject> summaryObjects;
     private List<AidsToNavigationType> atons;
 
@@ -89,11 +105,11 @@ class SecomServiceControllerTest {
     @BeforeEach
     void setUp() {
         // Create a list of retrieved instances
-        SearchObjectResult searchObjectResult1 = new SearchObjectResult();
+        ServiceInstanceObject searchObjectResult1 = new ServiceInstanceObject();
         searchObjectResult1.setName("searchResult1");
         searchObjectResult1.setVersion("0.0.1");
         searchObjectResult1.setEndpointUri("http://localhost/");
-        SearchObjectResult searchObjectResult2 = new SearchObjectResult();
+        ServiceInstanceObject searchObjectResult2 = new ServiceInstanceObject();
         searchObjectResult2.setName("searchResult2");
         searchObjectResult2.setVersion("0.0.2");
         searchObjectResult2.setEndpointUri("http://localhost/");
@@ -138,7 +154,7 @@ class SecomServiceControllerTest {
                 .andReturn();
 
         // Parse and validate the response
-        SearchObjectResult[] result = this.objectMapper.readValue(mvcResult.getResponse().getContentAsString(), SearchObjectResult[].class);
+        ServiceInstanceObject[] result = this.objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ServiceInstanceObject[].class);
         assertNotNull(result);
         assertEquals(this.instances.size(), result.length);
         // Check all returned instances

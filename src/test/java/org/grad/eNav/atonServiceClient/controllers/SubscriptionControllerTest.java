@@ -15,18 +15,26 @@
 
 package org.grad.eNav.atonServiceClient.controllers;
 
+import org.grad.secomv2.core.models.EnvelopeSubscriptionObject;
 import tools.jackson.databind.ObjectMapper;
 import org.grad.eNav.atonServiceClient.services.SubscriptionService;
-import org.grad.secom.core.models.RemoveSubscriptionResponseObject;
-import org.grad.secom.core.models.SubscriptionRequestObject;
-import org.grad.secom.core.models.SubscriptionResponseObject;
-import org.grad.secom.core.models.enums.ContainerTypeEnum;
-import org.grad.secom.core.models.enums.SECOM_DataProductType;
+import org.grad.secomv2.core.models.RemoveSubscriptionResponseObject;
+import org.grad.secomv2.core.models.SubscriptionRequestObject;
+import org.grad.secomv2.core.models.SubscriptionResponseObject;
+import org.grad.secomv2.core.models.enums.ContainerTypeEnum;
+import org.grad.secomv2.core.models.enums.SECOM_DataProductType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.security.autoconfigure.SecurityAutoConfiguration;
+import org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration;
+import org.springframework.boot.security.autoconfigure.web.servlet.SecurityFilterAutoConfiguration;
+import org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -46,7 +54,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
-@WebMvcTest(controllers = SubscriptionController.class, excludeAutoConfiguration = {SecurityAutoConfiguration.class})
+@WebMvcTest(
+        controllers = SubscriptionController.class,
+        excludeAutoConfiguration = {
+                SecurityAutoConfiguration.class,
+                SecurityFilterAutoConfiguration.class,
+                ServletWebSecurityAutoConfiguration.class,
+                UserDetailsServiceAutoConfiguration.class
+        },
+        excludeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = { EnableWebSecurity.class, EnableMethodSecurity.class })
+)
 class SubscriptionControllerTest {
 
     /**
@@ -79,9 +96,12 @@ class SubscriptionControllerTest {
     void setUp() {
         // Initialise the subscription request object
         this.subscriptionRequestObject = new SubscriptionRequestObject();
-        this.subscriptionRequestObject.setDataReference(UUID.randomUUID());
-        this.subscriptionRequestObject.setContainerType(ContainerTypeEnum.S100_DataSet);
-        this.subscriptionRequestObject.setDataProductType(SECOM_DataProductType.S125);
+        EnvelopeSubscriptionObject envelopeSubscriptionObject = new EnvelopeSubscriptionObject();
+        envelopeSubscriptionObject.setDataReference(UUID.randomUUID());
+        envelopeSubscriptionObject.setContainerType(ContainerTypeEnum.S100_DataSet);
+        envelopeSubscriptionObject.setDataProductType(SECOM_DataProductType.S125);
+
+        this.subscriptionRequestObject.setEnvelope(envelopeSubscriptionObject);
 
         // Initialise the subscription response object
         this.subscriptionResponseObject = new SubscriptionResponseObject();

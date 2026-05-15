@@ -21,9 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.grad.eNav.atonServiceClient.services.SecomService;
 import org.grad.eNav.atonServiceClient.utils.AtonTypeConverter;
 import org.grad.eNav.s125.utils.S125Utils;
-import org.grad.secom.core.models.SearchObjectResult;
-import org.grad.secom.core.models.SummaryObject;
-import org.grad.secom.core.models.enums.SECOM_DataProductType;
+import org.grad.secomv2.core.models.SummaryObject;
+import org.grad.secomv2.core.models.enums.SECOM_DataProductType;
+import org.grad.secomv2.core.models.ServiceInstanceObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -63,10 +63,10 @@ public class SecomServiceController {
      *
      * @param dataProductType the SECOM data product type
      * @param pageable the paging information for the request
-     * @return A list of all MCP Service Registry resutls
+     * @return A list of all MCP Service Registry results
      */
     @GetMapping(value="", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<SearchObjectResult> getRegisteredServices(String dataProductType, Pageable pageable) {
+    public List<ServiceInstanceObject> getRegisteredServices(String dataProductType, Pageable pageable) {
         return this.secomService.getRegisteredServices(dataProductType, pageable);
     }
 

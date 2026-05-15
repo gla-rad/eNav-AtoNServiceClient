@@ -54,7 +54,7 @@ public class SubscriptionNotificationSecomController implements SubscriptionNoti
      * @return the subscription notification response object
      */
     @Tag(name = "SECOM")
-    public ResponseEntity<SubscriptionResponseObject> subscriptionNotification(@Valid SubscriptionNotificationObject subscriptionNotificationObject) {
+    public ResponseEntity<SubscriptionNotificationResponseObject> subscriptionNotification(@Valid SubscriptionNotificationObject subscriptionNotificationObject) {
         EnvelopeSubscriptionNotificationObject envelopeSubscriptionNotificationObject = subscriptionNotificationObject.getEnvelope();
 
         log.debug("Received SECOM notification {} for subscription with identifier {}",
@@ -62,13 +62,13 @@ public class SubscriptionNotificationSecomController implements SubscriptionNoti
                 envelopeSubscriptionNotificationObject.getSubscriptionIdentifier());
 
         // Initialise a response
-        SubscriptionResponseObject subscriptionResponseObject = new SubscriptionResponseObject();
+        SubscriptionNotificationResponseObject subscriptionNotificationResponseObject = new SubscriptionNotificationResponseObject();
 
         // If the subscription event is a removal, we might need to also need to
         // remove the subscription from the current active list.
         if(envelopeSubscriptionNotificationObject.getEventEnum() == SubscriptionEventEnum.SUBSCRIPTION_REMOVED) {
             this.subscriptionService.deleteSubscription(envelopeSubscriptionNotificationObject.getSubscriptionIdentifier());
-            subscriptionResponseObject.setMessage(String.format(
+            subscriptionNotificationResponseObject.setMessage(String.format(
                     "The subscription with identifier %s has been removed by the service",
                     envelopeSubscriptionNotificationObject.getSubscriptionIdentifier()
             ));
@@ -81,7 +81,7 @@ public class SubscriptionNotificationSecomController implements SubscriptionNoti
         );
 
         // Return the response
-        return ResponseEntity.ok(subscriptionResponseObject);
+        return ResponseEntity.ok(subscriptionNotificationResponseObject);
     }
 
 }

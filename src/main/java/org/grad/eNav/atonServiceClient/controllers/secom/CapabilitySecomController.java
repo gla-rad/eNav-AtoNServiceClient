@@ -26,11 +26,9 @@ import org.grad.secomv2.core.models.enums.SECOM_DataProductType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import jakarta.ws.rs.Path;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;

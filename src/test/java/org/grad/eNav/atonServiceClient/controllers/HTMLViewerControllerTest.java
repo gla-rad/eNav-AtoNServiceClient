@@ -21,18 +21,34 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.security.autoconfigure.SecurityAutoConfiguration;
+import org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration;
+import org.springframework.boot.security.autoconfigure.web.servlet.SecurityFilterAutoConfiguration;
+import org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
-@WebMvcTest(controllers = HTMLViewerController.class, excludeAutoConfiguration = {SecurityAutoConfiguration.class})
+@WebMvcTest(
+        controllers = HTMLViewerController.class,
+        excludeAutoConfiguration = {
+                SecurityAutoConfiguration.class,
+                SecurityFilterAutoConfiguration.class,
+                ServletWebSecurityAutoConfiguration.class,
+                UserDetailsServiceAutoConfiguration.class
+        },
+        excludeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = { EnableWebSecurity.class, EnableMethodSecurity.class }
+        )
+)
 class HTMLViewerControllerTest {
 
     /**
@@ -71,7 +87,6 @@ class HTMLViewerControllerTest {
         this.mockMvc.perform(get("/index")
                         .param("username", "user")
                         .param("password", "password")
-                        .with(csrf())
                         .contentType(MediaType.TEXT_HTML))
                 .andExpect(status().isOk());
     }
@@ -85,7 +100,6 @@ class HTMLViewerControllerTest {
         this.mockMvc.perform(get("/about")
                         .param("username", "user")
                         .param("password", "password")
-                        .with(csrf())
                         .contentType(MediaType.TEXT_HTML))
                 .andExpect(status().isOk());
     }

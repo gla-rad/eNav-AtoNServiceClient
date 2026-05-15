@@ -59,7 +59,7 @@ class SecomServiceTest {
 
     // Test Variables
     List<ServiceInstanceObject> instances;
-    ResponseSearchObject responseSearchObject;
+    SearchResult searchResult;
     List<SummaryObject> summaryObjects;
     GetSummaryResponseObject summaryResponseObject;
     GetResponseObject getResponseObject;
@@ -85,8 +85,11 @@ class SecomServiceTest {
         this.instances = Arrays.asList(searchObjectResult1, searchObjectResult2);
 
         // Create the response search object
-        this.responseSearchObject = new ResponseSearchObject();
-        this.responseSearchObject.setSearchServiceResult(this.instances);
+        this.searchResult = new SearchResult();
+        EnvelopeSearchResultObject envelopeSearchResultObject = new EnvelopeSearchResultObject();
+        envelopeSearchResultObject.setServiceInstance(this.instances);
+        this.searchResult.setEnvelope(envelopeSearchResultObject);
+        this.searchResult.setEnvelopeSignature("signature");
 
         // Create a list of summary objects
         SummaryObject summaryObject1 = new SummaryObject();
@@ -101,7 +104,7 @@ class SecomServiceTest {
 
         // Create the summary response object
         this.summaryResponseObject = new GetSummaryResponseObject();
-        summaryResponseObject.setSummaryObject(this.summaryObjects);
+        summaryResponseObject.setInformationSummaryObject(this.summaryObjects);
 
         // Load the S-125 dataset file
         final InputStream in = ClassLoader.getSystemResourceAsStream("s125-msg.xml");
@@ -150,10 +153,10 @@ class SecomServiceTest {
     @Test
     void testGetRegisteredServicesUnPaged() {
         // Mock the search service response
-        doReturn(Optional.of(this.responseSearchObject)).when(this.discoveryService).searchService(any(), any(), any());
+        doReturn(Optional.of(this.searchResult)).when(this.discoveryService).searchService(any());
 
         // Perform the service call
-        List<SearchObjectResult> result = this.secomService.getRegisteredServices("test", Pageable.unpaged());
+        List<ServiceInstanceObject> result = this.secomService.getRegisteredServices("test", Pageable.unpaged());
 
         // Make sure the client seems OK
         assertNotNull(result);
@@ -172,10 +175,10 @@ class SecomServiceTest {
     @Test
     void testGetRegisteredServicesPaged() {
         // Mock the search service response
-        doReturn(Optional.of(this.responseSearchObject)).when(this.discoveryService).searchService(any(), eq(10), eq(1));
+        doReturn(Optional.of(this.searchResult)).when(this.discoveryService).searchService(any());
 
         // Perform the service call
-        List<SearchObjectResult> result = this.secomService.getRegisteredServices("test",PageRequest.of(10,1));
+        List<ServiceInstanceObject> result = this.secomService.getRegisteredServices("test",PageRequest.of(10,1));
 
         // Make sure the client seems OK
         assertNotNull(result);
@@ -297,7 +300,7 @@ class SecomServiceTest {
     void testGetClient() {
         // And mock a SECOM discovery service client
         this.secomService.discoveryService = mock(SecomClient.class);
-        doReturn(Optional.of(this.responseSearchObject)).when(this.secomService.discoveryService).searchService(any(), any(), any());
+        doReturn(Optional.of(this.searchResult)).when(this.secomService.discoveryService).searchService(any());
 
         // Perform the service call
         SecomClient result = this.secomService.getClient("urn:mrn:org:test");
@@ -315,11 +318,11 @@ class SecomServiceTest {
     @Test
     void testGetClientBrokenUrl() {
         // Break the URL of the latest instance
-        this.responseSearchObject.getSearchServiceResult().get(1).setEndpointUri("a broken URL");
+        this.searchResult.getEnvelope().getServiceInstance().get(1).setEndpointUri("a broken URL");
 
         // And mock a SECOM discovery service client
         this.secomService.discoveryService = mock(SecomClient.class);
-        doReturn(Optional.of(this.responseSearchObject)).when(this.secomService.discoveryService).searchService(any(), any(), any());
+        doReturn(Optional.of(this.searchResult)).when(this.secomService.discoveryService).searchService(any());
 
         // Perform the service call
         assertThrows(SecomValidationException.class, () -> this.secomService.getClient("urn:mrn:org:test"));

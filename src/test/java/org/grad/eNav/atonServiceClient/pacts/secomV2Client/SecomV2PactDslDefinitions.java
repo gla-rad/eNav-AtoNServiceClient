@@ -322,6 +322,7 @@ public class SecomV2PactDslDefinitions {
                     .stringMatcher("^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==")
                 .closeArray().asBody()
                 .stringMatcher("envelopeRootCertificateThumbprint",  "^[-A-Za-z0-9+/]*$", "714fead3e2e4f0a01051bc4e26c30a306c456ef1")
+                .nullValue("envelopeSignatureReference")
                 .datetime("envelopeSignatureTime", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
             .closeObject()
             .asBody()
