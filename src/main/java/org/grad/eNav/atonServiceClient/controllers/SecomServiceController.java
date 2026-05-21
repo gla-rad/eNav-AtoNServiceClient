@@ -76,7 +76,7 @@ public class SecomServiceController {
      *
      * @param mrn  the MRN of the service to retrieve the datasets for
      * @param pageable the paging information for the request
-     * @return A list of all MCP Service Registry resutls
+     * @return A list of all MCP Service Registry results
      */
     @GetMapping(value="/{mrn}/summary", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<SummaryObject> getSecomDatasets(@PathVariable("mrn") String mrn, Pageable pageable) {
