@@ -188,7 +188,6 @@ public class MsrPactDslDefinitions {
             .nullValue("envelopeSignatureCertificate")
             .nullValue("envelopeRootCertificateThumbprint")
             .nullValue("envelopeSignatureTime")
-            .nullValue("envelopeSignatureReference")
             .object("query")
             .nullValue("name")
             .stringMatcher("status", "INVALID-STATUS")

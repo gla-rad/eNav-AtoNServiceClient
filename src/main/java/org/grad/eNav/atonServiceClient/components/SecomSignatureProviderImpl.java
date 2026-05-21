@@ -15,17 +15,22 @@
 
 package org.grad.eNav.atonServiceClient.components;
 
+import feign.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.grad.eNav.atonServiceClient.feign.CKeeperClient;
 import org.grad.eNav.atonServiceClient.utils.X509Utils;
 import org.grad.secomv2.core.base.DigitalSignatureCertificate;
 import org.grad.secomv2.core.base.SecomSignatureProvider;
 import org.grad.secomv2.core.models.enums.DigitalSignatureAlgorithmEnum;
 import org.grad.secomv2.core.utils.SecomPemUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -33,6 +38,7 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Optional;
 
 /**
  * The SECOM Signature Validator Implementation.
@@ -47,14 +53,12 @@ import java.security.spec.InvalidKeySpecException;
 @Slf4j
 public class SecomSignatureProviderImpl implements SecomSignatureProvider {
 
-    @Value("${gla.rad.aton-service-client.secom.keypair.private:classpath:privateKey.pem}")
-    Resource privateKeyFile;
-
     /**
-     * The Key-Pair Curve.
+     * The cKeeper Feign Client.
      */
-    @Value("${gla.rad.aton-service-client.secom.keypair.curve:secp256r1}")
-    String keyPairCurve;
+    @Autowired
+    @Lazy
+    CKeeperClient cKeeperClient;
 
     /**
      * The Application Name.
@@ -86,15 +90,23 @@ public class SecomSignatureProviderImpl implements SecomSignatureProvider {
      */
     @Override
     public byte[] generateSignature(DigitalSignatureCertificate signatureCertificate, DigitalSignatureAlgorithmEnum algorithm, byte[] payload) {
-        // Create a new signature to sign the provided content
-        try {
-            Signature sign = Signature.getInstance(algorithm.getValue());
-            sign.initSign(X509Utils.privateKeyFromPem(new String(this.privateKeyFile.getInputStream().readAllBytes(), StandardCharsets.UTF_8), this.keyPairCurve));
-            sign.update(payload);
+        // Get the signing certificate signature algorithm
+        algorithm = DigitalSignatureAlgorithmEnum.fromValue(signatureCertificate.getCertificate()[0].getSigAlgName());
+        // Get the signature generated from cKeeper
+        final Response response = this.cKeeperClient.generateCertificateSignature(
+                new BigInteger(signatureCertificate.getCertificateAlias()[0]),
+                algorithm.getValue(),
+                Optional.ofNullable(payload).orElse(new byte[]{}));
 
-            // Sign and return the signature
-            return sign.sign();
-        } catch (NoSuchAlgorithmException | IOException | InvalidKeySpecException| SignatureException | InvalidKeyException ex) {
+        // Make sure the response is valid
+        if(response == null || response.body() == null) {
+            return null;
+        }
+
+        // Parse the response
+        try {
+            return response.body().asInputStream().readAllBytes();
+        } catch (IOException ex) {
             log.error(ex.getMessage());
             return null;
         }

@@ -16,10 +16,11 @@
 package org.grad.eNav.atonServiceClient;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.grad.secomv2.springboot4.components.SecomConfigProperties;
+import org.grad.eNav.atonServiceClient.models.domain.ServiceInformationConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 import java.security.Security;
 
@@ -29,7 +30,8 @@ import java.security.Security;
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
 @SpringBootApplication()
-@EnableConfigurationProperties(SecomConfigProperties.class)
+@EnableConfigurationProperties({ ServiceInformationConfig.class })
+@EnableFeignClients
 public class AtonServiceClient {
 
 	/**
