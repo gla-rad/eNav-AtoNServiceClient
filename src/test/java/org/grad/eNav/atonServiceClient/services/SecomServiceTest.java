@@ -104,7 +104,7 @@ class SecomServiceTest {
 
         // Create the summary response object
         this.summaryResponseObject = new GetSummaryResponseObject();
-        summaryResponseObject.setInformationSummaryObject(this.summaryObjects);
+        summaryResponseObject.setSummaryObject(this.summaryObjects);
 
         // Load the S-125 dataset file
         final InputStream in = ClassLoader.getSystemResourceAsStream("s125-msg.xml");
@@ -120,7 +120,7 @@ class SecomServiceTest {
     }
 
     /**
-     * That that during its initialisation the SECOM service will construct the
+     * That during its initialisation the SECOM service will construct the
      * SECOM discovery service client.
      */
     @Test

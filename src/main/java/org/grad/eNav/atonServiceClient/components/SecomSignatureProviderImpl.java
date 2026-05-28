@@ -84,14 +84,13 @@ public class SecomSignatureProviderImpl implements SecomSignatureProvider {
      * provided digital signature certificate information.
      *
      * @param signatureCertificate  The digital signature certificate to be used for the signature generation
-     * @param algorithm             The algorithm to be used for the signature generation
      * @param payload               The payload to be signed, (preferably Base64 encoded)
      * @return The signature generated
      */
     @Override
-    public byte[] generateSignature(DigitalSignatureCertificate signatureCertificate, DigitalSignatureAlgorithmEnum algorithm, byte[] payload) {
+    public byte[] generateSignature(DigitalSignatureCertificate signatureCertificate, byte[] payload) {
         // Get the signing certificate signature algorithm
-        algorithm = DigitalSignatureAlgorithmEnum.fromValue(signatureCertificate.getCertificate()[0].getSigAlgName());
+        DigitalSignatureAlgorithmEnum algorithm = DigitalSignatureAlgorithmEnum.fromValue(signatureCertificate.getCertificate()[0].getSigAlgName());
         // Get the signature generated from cKeeper
         final Response response = this.cKeeperClient.generateCertificateSignature(
                 new BigInteger(signatureCertificate.getCertificateAlias()[0]),
@@ -127,6 +126,8 @@ public class SecomSignatureProviderImpl implements SecomSignatureProvider {
     public boolean validateSignature(String[] signatureCertificates, DigitalSignatureAlgorithmEnum algorithm, byte[] signature, byte[] content) {
         // Create a new signature to sign the provided content
         try {
+            //TODO Get algorithm from the certificate
+
             Signature sign = Signature.getInstance(algorithm.getValue());
 
             for (String signatureCertificate: signatureCertificates){
@@ -147,5 +148,10 @@ public class SecomSignatureProviderImpl implements SecomSignatureProvider {
             log.error(ex.getMessage());
             return false;
         }
+    }
+
+    @Override
+    public boolean validateSignature(String[] signatureCertificates, byte[] signature, byte[] content) {
+        return this.validateSignature(signatureCertificates, DigitalSignatureAlgorithmEnum.SHA2_384_WITH_ECDSA, signature, content);
     }
 }

@@ -46,8 +46,8 @@ public class SecomV2PactDslDefinitions {
     static final DslPart capabilityResponseDsl = new PactDslJsonBody()
             .array("capability")
                 .object()
-                    .numberValue("containerType", 0)
-                    .stringValue("dataProductType", "S-125")
+            .integerMatching("containerType", "[0|1|2]", 1)
+            .stringValue("dataProductType", "S-125")
                     .stringType("productSchemaUrl", "https://rnavlab.gla-rad.org/enav/aton-service/xsd/S125.xsd")
                     .object("implementedInterfaces", new PactDslJsonBody()
                             .booleanType("upload",  true)
@@ -308,7 +308,7 @@ public class SecomV2PactDslDefinitions {
      */
     static final DslPart acknowledgementResponseErrorDsl = new PactDslJsonBody()
             .integerMatching("SECOM_ResponseCode", "[0|1|2|3]", 0)
-            .stringType("message",  "Acknowledgement message.");
+            .stringType("message",  "Bad Request");
 
     /**
      * SECOM Subscription Request Pact Body

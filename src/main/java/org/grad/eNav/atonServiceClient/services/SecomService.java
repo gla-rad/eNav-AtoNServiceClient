@@ -226,7 +226,7 @@ public class SecomService {
                 null,
                 pageable.isUnpaged()? null : pageable.getPageNumber(),
                 pageable.isUnpaged()? MAX_UNPAGED_RESULTS_NO : pageable.getPageSize())
-                .map(GetSummaryResponseObject::getInformationSummaryObject)
+                .map(GetSummaryResponseObject::getSummaryObject)
                 .orElse(Collections.emptyList());
     }
 
