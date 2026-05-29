@@ -204,7 +204,6 @@ class S125ServiceClientSecomV2PostGetTest {
         // Create the envelope
         EnvelopeGetFilterObject envelopeGetFilterObject = new EnvelopeGetFilterObject();
         envelopeGetFilterObject.setContainerType(ContainerTypeEnum.S100_DataSet);
-        envelopeGetFilterObject.setUnlocode("GBHRW");
         envelopeGetFilterObject.setDataProductType(SECOM_DataProductType.S125);
         envelopeGetFilterObject.setEnvelopeSignatureCertificate(new String[] {"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");

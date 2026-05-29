@@ -183,7 +183,6 @@ public class SecomV2PactDslDefinitions {
     static final DslPart getFilterObjectWithCriteriaDsl = new PactDslJsonBody()
             .object("envelope")
             .integerMatching("containerType", "^[0-2]", 1)
-            .stringValue("unlocode", "GBHRW")
             .stringValue("dataProductType", "S-125")
             .array("envelopeSignatureCertificate")
             .stringMatcher("^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==")
