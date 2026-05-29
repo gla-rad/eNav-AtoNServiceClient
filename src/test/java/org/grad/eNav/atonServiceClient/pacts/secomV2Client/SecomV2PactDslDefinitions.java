@@ -84,7 +84,7 @@ public class SecomV2PactDslDefinitions {
      */
     static final DslPart getSummaryFilterObjectWithCriteriaDsl = new PactDslJsonBody()
             .object("envelope")
-            .integerMatching("containerType", "^[0-2]", 1)
+            .integerMatching("containerType", "^[0-2]", 0)
             .stringValue("unlocode", "GBHRW")
             .array("envelopeSignatureCertificate")
             .stringMatcher("^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==")
@@ -178,7 +178,7 @@ public class SecomV2PactDslDefinitions {
      */
     static final DslPart getFilterObjectWithCriteriaDsl = new PactDslJsonBody()
             .object("envelope")
-            .integerMatching("containerType", "^[0-2]", 1)
+            .integerMatching("containerType", "^[0-2]", 0)
             .array("envelopeSignatureCertificate")
                 .stringMatcher("^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==")
             .closeArray().asBody()

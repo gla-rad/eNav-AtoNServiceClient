@@ -200,7 +200,7 @@ class S125ServiceClientSecomV2PostGetTest {
      */
     @Test
     @PactTestFor(pactMethods = "createGetPactWithParams")
-    void testGetWithParams(MockServer mockServer) throws IOException, URISyntaxException {
+    void testGetWithParams(MockServer mockServer) throws IOException {
         // Create the envelope
         EnvelopeGetFilterObject envelopeGetFilterObject = new EnvelopeGetFilterObject();
         envelopeGetFilterObject.setContainerType(ContainerTypeEnum.S100_DataSet);
