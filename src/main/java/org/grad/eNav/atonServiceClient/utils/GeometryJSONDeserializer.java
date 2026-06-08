@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,27 +15,24 @@
 
 package org.grad.eNav.atonServiceClient.utils;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ValueDeserializer;
 import org.locationtech.jts.geom.Geometry;
-
-import java.io.IOException;
 
 /**
  * The type Geometry json deserializer.
  *
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
-public class GeometryJSONDeserializer extends JsonDeserializer<Geometry> {
+public class GeometryJSONDeserializer extends ValueDeserializer<Geometry> {
 
     @Override
     public Geometry deserialize(JsonParser jsonParser,
-                                DeserializationContext deserializationContext) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode node = mapper.readTree(jsonParser);
+                                DeserializationContext deserializationContext) throws JacksonException {
+        JsonNode node = jsonParser.readValueAsTree();
         return GeometryJSONConverter.convertToGeometry(node);
     }
 

@@ -4,7 +4,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,14 +15,13 @@
 
 package org.grad.eNav.atonServiceClient.utils;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.geojson.GeoJsonReader;
 import org.locationtech.jts.io.geojson.GeoJsonWriter;
-
-import java.io.IOException;
 
 /**
  * The type Geometry JSON converter.
@@ -46,8 +45,8 @@ public class GeometryJSONConverter {
         try {
             JsonNode node = om.readTree(new GeoJsonWriter().write(geometry));
             return node;
-        } catch (IOException e) {
-            return null;
+        } catch (JacksonException e) {
+            return om.createObjectNode();
         }
     }
 
@@ -58,7 +57,7 @@ public class GeometryJSONConverter {
      * @return the geometry
      */
     public static Geometry convertToGeometry(JsonNode jsonNode) {
-        if (jsonNode == null  || jsonNode.toString() == "null" || jsonNode.asText() == "null") {
+        if (jsonNode == null || jsonNode.isNull()) {
             return null;
         }
 

@@ -17,8 +17,11 @@ package org.grad.eNav.atonServiceClient.pacts.utils;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.cloud.openfeign.support.PageJacksonModule;
+import org.springframework.cloud.openfeign.support.SortJacksonModule;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.IOException;
 
@@ -44,6 +47,9 @@ public class PactTestHelper {
                 .changeDefaultPropertyInclusion(incl -> incl
                         .withContentInclusion(JsonInclude.Include.NON_NULL)
                         .withValueInclusion(JsonInclude.Include.NON_NULL))
+                .addModule(new JavaTimeModule())
+                .addModule(new PageJacksonModule())
+                .addModule(new SortJacksonModule())
                 .build();
 
         //If there are any mapping issues, appropriate module could be the solution

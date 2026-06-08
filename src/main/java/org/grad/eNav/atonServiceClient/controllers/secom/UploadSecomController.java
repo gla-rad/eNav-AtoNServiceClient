@@ -170,7 +170,7 @@ public class UploadSecomController implements UploadServiceInterface {
                             envelopeAckObject.setTransactionIdentifier(uploadObject.getEnvelope().getTransactionIdentifier());
                             envelopeAckObject.setAckType(AckTypeEnum.DELIVERED_ACK);
                             acknowledgementObject.setEnvelope(envelopeAckObject);
-                            this.secomClient.acknowledgment(acknowledgementObject);
+                            this.secomClient.acknowledgement(acknowledgementObject);
                         });
             }
         } catch (JAXBException ex) {
