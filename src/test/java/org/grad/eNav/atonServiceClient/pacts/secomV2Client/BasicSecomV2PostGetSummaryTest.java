@@ -92,7 +92,7 @@ public class BasicSecomV2PostGetSummaryTest {
         return builder
                 .given("Test SECOM Get Summary POST Interface")
                 .expectsToReceiveHttpInteraction(
-                        "A valid get summary request",
+                        "A valid get summary request with query",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path(POST_GET_SUMMARY_PATH)

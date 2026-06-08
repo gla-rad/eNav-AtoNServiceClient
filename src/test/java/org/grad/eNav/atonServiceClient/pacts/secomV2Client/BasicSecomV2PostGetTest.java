@@ -61,21 +61,6 @@ class BasicSecomV2PostGetTest {
      */
     ObjectMapper objectMapper;
 
-//    /**
-//     * Define a map of query parameters for the createGetPactWithParams
-//     * pacts. This can also be reused in the testing.
-//     */
-//    final Map<String, String> queryParamsMap = Map.of(
-//            "containerType" ,"0",
-//            "productVersion" ,"0.0.1",
-//            "geometry" ,"POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))",
-//            "unlocode" ,"GBHRW",
-//            "validFrom" ,"2020-01-01T00:00:00",
-//            "validTo" ,"2020-01-01T23:59:59",
-//            "page" ,"1",
-//            "pageSize" ,"10"
-//    );
-
     /**
      * SECOM Get Pact.
      * @param builder The Pact Builder
