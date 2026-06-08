@@ -314,12 +314,6 @@
             <version>1.84</version>
         </dependency>
 
-        <dependency>
-            <groupId>tools.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>3.0.0-rc2</version>
-        </dependency>
-
         <!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
