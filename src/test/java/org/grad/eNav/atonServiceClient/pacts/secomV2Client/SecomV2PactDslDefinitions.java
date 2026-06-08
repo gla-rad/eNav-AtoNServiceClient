@@ -309,6 +309,7 @@ public class SecomV2PactDslDefinitions {
             .object("envelope")
                 .integerMatching("containerType", "[0|1|2]", 1)
                 .stringMatcher("dataReference",  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "7f000101-8ad6-1ee7-818a-d7332b920002")
+                .stringMatcher("dataProductType", "S-(?:[1|2|4])?[\\d][\\d]|(RTZ)|(EPC)|(ASM)", "S-125")
                 .stringType("productVersion", "0.0.1")
                 .stringMatcher("geometry", "^([A-Z]+\\s*\\(\\(?\\s*(-?\\d+(\\.\\d+)?)\\s+-?\\d+(\\.\\d+)?(?:\\s+-?\\d+(\\.\\d+)?)?\\s*(,\\s*(-?\\d+(\\.\\d+)?)\\s+-?\\d+(\\.\\d+)?(?:\\s+-?\\d+(\\.\\d+)?)?\\s*)*\\)\\)?\\s*)+$", "POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))")
                 .stringMatcher("unlocode",  "[A-Z]{5}", "GBHRW")
