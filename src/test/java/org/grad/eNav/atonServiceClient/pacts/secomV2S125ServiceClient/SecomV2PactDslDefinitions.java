@@ -274,7 +274,7 @@ public class SecomV2PactDslDefinitions {
                 .datetime("envelopeSignatureTime", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
             .closeObject()
             .asBody()
-            .stringMatcher("digitalSignature",  "^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==");
+            .stringMatcher("envelopeSignature",  "^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==");
 
 
     /**
@@ -292,7 +292,7 @@ public class SecomV2PactDslDefinitions {
                 .datetime("envelopeSignatureTime", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
             .closeObject()
             .asBody()
-            .stringMatcher("digitalSignature",  "^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==");
+            .stringMatcher("envelopeSignature",  "^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==");
 
 
     /**
