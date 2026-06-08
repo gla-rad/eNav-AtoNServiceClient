@@ -52,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Lawrence Hughes (email: Lawrence.Hughes@gla-rad.org)
  */
 @PactConsumerTest
-@PactTestFor(providerName = "SecomV2Service")
+@PactTestFor(providerName = "SecomV2S125Service")
 class S125ServiceClientSecomV2PostGetTest {
 
     static final String POST_GET_PATH = "/v2/object/search";
@@ -66,7 +66,7 @@ class S125ServiceClientSecomV2PostGetTest {
      * SECOM Get Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetPact(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get POST Interface")
@@ -88,7 +88,7 @@ class S125ServiceClientSecomV2PostGetTest {
      * SECOM Get With Parameters Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetPactWithParams(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get POST Interface")
@@ -110,7 +110,7 @@ class S125ServiceClientSecomV2PostGetTest {
      * SECOM Get With Parameters of Badly Formatted Container Type Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetPactWithParamsContainerTypeBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get POST Interface")
@@ -132,7 +132,7 @@ class S125ServiceClientSecomV2PostGetTest {
      * SECOM Get With Parameters of invalid page number.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetPactWithParamsPageNumberInvalid(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get POST Interface")

@@ -52,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Lawrence Hughes (email: Lawrence.Hughes@gla-rad.org)
  */
 @PactConsumerTest
-@PactTestFor(providerName = "SecomV2Service")
+@PactTestFor(providerName = "SecomV2S125Service")
 public class S125ServiceClientSecomV2PostGetSummaryTest {
 
     static final String POST_GET_SUMMARY_PATH = "/v2/object/search/summary";
@@ -66,7 +66,7 @@ public class S125ServiceClientSecomV2PostGetSummaryTest {
      * SECOM Get Summary Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetSummaryPact(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Summary POST Interface")
@@ -88,7 +88,7 @@ public class S125ServiceClientSecomV2PostGetSummaryTest {
      * SECOM Get Summary Pact with parameters.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetSummaryPactWithParams(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Summary POST Interface")
@@ -111,7 +111,7 @@ public class S125ServiceClientSecomV2PostGetSummaryTest {
      * SECOM Get Summary With Parameters of Badly Formatted Container Type Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetSummaryPactWithParamsContainerTypeBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Summary POST Interface")
@@ -133,7 +133,7 @@ public class S125ServiceClientSecomV2PostGetSummaryTest {
      * SECOM Get Summary With Parameters of invalid page number.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetSummaryPactWithParamsPageNumberInvalid(PactBuilder builder) {
         return builder
                 .given("Test SECOM Get Summary POST Interface")
