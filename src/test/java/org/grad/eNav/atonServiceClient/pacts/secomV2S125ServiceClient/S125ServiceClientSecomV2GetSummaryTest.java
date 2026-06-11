@@ -192,7 +192,7 @@ public class S125ServiceClientSecomV2GetSummaryTest {
                                         .method("GET")
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "geometry", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
-                                        .status(400)
+                                        .status(422)
                                         .body(SecomV2PactDslDefinitions.getSummaryResponseErrorDsl))
                 )
                 .toPact();
