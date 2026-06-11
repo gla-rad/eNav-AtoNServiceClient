@@ -384,7 +384,7 @@ public class BasicSecomV2GetSummaryTest {
                                 .addParameters(this.mapToNameValueParams(queryParams))
                                 .build())
                 .execute();
-        assertEquals(400, response.returnResponse().getCode());
+        assertEquals(422, response.returnResponse().getCode());
     }
 
     /**
