@@ -132,8 +132,8 @@ function showError(errorMsg) {
 /**
  * We want to format the date in a format that is compatible with the
  * SECOM date-time format which looks a bit like this:
- * FORMAT:  yyyyMMddTHHmmss
- * EXAMPLE: 19850412T101530
+ * FORMAT:  yyyy-MM-ddTHH:mm:ssZ
+ * EXAMPLE: 1985-04-12T10:15:30Z
  */
 function dateToSecomFormat(date) {
     // Sanity Check
@@ -146,8 +146,8 @@ function dateToSecomFormat(date) {
     // and remove the bits we don't like
     var isoDateTimeString = new Date(date);
     return isoDateTimeString.toISOString()
-            .replaceAll("-","")
-            .replaceAll(":","")
+            // .replaceAll("-","")
+            // .replaceAll(":","")
             .split(".")[0] + "Z";
 }
 

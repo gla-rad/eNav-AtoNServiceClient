@@ -89,8 +89,10 @@ public class SecomSignatureProviderImpl implements SecomSignatureProvider {
      */
     @Override
     public byte[] generateSignature(DigitalSignatureCertificate signatureCertificate, byte[] payload) {
-        // Get the signing certificate signature algorithm
-        DigitalSignatureAlgorithmEnum algorithm = DigitalSignatureAlgorithmEnum.fromValue(signatureCertificate.getCertificate()[0].getSigAlgName());
+        // Get the signing certificate signature algorithm, falling back to the provider default if unrecognised
+        DigitalSignatureAlgorithmEnum algorithm = Optional.ofNullable(
+                        DigitalSignatureAlgorithmEnum.fromValue(signatureCertificate.getCertificate()[0].getSigAlgName()))
+                .orElseGet(this::getSignatureAlgorithm);
         // Get the signature generated from cKeeper
         final Response response = this.cKeeperClient.generateCertificateSignature(
                 new BigInteger(signatureCertificate.getCertificateAlias()[0]),

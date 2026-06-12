@@ -235,14 +235,20 @@ function subscribe() {
 
     // Create the subscription request
     var subscriptionRequestObject = {
-        containerType: 0, //trimToNull($("#containerTypeInput").val()),
-        dataProductType: trimToNull($("#dataProductTypeInput").val()),
-        dataReference: trimToNull($("#dataReferenceInput").val()),
-        productVersion: trimToNull($("#productVersionInput").val()),
-        geometry: trimToNull($("#geometyInput").val()),
-        unlocode: trimToNull($("#unlocodeInput").val()),
-        subscriptionPeriodStart: dateToSecomFormat($("#subscriptionPeriodStartInput").val()),
-        subscriptionPeriodEnd: dateToSecomFormat($("#subscriptionPeriodEndInput").val())
+        envelope : {
+            containerType: 0, //trimToNull($("#containerTypeInput").val()),
+            dataProductType: trimToNull($("#dataProductTypeInput").val()),
+            dataReference: trimToNull($("#dataReferenceInput").val()),
+            productVersion: trimToNull($("#productVersionInput").val()),
+            geometry: trimToNull($("#geometyInput").val()),
+            unlocode: trimToNull($("#unlocodeInput").val()),
+            subscriptionPeriodStart: dateToSecomFormat($("#subscriptionPeriodStartInput").val()),
+            subscriptionPeriodEnd: dateToSecomFormat($("#subscriptionPeriodEndInput").val()),
+            envelopeSignatureCertificates: [],
+            envelopeRootCertificateThumbprint: "",
+            envelopeSignatureTime: "2026-06-12T12:00:00Z"
+        },
+        envelopeSignature : ""
     };
 
     // Perform the Subscription API request
