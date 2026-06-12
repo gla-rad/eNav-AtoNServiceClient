@@ -213,7 +213,7 @@ class S125ServiceClientSecomV2GetTest {
                                         .method("GET")
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "unlocode", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
-                                        .status(422)
+                                        .status(400)
                                         .body(SecomV2PactDslDefinitions.getResponseErrorDsl))
                 )
                 .toPact();
@@ -407,7 +407,7 @@ class S125ServiceClientSecomV2GetTest {
                                 .addParameters(this.mapToNameValueParams(queryParams))
                                 .build())
                 .execute();
-        assertEquals(422, response.returnResponse().getCode());
+        assertEquals(400, response.returnResponse().getCode());
     }
 
     /**

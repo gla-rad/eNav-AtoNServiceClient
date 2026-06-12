@@ -213,7 +213,7 @@ public class BasicSecomV2GetSummaryTest {
                                         .method("GET")
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "unlocode", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
-                                        .status(422)
+                                        .status(400)
                                         .body(SecomV2PactDslDefinitions.getSummaryResponseErrorDsl))
                 )
                 .toPact();
@@ -406,7 +406,7 @@ public class BasicSecomV2GetSummaryTest {
                                 .addParameters(this.mapToNameValueParams(queryParams))
                                 .build())
                 .execute();
-        assertEquals(422, response.returnResponse().getCode());
+        assertEquals(400, response.returnResponse().getCode());
     }
 
     /**
