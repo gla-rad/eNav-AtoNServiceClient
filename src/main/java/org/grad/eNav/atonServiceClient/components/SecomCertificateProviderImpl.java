@@ -22,20 +22,12 @@ import org.grad.eNav.atonServiceClient.models.dtos.McpEntityType;
 import org.grad.eNav.atonServiceClient.models.dtos.SignatureCertificateDto;
 import org.grad.secomv2.core.base.DigitalSignatureCertificate;
 import org.grad.secomv2.core.base.SecomCertificateProvider;
-import org.grad.secomv2.core.utils.KeyStoreUtils;
 import org.grad.secomv2.core.utils.SecomPemUtils;
-import org.grad.secomv2.springboot4.components.SecomConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 
 /**
  * The SECOM Certificate Provider Implementation.

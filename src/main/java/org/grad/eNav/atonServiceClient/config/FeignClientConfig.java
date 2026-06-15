@@ -97,7 +97,7 @@ public class FeignClientConfig {
         return requestTemplate -> {
             OAuth2AuthorizedClient client = manager.authorize(OAuth2AuthorizeRequest
                     .withClientRegistrationId("feign")
-                    .principal(new AnonymousAuthenticationToken("name", "aton-service", AuthorityUtils.createAuthorityList("ROLE_ACTUATOR")))
+                    .principal(new AnonymousAuthenticationToken("name", "aton-service-client", AuthorityUtils.createAuthorityList("ROLE_ACTUATOR")))
                     .build());
             String accessToken = client.getAccessToken().getTokenValue();
             requestTemplate.header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
