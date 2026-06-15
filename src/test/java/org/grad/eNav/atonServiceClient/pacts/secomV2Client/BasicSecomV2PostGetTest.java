@@ -205,7 +205,6 @@ class BasicSecomV2PostGetTest {
         EnvelopeGetFilterObject envelopeGetFilterObject = new EnvelopeGetFilterObject();
         envelopeGetFilterObject.setContainerType(ContainerTypeEnum.S100_DataSet);
         envelopeGetFilterObject.setDataProductType(SECOM_DataProductType.S101);
-        envelopeGetFilterObject.setUnlocode("GBHRW");
         envelopeGetFilterObject.setEnvelopeSignatureCertificate(new String[] {"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
         envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));

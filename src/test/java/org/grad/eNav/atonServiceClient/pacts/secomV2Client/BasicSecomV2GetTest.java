@@ -190,7 +190,7 @@ class BasicSecomV2GetTest {
                                         .method("GET")
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "geometry", "invalid")))
                                 .willRespondWith(responseBuilder -> responseBuilder
-                                        .status(422)
+                                        .status(400)
                                         .body(SecomV2PactDslDefinitions.getResponseErrorDsl))
                 )
                 .toPact();
@@ -384,7 +384,7 @@ class BasicSecomV2GetTest {
                                 .addParameters(this.mapToNameValueParams(queryParams))
                                 .build())
                 .execute();
-        assertEquals(422, response.returnResponse().getCode());
+        assertEquals(400, response.returnResponse().getCode());
     }
 
     /**
