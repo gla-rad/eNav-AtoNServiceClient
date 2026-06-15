@@ -15,9 +15,6 @@
 
 package org.grad.eNav.atonServiceClient;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
