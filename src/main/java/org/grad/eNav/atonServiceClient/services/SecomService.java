@@ -88,7 +88,6 @@ public class SecomService {
     @PostConstruct
     public void init() {
         log.info("SECOM Service is booting up...");
-        //this.discoveryServiceUrl = "https://webhook.site/a9aeb457-87bb-48d9-a288-130833733ad0";
         this.discoveryService = Optional.ofNullable(this.discoveryServiceUrl)
                 .filter(StringUtils::isNotBlank)
                 .map(url -> {
