@@ -92,7 +92,7 @@ public class S125ServiceClientSecomV2RemoveSubscriptionTest {
                                         .queryParameters(this.queryParamsMap))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
-                                        .body(SecomV2PactDslDefinitions.removeSubscriptionResponseDsl))
+                                        .body(SecomV2PactDslDefinitions.removeSubscriptionResponseObjectDsl))
                 )
                 .toPact();
     }
@@ -114,7 +114,7 @@ public class S125ServiceClientSecomV2RemoveSubscriptionTest {
                                         .queryParameters(this.badQueryParamsMap))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(404)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -136,7 +136,7 @@ public class S125ServiceClientSecomV2RemoveSubscriptionTest {
                                         .queryParameter("subscriptionIdentifier", randomUuid))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(404)
-                                        .body(SecomV2PactDslDefinitions.removeSubscriptionResponseNotFoundDsl))
+                                        .body(SecomV2PactDslDefinitions.removeSubscriptionResponseObjectNotFoundDsl))
                 )
                 .toPact();
     }

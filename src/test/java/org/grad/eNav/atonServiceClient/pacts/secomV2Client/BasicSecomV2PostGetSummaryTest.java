@@ -30,6 +30,7 @@ import org.apache.hc.core5.http.ContentType;
 import org.grad.secomv2.core.models.EnvelopeGetSummaryFilterObject;
 import org.grad.secomv2.core.models.GetSummaryFilterObject;
 import org.grad.secomv2.core.models.enums.ContainerTypeEnum;
+import org.grad.secomv2.core.models.enums.SECOM_DataProductType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -68,7 +69,7 @@ public class BasicSecomV2PostGetSummaryTest {
     @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetSummaryPact(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Summary POST Interface")
+                .given("Test SECOM POST Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
                         "A valid get summary request",
                         httpBuilder -> httpBuilder
@@ -90,7 +91,7 @@ public class BasicSecomV2PostGetSummaryTest {
     @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetSummaryPactWithParams(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Summary POST Interface")
+                .given("Test SECOM POST Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
                         "A valid get summary request with query",
                         httpBuilder -> httpBuilder
@@ -113,7 +114,7 @@ public class BasicSecomV2PostGetSummaryTest {
     @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetSummaryPactWithParamsContainerTypeBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Summary POST Interface")
+                .given("Test SECOM POST Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
                         "A get summary request with query parameters but a badly formatted containerType",
                         httpBuilder -> httpBuilder
@@ -135,7 +136,7 @@ public class BasicSecomV2PostGetSummaryTest {
     @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetSummaryPactWithParamsPageNumberInvalid(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get Summary POST Interface")
+                .given("Test SECOM POST Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
                         "A get summary request with query parameters but an invalid page number",
                         httpBuilder -> httpBuilder
@@ -202,6 +203,7 @@ public class BasicSecomV2PostGetSummaryTest {
         // Create the envelope get summary filter object
         EnvelopeGetSummaryFilterObject envelopeGetSummaryFilterObject = new EnvelopeGetSummaryFilterObject();
         envelopeGetSummaryFilterObject.setContainerType(ContainerTypeEnum.S100_DataSet);
+        envelopeGetSummaryFilterObject.setDataProductType(SECOM_DataProductType.S101);
         envelopeGetSummaryFilterObject.setUnlocode("GBHRW");
         envelopeGetSummaryFilterObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetSummaryFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
@@ -233,6 +235,7 @@ public class BasicSecomV2PostGetSummaryTest {
         // Create the envelope get summary filter object
         EnvelopeGetSummaryFilterObject envelopeGetSummaryFilterObject = new EnvelopeGetSummaryFilterObject();
         envelopeGetSummaryFilterObject.setContainerType(ContainerTypeEnum.S100_DataSet);
+        envelopeGetSummaryFilterObject.setDataProductType(SECOM_DataProductType.S124);
         envelopeGetSummaryFilterObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetSummaryFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
         envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
@@ -264,6 +267,7 @@ public class BasicSecomV2PostGetSummaryTest {
     void testGetSummaryWithParamsPageNumberInvalid(MockServer mockServer) throws IOException, URISyntaxException {
         // Create the envelope get summary filter object
         EnvelopeGetSummaryFilterObject envelopeGetSummaryFilterObject = new EnvelopeGetSummaryFilterObject();
+        envelopeGetSummaryFilterObject.setDataProductType(SECOM_DataProductType.S421);
         envelopeGetSummaryFilterObject.setPage(0);
         envelopeGetSummaryFilterObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetSummaryFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
@@ -280,6 +284,5 @@ public class BasicSecomV2PostGetSummaryTest {
                 .execute();
         assertEquals(400, response.returnResponse().getCode());
     }
-
 
 }

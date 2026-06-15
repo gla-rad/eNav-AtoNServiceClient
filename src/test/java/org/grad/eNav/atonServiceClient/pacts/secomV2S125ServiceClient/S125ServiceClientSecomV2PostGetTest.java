@@ -69,7 +69,7 @@ class S125ServiceClientSecomV2PostGetTest {
     @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetPact(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get POST Interface")
+                .given("Test SECOM POST Get Interface")
                 .expectsToReceiveHttpInteraction(
                         "A valid get request",
                         httpBuilder -> httpBuilder
@@ -91,7 +91,7 @@ class S125ServiceClientSecomV2PostGetTest {
     @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetPactWithParams(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get POST Interface")
+                .given("Test SECOM POST Get Interface")
                 .expectsToReceiveHttpInteraction(
                         "A valid get request with query parameters",
                         httpBuilder -> httpBuilder
@@ -113,7 +113,7 @@ class S125ServiceClientSecomV2PostGetTest {
     @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetPactWithParamsContainerTypeBadFormat(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get POST Interface")
+                .given("Test SECOM POST Get Interface")
                 .expectsToReceiveHttpInteraction(
                         "A get request with query parameters but a badly formatted containerType",
                         httpBuilder -> httpBuilder
@@ -135,7 +135,7 @@ class S125ServiceClientSecomV2PostGetTest {
     @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetPactWithParamsPageNumberInvalid(PactBuilder builder) {
         return builder
-                .given("Test SECOM Get POST Interface")
+                .given("Test SECOM POST Get Interface")
                 .expectsToReceiveHttpInteraction(
                         "A get request with query parameters but an invalid page number",
                         httpBuilder -> httpBuilder
@@ -285,6 +285,5 @@ class S125ServiceClientSecomV2PostGetTest {
                 .execute();
         assertEquals(400, response.returnResponse().getCode());
     }
-
 
 }

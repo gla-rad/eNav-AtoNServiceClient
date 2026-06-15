@@ -78,10 +78,10 @@ public class BasicSecomV2AcknowledgementTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v2/acknowledgement")
                                         .method("POST")
-                                        .body(SecomV2PactDslDefinitions.acknowledgementRequestDsl))
+                                        .body(SecomV2PactDslDefinitions.acknowledgementObjectDsl))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
-                                        .body(SecomV2PactDslDefinitions.acknowledgementResponseDsl))
+                                        .body(SecomV2PactDslDefinitions.acknowledgementResponseObjectDsl))
                 )
                 .toPact();
     }
@@ -100,10 +100,10 @@ public class BasicSecomV2AcknowledgementTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v2/acknowledgement")
                                         .method("POST")
-                                        .body("{\"envelope\":\"bad-envelope\", \"digitalSignature\":\"bad-digital-signature\"}"))
+                                        .body("{\"envelope\":\"bad-envelope\", \"envelopeSignature\":\"bad-digital-signature\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.acknowledgementResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.acknowledgementResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -122,10 +122,10 @@ public class BasicSecomV2AcknowledgementTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v2/acknowledgement")
                                         .method("POST")
-                                        .body(SecomV2PactDslDefinitions.acknowledgementRequestWithoutTransactionIdentifierDsl))
+                                        .body(SecomV2PactDslDefinitions.acknowledgementObjectWithoutTransactionIdentifierDsl))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.acknowledgementResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.acknowledgementResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -182,7 +182,7 @@ public class BasicSecomV2AcknowledgementTest {
     void testAcknowledgementWithBodBody(MockServer mockServer) throws IOException {
         // Perform the SECOM request
         Response response = Request.post(mockServer.getUrl() + "/v2/acknowledgement")
-                .bodyString("{\"envelope\":\"bad-envelope\", \"digitalSignature\":\"bad-digital-signature\"}", ContentType.APPLICATION_JSON)
+                .bodyString("{\"envelope\":\"bad-envelope\", \"envelopeSignature\":\"bad-digital-signature\"}", ContentType.APPLICATION_JSON)
                 .execute();
         assertEquals(400, response.returnResponse().getCode());
     }

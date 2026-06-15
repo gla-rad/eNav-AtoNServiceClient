@@ -74,10 +74,10 @@ public class BasicSecomV2SubscriptionTest {
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path("/v2/subscription")
                                         .method("POST")
-                                        .body(SecomV2PactDslDefinitions.subscriptionRequestDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionRequestObjectDsl))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectDsl))
                 )
                 .toPact();
     }
@@ -99,7 +99,7 @@ public class BasicSecomV2SubscriptionTest {
                                         .body("{\"field1\":\"bad-field\", \"field2\":\"bad-field\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -121,7 +121,7 @@ public class BasicSecomV2SubscriptionTest {
                                         .body("{\"containerType\":\"invalid\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -143,7 +143,7 @@ public class BasicSecomV2SubscriptionTest {
                                         .body("{\"dataProductType\":\"invalid\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -165,7 +165,7 @@ public class BasicSecomV2SubscriptionTest {
                                         .body("{\"dataReference\":\"invalid\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -187,7 +187,7 @@ public class BasicSecomV2SubscriptionTest {
                                         .body("{\"geometry\":\"invalid\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -209,7 +209,7 @@ public class BasicSecomV2SubscriptionTest {
                                         .body("{\"unlocode\":\"invalid\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -231,7 +231,7 @@ public class BasicSecomV2SubscriptionTest {
                                         .body("{\"subscriptionPeriodStart\":\"invalid\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -253,7 +253,7 @@ public class BasicSecomV2SubscriptionTest {
                                         .body("{\"subscriptionPeriodEnd\":\"invalid\"}"))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(400)
-                                        .body(SecomV2PactDslDefinitions.subscriptionResponseErrorDsl))
+                                        .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
     }
@@ -298,7 +298,9 @@ public class BasicSecomV2SubscriptionTest {
         // And perform the SECOM request
         // Don't include the non-defined data product type
         Response response = Request.post(mockServer.getUrl() + "/v2/subscription")
-                .bodyString(this.objectMapper.writeValueAsString(subscriptionRequestObject), ContentType.APPLICATION_JSON)
+                .bodyString(this.objectMapper
+                        //.setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                        .writeValueAsString(subscriptionRequestObject), ContentType.APPLICATION_JSON)
                 .execute();
         assertEquals(200, response.returnResponse().getCode());
     }
