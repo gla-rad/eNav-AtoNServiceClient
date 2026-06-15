@@ -17,7 +17,13 @@ package org.grad.eNav.atonServiceClient.components;
 
 import feign.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.x500.AttributeTypeAndValue;
+import org.bouncycastle.asn1.x500.RDN;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.style.IETFUtils;
 import org.grad.eNav.atonServiceClient.feign.CKeeperClient;
+import org.grad.eNav.atonServiceClient.models.dtos.SignatureVerificationRequestDto;
 import org.grad.eNav.atonServiceClient.utils.X509Utils;
 import org.grad.secomv2.core.base.DigitalSignatureCertificate;
 import org.grad.secomv2.core.base.SecomSignatureProvider;
@@ -29,6 +35,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
+import javax.security.auth.x500.X500Principal;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -37,8 +44,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * The SECOM Signature Validator Implementation.
@@ -60,21 +71,19 @@ public class SecomSignatureProviderImpl implements SecomSignatureProvider {
     @Lazy
     CKeeperClient cKeeperClient;
 
-    /**
-     * The Application Name.
-     */
-    @Value("${gla.rad.aton-service-client.secom.signing-algorithm:SHA3-384withECDSA}")
-    String defaultSigningAlgorithm;
+    // Class Variables
+    private static final String ANS10_MRN_OBJECT_IDENTIFIER = "0.9.2342.19200300.100.1.1";
 
     /**
-     * Returns the digital signature algorithm for the signature validator.
-     * In SECOM, by default this should be DSA, also ECDSA could be used
+     * Returns the digital signature algorithm for the signature provider.
+     * In SECOM, by default this should be DSA, but ECDSA should be used
      * to generate smaller signatures.
      *
      * @return the digital signature algorithm for the signature provider
      */
+    @Override
     public DigitalSignatureAlgorithmEnum getSignatureAlgorithm() {
-        return DigitalSignatureAlgorithmEnum.fromValue(this.defaultSigningAlgorithm);
+        return DigitalSignatureAlgorithmEnum.SHA3_384_WITH_ECDSA;
     }
 
     /**
@@ -119,41 +128,54 @@ public class SecomSignatureProviderImpl implements SecomSignatureProvider {
      * to validate the content against.
      *
      * @param signatureCertificates The array of digital signature certificate to be used for the signature generation
-     * @param algorithm             The algorithm used for the signature generation
      * @param signature             The signature to validate the context against
      * @param content               The context (in Base64 format) to be validated
      * @return whether the signature validation was successful or not
      */
     @Override
-    public boolean validateSignature(String[] signatureCertificates, DigitalSignatureAlgorithmEnum algorithm, byte[] signature, byte[] content) {
-        // Create a new signature to sign the provided content
+    public boolean validateSignature(String[] signatureCertificates, byte[] signature, byte[] content) {
+        // Get the X.509 certificate from the request
+        X509Certificate[] certificate = null;
         try {
-            //TODO Get algorithm from the certificate
-
-            Signature sign = Signature.getInstance(algorithm.getValue());
-
-            for (String signatureCertificate: signatureCertificates){
-                sign.initVerify(SecomPemUtils.getCertFromPem(signatureCertificate));
-                sign.update(content);
-
-                if (sign.verify(signature)) {
-                    // If verified return true
-                    return true;
-                }
-
-            }
-
-            // If no certificates verified, return false
-            return false;
-
-        } catch (NoSuchAlgorithmException | CertificateException | SignatureException | InvalidKeyException ex) {
+            certificate = SecomPemUtils.getCertsFromPem(signatureCertificates);
+        } catch (CertificateException ex) {
             log.error(ex.getMessage());
+        }
+        // Now try to get the MRN out of the certificate principals
+        final String mrn = Stream.of(certificate)
+                .map(X509Certificate::getSubjectX500Principal)
+                .map(p -> p.getName(X500Principal.RFC2253))
+                .map(X500Name::new)
+                .map(n -> n.getRDNs(new ASN1ObjectIdentifier(ANS10_MRN_OBJECT_IDENTIFIER)))
+                .flatMap(Arrays::stream)
+                .map(RDN::getFirst)
+                .map(AttributeTypeAndValue::getValue)
+                .map(IETFUtils::valueToString)
+                .findFirst()
+                .orElse(null);
+
+        DigitalSignatureAlgorithmEnum algorithm = Stream.of(certificate)
+                .map(X509Certificate::getSigAlgName)
+                .findFirst()
+                .map(DigitalSignatureAlgorithmEnum::fromValue)
+                .orElse(getSignatureAlgorithm());
+
+
+        // Construct the signature verification object
+        final SignatureVerificationRequestDto verificationRequest = new SignatureVerificationRequestDto();
+        verificationRequest.setContent(Base64.getEncoder().encodeToString(content));
+        verificationRequest.setSignature(Base64.getEncoder().encodeToString(signature));
+        verificationRequest.setAlgorithm(algorithm.getValue());
+
+        // Ask cKeeper to verify the signature
+        final Response response = this.cKeeperClient.verifyEntitySignature(mrn, verificationRequest);
+
+        // Make sure the response is valid
+        if(response == null) {
             return false;
         }
-    }
 
-    @Override
-    public boolean validateSignature(String[] signatureCertificates, byte[] signature, byte[] content) {
-        return this.validateSignature(signatureCertificates, DigitalSignatureAlgorithmEnum.SHA2_384_WITH_ECDSA, signature, content);
+        // If everything went OK, return a positive response
+        return response.status() < 300;
     }
 }
