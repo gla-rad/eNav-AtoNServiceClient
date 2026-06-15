@@ -15,6 +15,8 @@
 
 package org.grad.eNav.atonServiceClient.controllers;
 
+import org.grad.eNav.atonServiceClient.TestFeignSecurityConfig;
+import org.grad.eNav.atonServiceClient.TestingConfiguration;
 import org.grad.eNav.atonServiceClient.services.SecomService;
 import org.grad.eNav.atonServiceClient.services.SubscriptionService;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +29,7 @@ import org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSec
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -38,17 +41,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
-@WebMvcTest(
-        controllers = HTMLViewerController.class,
-        excludeAutoConfiguration = {
-                SecurityAutoConfiguration.class,
-                SecurityFilterAutoConfiguration.class,
-                ServletWebSecurityAutoConfiguration.class,
-                UserDetailsServiceAutoConfiguration.class
-        },
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = { EnableWebSecurity.class, EnableMethodSecurity.class }
-        )
-)
+@WebMvcTest(controllers = HTMLViewerController.class, excludeAutoConfiguration = {SecurityAutoConfiguration.class})
+@Import({TestingConfiguration.class, TestFeignSecurityConfig.class})
 class HTMLViewerControllerTest {
 
     /**

@@ -46,7 +46,7 @@ public class SecomV2PactDslDefinitions {
     static final DslPart capabilityResponseDsl = new PactDslJsonBody()
             .array("capability")
                 .object()
-            .integerMatching("containerType", "[0|1|2]", 1)
+            .integerMatching("containerType", "[0|1|2]", 0)
             .stringValue("dataProductType", "S-125")
                     .stringType("productSchemaUrl", "https://rnavlab.gla-rad.org/enav/aton-service/xsd/S125.xsd")
                     .object("implementedInterfaces", new PactDslJsonBody()

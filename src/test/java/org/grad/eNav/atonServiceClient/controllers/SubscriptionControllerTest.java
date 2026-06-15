@@ -15,7 +15,11 @@
 
 package org.grad.eNav.atonServiceClient.controllers;
 
+import org.grad.eNav.atonServiceClient.TestFeignSecurityConfig;
+import org.grad.eNav.atonServiceClient.TestingConfiguration;
 import org.grad.secomv2.core.models.EnvelopeSubscriptionObject;
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient;
+import org.springframework.context.annotation.Import;
 import tools.jackson.databind.ObjectMapper;
 import org.grad.eNav.atonServiceClient.services.SubscriptionService;
 import org.grad.secomv2.core.models.RemoveSubscriptionResponseObject;
@@ -54,16 +58,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
-@WebMvcTest(
-        controllers = SubscriptionController.class,
-        excludeAutoConfiguration = {
-                SecurityAutoConfiguration.class,
-                SecurityFilterAutoConfiguration.class,
-                ServletWebSecurityAutoConfiguration.class,
-                UserDetailsServiceAutoConfiguration.class
-        },
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = { EnableWebSecurity.class, EnableMethodSecurity.class })
-)
+@WebMvcTest(controllers = SubscriptionController.class, excludeAutoConfiguration = {SecurityAutoConfiguration.class})
+@Import({TestingConfiguration.class, TestFeignSecurityConfig.class})
 class SubscriptionControllerTest {
 
     /**
