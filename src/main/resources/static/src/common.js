@@ -146,8 +146,6 @@ function dateToSecomFormat(date) {
     // and remove the bits we don't like
     var isoDateTimeString = new Date(date);
     return isoDateTimeString.toISOString()
-            // .replaceAll("-","")
-            // .replaceAll(":","")
             .split(".")[0] + "Z";
 }
 

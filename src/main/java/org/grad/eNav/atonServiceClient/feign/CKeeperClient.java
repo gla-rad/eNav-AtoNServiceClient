@@ -31,8 +31,7 @@ import java.math.BigInteger;
  *
  * @author Nikolaos Vastardis (email: Nikolaos.Vastardis@gla-rad.org)
  */
-// todo change url
-@FeignClient(name = "cKeeper", url = "https://rnavlab.gla-rad.org/enav/ckeeper", configuration = FeignClientConfig.class)
+@FeignClient(name = "cKeeper", /*url = "https://rnavlab.gla-rad.org/enav/ckeeper",*/ configuration = FeignClientConfig.class)
 public interface CKeeperClient {
 
     @RequestMapping(method = RequestMethod.GET, value = "/api/signature/certificate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
