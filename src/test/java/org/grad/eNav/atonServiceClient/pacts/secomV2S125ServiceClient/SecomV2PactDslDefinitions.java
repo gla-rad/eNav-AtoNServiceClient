@@ -159,8 +159,7 @@ public class SecomV2PactDslDefinitions {
      * SECOM GetSummary Response Error Pact Body
      */
     static final DslPart getSummaryResponseErrorDsl = new PactDslJsonBody()
-            .nullValue("summaryObject")
-            .nullValue("pagination");
+            .stringType("message", "Bad request");
 
     /**
      * SECOM GetFilter Object
@@ -254,8 +253,7 @@ public class SecomV2PactDslDefinitions {
      * SECOM Get Response Error Pact Body
      */
     static final DslPart getResponseErrorDsl = new PactDslJsonBody()
-            .nullValue("dataResponseObject")
-            .nullValue("pagination");
+            .stringType("message", "Bad request");
 
     /**
      * SECOM Acknowledgement Object Pact Body
