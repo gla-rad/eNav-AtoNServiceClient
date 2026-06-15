@@ -18,6 +18,9 @@ package org.grad.eNav.atonServiceClient.controllers;
 import _int.iho.s_125.gml.cs0._1.AidsToNavigationType;
 import _int.iho.s_125.gml.cs0._1.impl.AidsToNavigationTypeImpl;
 import _int.iho.s_125.gml.cs0._1.impl.VirtualAISAidToNavigationImpl;
+import org.grad.eNav.atonServiceClient.TestFeignSecurityConfig;
+import org.grad.eNav.atonServiceClient.TestingConfiguration;
+import org.springframework.context.annotation.Import;
 import tools.jackson.databind.ObjectMapper;
 import org.grad.eNav.atonServiceClient.models.domain.SignedDatasetContent;
 import org.grad.eNav.atonServiceClient.services.SecomService;
@@ -58,16 +61,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
-@WebMvcTest(
-        controllers = SecomServiceController.class,
-        excludeAutoConfiguration = {
-                SecurityAutoConfiguration.class,
-                SecurityFilterAutoConfiguration.class,
-                ServletWebSecurityAutoConfiguration.class,
-                UserDetailsServiceAutoConfiguration.class
-        },
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, classes = { EnableWebSecurity.class, EnableMethodSecurity.class })
-)
+@WebMvcTest(controllers = SecomServiceController.class, excludeAutoConfiguration = {SecurityAutoConfiguration.class})
+@Import({TestingConfiguration.class, TestFeignSecurityConfig.class})
 class SecomServiceControllerTest {
 
     /**
