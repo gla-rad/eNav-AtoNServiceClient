@@ -186,6 +186,7 @@ public class SecomService {
         final SearchParameters searchParameters = new SearchParameters();
         searchParameters.setKeywords(keyword.split(" "));
         envelopeSearchFilterObject.setQuery(searchParameters);
+        // TODO: Perhaps we could also suppport non-local service in the MSR
         envelopeSearchFilterObject.setLocalOnly(true);
         searchFilterObject.setEnvelope(envelopeSearchFilterObject);
         // Return the retrieved list
