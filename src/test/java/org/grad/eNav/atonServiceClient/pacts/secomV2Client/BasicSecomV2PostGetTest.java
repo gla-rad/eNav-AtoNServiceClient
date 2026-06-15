@@ -91,7 +91,7 @@ class BasicSecomV2PostGetTest {
     @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetPactWithParams(PactBuilder builder) {
         return builder
-                .given("Test SECOM POST Ge Interface")
+                .given("Test SECOM POST Get Interface")
                 .expectsToReceiveHttpInteraction(
                         "A valid get request with query parameters",
                         httpBuilder -> httpBuilder
