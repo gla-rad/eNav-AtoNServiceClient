@@ -21,9 +21,8 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTest;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import org.grad.eNav.atonServiceClient.TestingConfiguration;
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
@@ -156,11 +155,7 @@ public class S125ServiceClientSecomV2PostGetSummaryTest {
      */
     @BeforeEach
     void setup() {
-        this.objectMapper = JsonMapper.builder()
-                .changeDefaultPropertyInclusion(incl -> incl
-                        .withContentInclusion(JsonInclude.Include.NON_NULL)
-                        .withValueInclusion(JsonInclude.Include.NON_NULL))
-                .build();
+        this.objectMapper = TestingConfiguration.testObjectMapper();
     }
 
     /**

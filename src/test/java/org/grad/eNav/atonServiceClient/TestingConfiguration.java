@@ -15,12 +15,30 @@
 
 package org.grad.eNav.atonServiceClient;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.context.annotation.Configuration;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * The Test Configuration.
  */
 @Configuration
 public class TestingConfiguration {
+
+    /**
+     * Builds the object mapper used throughout the SECOM pact tests, configured
+     * to omit null values so that the serialised output matches the pact DSL
+     * definitions.
+     *
+     * @return the configured test object mapper
+     */
+    public static ObjectMapper testObjectMapper() {
+        return JsonMapper.builder()
+                .changeDefaultPropertyInclusion(incl -> incl
+                        .withContentInclusion(JsonInclude.Include.NON_NULL)
+                        .withValueInclusion(JsonInclude.Include.NON_NULL))
+                .build();
+    }
 
 }

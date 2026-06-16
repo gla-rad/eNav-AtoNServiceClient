@@ -16,9 +16,8 @@
 package org.grad.eNav.atonServiceClient.pacts.utils;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import org.grad.eNav.atonServiceClient.TestingConfiguration;
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 
@@ -40,11 +39,7 @@ public class PactTestHelper {
      * @throws IOException the IO exception the occurred
      */
     public static void testPactDtoMapping(DslPart dslPart, Class<?> dtoClass) throws IOException {
-        ObjectMapper mapper = JsonMapper.builder()
-                .changeDefaultPropertyInclusion(incl -> incl
-                        .withContentInclusion(JsonInclude.Include.NON_NULL)
-                        .withValueInclusion(JsonInclude.Include.NON_NULL))
-                .build();
+        ObjectMapper mapper = TestingConfiguration.testObjectMapper();
 
         //If there are any mapping issues, appropriate module could be the solution
         String pactJson = dslPart.getBody().toString();
