@@ -198,6 +198,7 @@ public class BasicSecomV2PostGetSummaryTest {
         // Create the envelope get summary filter object
         EnvelopeGetSummaryFilterObject envelopeGetSummaryFilterObject = new EnvelopeGetSummaryFilterObject();
         envelopeGetSummaryFilterObject.setContainerType(ContainerTypeEnum.S100_DataSet);
+        envelopeGetSummaryFilterObject.setDataProductType(SECOM_DataProductType.S125);
         envelopeGetSummaryFilterObject.setUnlocode("GBHRW");
         envelopeGetSummaryFilterObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetSummaryFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
