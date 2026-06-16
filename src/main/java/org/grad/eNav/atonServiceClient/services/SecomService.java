@@ -22,13 +22,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.grad.eNav.atonServiceClient.models.domain.SignedDatasetContent;
 import org.grad.eNav.atonServiceClient.utils.X509Utils;
-import org.grad.secom.core.exceptions.SecomNotFoundException;
-import org.grad.secom.core.exceptions.SecomValidationException;
-import org.grad.secom.core.models.*;
-import org.grad.secom.core.models.enums.ContainerTypeEnum;
-import org.grad.secom.core.models.enums.SECOM_DataProductType;
-import org.grad.secom.springboot3.components.SecomClient;
-import org.grad.secom.springboot3.components.SecomConfigProperties;
+import org.grad.secomv2.core.exceptions.SecomNotFoundException;
+import org.grad.secomv2.core.exceptions.SecomValidationException;
+import org.grad.secomv2.core.models.*;
+import org.grad.secomv2.core.models.enums.ContainerTypeEnum;
+import org.grad.secomv2.core.models.enums.SECOM_DataProductType;
+import org.grad.secomv2.springboot4.components.SecomClient;
+import org.grad.secomv2.springboot4.components.SecomConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -78,7 +78,7 @@ public class SecomService {
 
     // Class Variables
     SecomClient discoveryService;
-    private SearchObjectResult searchObjectResult;
+    private SearchResult searchObjectResult;
     private ResponseSearchObject responseSearchObject;
 
     /**
@@ -143,19 +143,22 @@ public class SecomService {
 
         // Create the discovery service search filter object for the provided MRN
         final SearchFilterObject searchFilterObject = new SearchFilterObject();
+        final EnvelopeSearchFilterObject envelopeSearchFilterObject = new EnvelopeSearchFilterObject();
         final SearchParameters searchParameters = new SearchParameters();
         searchParameters.setInstanceId(mrn);
-        searchFilterObject.setQuery(searchParameters);
+        envelopeSearchFilterObject.setQuery(searchParameters);
+        searchFilterObject.setEnvelope(envelopeSearchFilterObject);
 
         // Lookup the endpoints of the clients from the SECOM discovery service
-        final List<SearchObjectResult> instances = Optional.ofNullable(this.discoveryService)
-                .flatMap(ds -> ds.searchService(searchFilterObject, 0, Integer.MAX_VALUE))
-                .map(ResponseSearchObject::getSearchServiceResult)
+        final List<ServiceInstanceObject> instances = Optional.ofNullable(this.discoveryService)
+                .flatMap(ds -> ds.searchService(searchFilterObject))
+                .map(SearchResult::getEnvelope)
+                .map(EnvelopeSearchResultObject::getServiceInstance)
                 .orElse(Collections.emptyList());
 
         // Extract the latest matching instance
-        final SearchObjectResult instance = instances.stream()
-                .max(Comparator.comparing(SearchObjectResult::getVersion))
+        final ServiceInstanceObject instance = instances.stream()
+                .max(Comparator.comparing(ServiceInstanceObject::getVersion))
                 .orElseThrow(() -> new SecomNotFoundException(mrn));
 
         // Now construct and return a SECOM client for the discovered URI
@@ -176,18 +179,21 @@ public class SecomService {
      * @param pageable the paging information for the search
      * @return all the matching S-125 AtoN services currently registered
      */
-    public List<SearchObjectResult> getRegisteredServices(@NotNull String keyword, @NotNull Pageable pageable) {
+    public List<ServiceInstanceObject> getRegisteredServices(@NotNull String keyword, @NotNull Pageable pageable) {
         // Create a search filter object
         final SearchFilterObject searchFilterObject = new SearchFilterObject();
+        final EnvelopeSearchFilterObject envelopeSearchFilterObject = new EnvelopeSearchFilterObject();
         final SearchParameters searchParameters = new SearchParameters();
-        searchParameters.setKeywords(keyword.replace("-","*"));
-        searchFilterObject.setQuery(searchParameters);
+        searchParameters.setKeywords(keyword.split(" "));
+        envelopeSearchFilterObject.setQuery(searchParameters);
+        // TODO: Perhaps we could also suppport non-local service in the MSR
+        envelopeSearchFilterObject.setLocalOnly(true);
+        searchFilterObject.setEnvelope(envelopeSearchFilterObject);
         // Return the retrieved list
         return this.discoveryService.searchService(
-                        searchFilterObject,
-                        pageable.isUnpaged()? null : pageable.getPageNumber(),
-                        pageable.isUnpaged()? MAX_UNPAGED_RESULTS_NO : pageable.getPageSize())
-                .map(ResponseSearchObject::getSearchServiceResult)
+                        searchFilterObject)
+                .map(SearchResult::getEnvelope)
+                .map(EnvelopeSearchResultObject::getServiceInstance)
                 .orElse(Collections.emptyList())
                 .stream()
                 .filter(not(result -> result.getName().toLowerCase().contains("client")))
@@ -273,18 +279,30 @@ public class SecomService {
                     
                     Optional.of(dataResponseObject)
                             .map(DataResponseObject::getExchangeMetadata)
-                            .map(SECOM_ExchangeMetadataObject::getDigitalSignatureValue)
-                            .map(DigitalSignatureValue::getPublicCertificate)
-                            .map(X509Utils::extractFromCertificatePem)
-                            .map(X509Utils::extractUIDFromCertificate)
-                            .ifPresent(signedDatasetContent::setSignedBy);
+                            .map(ExchangeMetadata::getDigitalSignatureValue)
+                            .map(DigitalSignatureValueObject::getPublicCertificate)
+                            .stream()
+                            .flatMap(Arrays::stream)
+                            .forEach(certificate -> {
+                                Optional.of(certificate)
+                                .map(X509Utils::extractFromCertificatePem)
+                                .map(X509Utils::extractUIDFromCertificate)
+                                .ifPresent(signedDatasetContent::setSignedBy);
+                            } );
+
                     Optional.of(dataResponseObject)
                             .map(DataResponseObject::getExchangeMetadata)
-                            .map(SECOM_ExchangeMetadataObject::getDigitalSignatureValue)
-                            .map(DigitalSignatureValue::getPublicCertificate)
-                            .map(X509Utils::extractFromCertificatePem)
-                            .map(X509Utils::extractIssuerUIDFromCertificate)
-                            .ifPresent(signedDatasetContent::setIssuedBy);
+                            .map(ExchangeMetadata::getDigitalSignatureValue)
+                            .map(DigitalSignatureValueObject::getPublicCertificate)
+                            .stream()
+                            .flatMap(Arrays::stream)
+                            .forEach(certificate -> {
+                                Optional.of(certificate)
+                                .map(X509Utils::extractFromCertificatePem)
+                                .map(X509Utils::extractIssuerUIDFromCertificate)
+                                .ifPresent(signedDatasetContent::setIssuedBy);
+                            });
+
                     signedDatasetContent.setContent(dataResponseObject.getData());
                     return signedDatasetContent;
                 })

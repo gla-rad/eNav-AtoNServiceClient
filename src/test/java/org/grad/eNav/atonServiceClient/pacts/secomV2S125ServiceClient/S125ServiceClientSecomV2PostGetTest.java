@@ -21,8 +21,8 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTest;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.grad.eNav.atonServiceClient.TestingConfiguration;
+import tools.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -50,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Lawrence Hughes (email: Lawrence.Hughes@gla-rad.org)
  */
 @PactConsumerTest
-@PactTestFor(providerName = "SecomV2Service")
+@PactTestFor(providerName = "SecomV2S125Service")
 class S125ServiceClientSecomV2PostGetTest {
 
     static final String POST_GET_PATH = "/v2/object/search";
@@ -64,7 +65,7 @@ class S125ServiceClientSecomV2PostGetTest {
      * SECOM Get Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetPact(PactBuilder builder) {
         return builder
                 .given("Test SECOM POST Get Interface")
@@ -86,7 +87,7 @@ class S125ServiceClientSecomV2PostGetTest {
      * SECOM Get With Parameters Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetPactWithParams(PactBuilder builder) {
         return builder
                 .given("Test SECOM POST Get Interface")
@@ -108,7 +109,7 @@ class S125ServiceClientSecomV2PostGetTest {
      * SECOM Get With Parameters of Badly Formatted Container Type Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetPactWithParamsContainerTypeBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM POST Get Interface")
@@ -130,7 +131,7 @@ class S125ServiceClientSecomV2PostGetTest {
      * SECOM Get With Parameters of invalid page number.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetPactWithParamsPageNumberInvalid(PactBuilder builder) {
         return builder
                 .given("Test SECOM POST Get Interface")
@@ -153,8 +154,7 @@ class S125ServiceClientSecomV2PostGetTest {
      */
     @BeforeEach
     void setup() {
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        this.objectMapper = TestingConfiguration.testObjectMapper();
     }
 
     /**
@@ -171,7 +171,7 @@ class S125ServiceClientSecomV2PostGetTest {
         EnvelopeGetFilterObject envelopeGetFilterObject = new EnvelopeGetFilterObject();
         envelopeGetFilterObject.setEnvelopeSignatureCertificate(new String[] {"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the filter object
         GetFilterObject getFilterObject = new GetFilterObject();
@@ -195,15 +195,14 @@ class S125ServiceClientSecomV2PostGetTest {
      */
     @Test
     @PactTestFor(pactMethods = "createGetPactWithParams")
-    void testGetWithParams(MockServer mockServer) throws IOException, URISyntaxException {
+    void testGetWithParams(MockServer mockServer) throws IOException {
         // Create the envelope
         EnvelopeGetFilterObject envelopeGetFilterObject = new EnvelopeGetFilterObject();
         envelopeGetFilterObject.setContainerType(ContainerTypeEnum.S100_DataSet);
-        envelopeGetFilterObject.setUnlocode("GBHRW");
         envelopeGetFilterObject.setDataProductType(SECOM_DataProductType.S125);
         envelopeGetFilterObject.setEnvelopeSignatureCertificate(new String[] {"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the filter object
         GetFilterObject getFilterObject = new GetFilterObject();
@@ -234,7 +233,7 @@ class S125ServiceClientSecomV2PostGetTest {
         envelopeGetFilterObject.setDataProductType(SECOM_DataProductType.S125);
         envelopeGetFilterObject.setEnvelopeSignatureCertificate(new String[] {"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the filter object
         GetFilterObject getFilterObject = new GetFilterObject();
@@ -268,7 +267,7 @@ class S125ServiceClientSecomV2PostGetTest {
         envelopeGetFilterObject.setPage(0);
         envelopeGetFilterObject.setEnvelopeSignatureCertificate(new String[] {"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the filter object
         GetFilterObject getFilterObject = new GetFilterObject();

@@ -16,9 +16,9 @@
 package org.grad.eNav.atonServiceClient.components;
 
 import lombok.extern.slf4j.Slf4j;
-import org.grad.secom.core.base.SecomTrustStoreProvider;
-import org.grad.secom.core.utils.KeyStoreUtils;
-import org.grad.secom.springboot3.components.SecomConfigProperties;
+import org.grad.secomv2.core.base.SecomTrustStoreProvider;
+import org.grad.secomv2.core.utils.KeyStoreUtils;
+import org.grad.secomv2.springboot4.components.SecomConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

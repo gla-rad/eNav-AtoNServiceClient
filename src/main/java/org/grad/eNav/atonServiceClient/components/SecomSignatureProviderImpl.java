@@ -15,24 +15,32 @@
 
 package org.grad.eNav.atonServiceClient.components;
 
+import feign.Response;
 import lombok.extern.slf4j.Slf4j;
-import org.grad.eNav.atonServiceClient.utils.X509Utils;
-import org.grad.secom.core.base.DigitalSignatureCertificate;
-import org.grad.secom.core.base.SecomSignatureProvider;
-import org.grad.secom.core.models.enums.DigitalSignatureAlgorithmEnum;
-import org.grad.secom.core.utils.SecomPemUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.x500.AttributeTypeAndValue;
+import org.bouncycastle.asn1.x500.RDN;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.style.IETFUtils;
+import org.grad.eNav.atonServiceClient.feign.CKeeperClient;
+import org.grad.eNav.atonServiceClient.models.dtos.SignatureVerificationRequestDto;
+import org.grad.secomv2.core.base.DigitalSignatureCertificate;
+import org.grad.secomv2.core.base.SecomSignatureProvider;
+import org.grad.secomv2.core.models.enums.DigitalSignatureAlgorithmEnum;
+import org.grad.secomv2.core.utils.SecomPemUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import javax.security.auth.x500.X500Principal;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.Signature;
-import java.security.SignatureException;
+import java.math.BigInteger;
 import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
+import java.security.cert.X509Certificate;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * The SECOM Signature Validator Implementation.
@@ -47,30 +55,26 @@ import java.security.spec.InvalidKeySpecException;
 @Slf4j
 public class SecomSignatureProviderImpl implements SecomSignatureProvider {
 
-    @Value("${gla.rad.aton-service-client.secom.keypair.private:classpath:privateKey.pem}")
-    Resource privateKeyFile;
-
     /**
-     * The Key-Pair Curve.
+     * The cKeeper Feign Client.
      */
-    @Value("${gla.rad.aton-service-client.secom.keypair.curve:secp256r1}")
-    String keyPairCurve;
+    @Autowired
+    @Lazy
+    CKeeperClient cKeeperClient;
+
+    // Class Variables
+    private static final String ANS10_MRN_OBJECT_IDENTIFIER = "0.9.2342.19200300.100.1.1";
 
     /**
-     * The Application Name.
-     */
-    @Value("${gla.rad.aton-service-client.secom.signing-algorithm:SHA3-384withECDSA}")
-    String defaultSigningAlgorithm;
-
-    /**
-     * Returns the digital signature algorithm for the signature validator.
-     * In SECOM, by default this should be DSA, also ECDSA could be used
+     * Returns the digital signature algorithm for the signature provider.
+     * In SECOM, by default this should be DSA, but ECDSA should be used
      * to generate smaller signatures.
      *
      * @return the digital signature algorithm for the signature provider
      */
+    @Override
     public DigitalSignatureAlgorithmEnum getSignatureAlgorithm() {
-        return DigitalSignatureAlgorithmEnum.fromValue(this.defaultSigningAlgorithm);
+        return DigitalSignatureAlgorithmEnum.SHA3_384_WITH_ECDSA;
     }
 
     /**
@@ -80,21 +84,30 @@ public class SecomSignatureProviderImpl implements SecomSignatureProvider {
      * provided digital signature certificate information.
      *
      * @param signatureCertificate  The digital signature certificate to be used for the signature generation
-     * @param algorithm             The algorithm to be used for the signature generation
      * @param payload               The payload to be signed, (preferably Base64 encoded)
      * @return The signature generated
      */
     @Override
-    public byte[] generateSignature(DigitalSignatureCertificate signatureCertificate, DigitalSignatureAlgorithmEnum algorithm, byte[] payload) {
-        // Create a new signature to sign the provided content
-        try {
-            Signature sign = Signature.getInstance(algorithm.getValue());
-            sign.initSign(X509Utils.privateKeyFromPem(new String(this.privateKeyFile.getInputStream().readAllBytes(), StandardCharsets.UTF_8), this.keyPairCurve));
-            sign.update(payload);
+    public byte[] generateSignature(DigitalSignatureCertificate signatureCertificate, byte[] payload) {
+        // Get the signing certificate signature algorithm, falling back to the provider default if unrecognised
+        DigitalSignatureAlgorithmEnum algorithm = Optional.ofNullable(
+                        DigitalSignatureAlgorithmEnum.fromValue(signatureCertificate.getCertificate()[0].getSigAlgName()))
+                .orElseGet(this::getSignatureAlgorithm);
+        // Get the signature generated from cKeeper
+        final Response response = this.cKeeperClient.generateCertificateSignature(
+                new BigInteger(signatureCertificate.getCertificateAlias()[0]),
+                algorithm.getValue(),
+                Optional.ofNullable(payload).orElse(new byte[]{}));
 
-            // Sign and return the signature
-            return sign.sign();
-        } catch (NoSuchAlgorithmException | IOException | InvalidKeySpecException| SignatureException | InvalidKeyException ex) {
+        // Make sure the response is valid
+        if(response == null || response.body() == null) {
+            return null;
+        }
+
+        // Parse the response
+        try {
+            return response.body().asInputStream().readAllBytes();
+        } catch (IOException ex) {
             log.error(ex.getMessage());
             return null;
         }
@@ -105,25 +118,55 @@ public class SecomSignatureProviderImpl implements SecomSignatureProvider {
      * of the message content (preferably in a Base64 format) and the signature
      * to validate the content against.
      *
-     * @param signatureCertificate  The digital signature certificate to be used for the signature generation
-     * @param algorithm             The algorithm used for the signature generation
+     * @param signatureCertificates The array of digital signature certificate to be used for the signature generation
      * @param signature             The signature to validate the context against
      * @param content               The context (in Base64 format) to be validated
      * @return whether the signature validation was successful or not
      */
     @Override
-    public boolean validateSignature(String signatureCertificate, DigitalSignatureAlgorithmEnum algorithm, byte[] signature, byte[] content) {
-        // Create a new signature to sign the provided content
+    public boolean validateSignature(String[] signatureCertificates, byte[] signature, byte[] content) {
+        // Get the X.509 certificate from the request
+        X509Certificate[] certificate = null;
         try {
-            Signature sign = Signature.getInstance(algorithm.getValue());
-            sign.initVerify(SecomPemUtils.getCertFromPem(signatureCertificate));
-            sign.update(content);
-
-            // Sign and return the signature
-            return sign.verify(signature);
-        } catch (NoSuchAlgorithmException | CertificateException | SignatureException | InvalidKeyException ex) {
+            certificate = SecomPemUtils.getCertsFromPem(signatureCertificates);
+        } catch (CertificateException ex) {
             log.error(ex.getMessage());
+        }
+        // Now try to get the MRN out of the certificate principals
+        final String mrn = Stream.of(certificate)
+                .map(X509Certificate::getSubjectX500Principal)
+                .map(p -> p.getName(X500Principal.RFC2253))
+                .map(X500Name::new)
+                .map(n -> n.getRDNs(new ASN1ObjectIdentifier(ANS10_MRN_OBJECT_IDENTIFIER)))
+                .flatMap(Arrays::stream)
+                .map(RDN::getFirst)
+                .map(AttributeTypeAndValue::getValue)
+                .map(IETFUtils::valueToString)
+                .findFirst()
+                .orElse(null);
+
+        DigitalSignatureAlgorithmEnum algorithm = Stream.of(certificate)
+                .map(X509Certificate::getSigAlgName)
+                .findFirst()
+                .map(DigitalSignatureAlgorithmEnum::fromValue)
+                .orElse(getSignatureAlgorithm());
+
+
+        // Construct the signature verification object
+        final SignatureVerificationRequestDto verificationRequest = new SignatureVerificationRequestDto();
+        verificationRequest.setContent(Base64.getEncoder().encodeToString(content));
+        verificationRequest.setSignature(Base64.getEncoder().encodeToString(signature));
+        verificationRequest.setAlgorithm(algorithm.getValue());
+
+        // Ask cKeeper to verify the signature
+        final Response response = this.cKeeperClient.verifyEntitySignature(mrn, verificationRequest);
+
+        // Make sure the response is valid
+        if(response == null) {
             return false;
         }
+
+        // If everything went OK, return a positive response
+        return response.status() < 300;
     }
 }

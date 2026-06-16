@@ -21,8 +21,8 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTest;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.grad.eNav.atonServiceClient.TestingConfiguration;
+import tools.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -89,7 +90,7 @@ class BasicSecomV2PostGetTest {
     @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
     public V4Pact createGetPactWithParams(PactBuilder builder) {
         return builder
-                .given("Test SECOM POST Ge Interface")
+                .given("Test SECOM POST Get Interface")
                 .expectsToReceiveHttpInteraction(
                         "A valid get request with query parameters",
                         httpBuilder -> httpBuilder
@@ -153,8 +154,7 @@ class BasicSecomV2PostGetTest {
      */
     @BeforeEach
     void setup() {
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        this.objectMapper = TestingConfiguration.testObjectMapper();
     }
 
     /**
@@ -171,7 +171,7 @@ class BasicSecomV2PostGetTest {
         EnvelopeGetFilterObject envelopeGetFilterObject = new EnvelopeGetFilterObject();
         envelopeGetFilterObject.setEnvelopeSignatureCertificate(new String[] {"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the filter object
         GetFilterObject getFilterObject = new GetFilterObject();
@@ -199,11 +199,9 @@ class BasicSecomV2PostGetTest {
         // Create the envelope
         EnvelopeGetFilterObject envelopeGetFilterObject = new EnvelopeGetFilterObject();
         envelopeGetFilterObject.setContainerType(ContainerTypeEnum.S100_DataSet);
-        envelopeGetFilterObject.setDataProductType(SECOM_DataProductType.S101);
-        envelopeGetFilterObject.setUnlocode("GBHRW");
         envelopeGetFilterObject.setEnvelopeSignatureCertificate(new String[] {"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the filter object
         GetFilterObject getFilterObject = new GetFilterObject();
@@ -234,7 +232,7 @@ class BasicSecomV2PostGetTest {
         envelopeGetFilterObject.setDataProductType(SECOM_DataProductType.S124);
         envelopeGetFilterObject.setEnvelopeSignatureCertificate(new String[] {"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the filter object
         GetFilterObject getFilterObject = new GetFilterObject();
@@ -268,7 +266,7 @@ class BasicSecomV2PostGetTest {
         envelopeGetFilterObject.setPage(0);
         envelopeGetFilterObject.setEnvelopeSignatureCertificate(new String[] {"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the filter object
         GetFilterObject getFilterObject = new GetFilterObject();

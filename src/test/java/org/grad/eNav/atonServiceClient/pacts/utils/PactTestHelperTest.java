@@ -18,8 +18,8 @@ package org.grad.eNav.atonServiceClient.pacts.utils;
 import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.LambdaDsl;
 import org.grad.secomv2.core.models.CapabilityResponseObject;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -38,20 +38,21 @@ public class PactTestHelperTest {
     /**
      * Common setup for all the tests.
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         final LocalDateTime created = LocalDateTime.of(2019,12,31,12,0);
         capabilityResponseBody = LambdaDsl.newJsonBody(body ->
                 body.arrayContaining("capability",
                         capability -> capability.object(capabilityObj -> capabilityObj
                                 .numberValue("containerType", 0)
-                                .stringValue("dataProductType", "S125")
+                                .stringValue("dataProductType", "S-125")
                                 .stringValue("productSchemaUrl", "https://rnavlab.gla-rad.org/enav/aton-service/xsd/S125.xsd")
                                 .object("implementedInterfaces", implementedInterfacesObj -> implementedInterfacesObj
                                         .booleanType("upload", false)
                                         .booleanType("uploadLink", false)
                                         .booleanType("get", false)
                                         .booleanType("getSummary", false)
+                                        .booleanType("publicKey", false)
                                         .booleanType("getByLink", false)
                                         .booleanType("subscription", false)
                                         .booleanType("access", false)

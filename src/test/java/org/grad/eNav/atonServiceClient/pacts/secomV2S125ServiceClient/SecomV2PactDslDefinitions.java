@@ -46,8 +46,8 @@ public class SecomV2PactDslDefinitions {
     static final DslPart capabilityResponseDsl = new PactDslJsonBody()
             .array("capability")
                 .object()
-                    .numberValue("containerType", 0)
-                    .stringValue("dataProductType", "S-125")
+            .integerMatching("containerType", "[0|1|2]", 0)
+            .stringValue("dataProductType", "S-125")
                     .stringType("productSchemaUrl", "https://rnavlab.gla-rad.org/enav/aton-service/xsd/S125.xsd")
                     .object("implementedInterfaces", new PactDslJsonBody()
                             .booleanType("upload",  true)
@@ -84,7 +84,7 @@ public class SecomV2PactDslDefinitions {
      */
     static final DslPart getSummaryFilterObjectWithCriteriaDsl = new PactDslJsonBody()
             .object("envelope")
-                .integerMatching("containerType", "^[0-2]", 1)
+                .integerMatching("containerType", "^[0-2]", 0)
                 .stringValue("unlocode", "GBHRW")
                 .stringValue("dataProductType", "S-125")
                 .array("envelopeSignatureCertificate")
@@ -159,8 +159,7 @@ public class SecomV2PactDslDefinitions {
      * SECOM GetSummary Response Error Pact Body
      */
     static final DslPart getSummaryResponseErrorDsl = new PactDslJsonBody()
-            .nullValue("summaryObject")
-            .nullValue("pagination");
+            .stringType("message", "Bad request");
 
     /**
      * SECOM GetFilter Object
@@ -181,8 +180,7 @@ public class SecomV2PactDslDefinitions {
      */
     static final DslPart getFilterObjectWithCriteriaDsl = new PactDslJsonBody()
             .object("envelope")
-                .integerMatching("containerType", "^[0-2]", 1)
-                .stringValue("unlocode", "GBHRW")
+                .integerMatching("containerType", "^[0-2]", 0)
                 .stringValue("dataProductType", "S-125")
                 .array("envelopeSignatureCertificate")
                     .stringMatcher("^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==")
@@ -255,8 +253,7 @@ public class SecomV2PactDslDefinitions {
      * SECOM Get Response Error Pact Body
      */
     static final DslPart getResponseErrorDsl = new PactDslJsonBody()
-            .nullValue("dataResponseObject")
-            .nullValue("pagination");
+            .stringType("message", "Bad request");
 
     /**
      * SECOM Acknowledgement Object Pact Body
@@ -307,7 +304,7 @@ public class SecomV2PactDslDefinitions {
      */
     static final DslPart acknowledgementResponseObjectErrorDsl = new PactDslJsonBody()
             .integerMatching("SECOM_ResponseCode", "[0|1|2|3]", 0)
-            .stringType("message",  "Acknowledgement message.");
+            .stringType("message",  "Bad Request");
 
     /**
      * SECOM Subscription Request Object Pact Body
@@ -327,7 +324,6 @@ public class SecomV2PactDslDefinitions {
                 .array("envelopeSignatureCertificate")
                     .stringMatcher("^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==")
                 .closeArray().asBody()
-                .nullValue("envelopeSignatureReference")
                 .stringMatcher("envelopeRootCertificateThumbprint",  "^[-A-Za-z0-9+/]*$", "714fead3e2e4f0a01051bc4e26c30a306c456ef1")
                 .datetime("envelopeSignatureTime", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
             .closeObject()

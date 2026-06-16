@@ -21,8 +21,8 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTest;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.grad.eNav.atonServiceClient.TestingConfiguration;
+import tools.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -50,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Lawrence Hughes (email: Lawrence.Hughes@gla-rad.org)
  */
 @PactConsumerTest
-@PactTestFor(providerName = "SecomV2Service")
+@PactTestFor(providerName = "SecomV2S125Service")
 public class S125ServiceClientSecomV2PostGetSummaryTest {
 
     static final String POST_GET_SUMMARY_PATH = "/v2/object/search/summary";
@@ -64,7 +65,7 @@ public class S125ServiceClientSecomV2PostGetSummaryTest {
      * SECOM Get Summary Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetSummaryPact(PactBuilder builder) {
         return builder
                 .given("Test SECOM POST Get Summary Interface")
@@ -86,7 +87,7 @@ public class S125ServiceClientSecomV2PostGetSummaryTest {
      * SECOM Get Summary Pact with parameters.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetSummaryPactWithParams(PactBuilder builder) {
         return builder
                 .given("Test SECOM POST Get Summary Interface")
@@ -109,7 +110,7 @@ public class S125ServiceClientSecomV2PostGetSummaryTest {
      * SECOM Get Summary With Parameters of Badly Formatted Container Type Pact.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetSummaryPactWithParamsContainerTypeBadFormat(PactBuilder builder) {
         return builder
                 .given("Test SECOM POST Get Summary Interface")
@@ -131,7 +132,7 @@ public class S125ServiceClientSecomV2PostGetSummaryTest {
      * SECOM Get Summary With Parameters of invalid page number.
      * @param builder The Pact Builder
      */
-    @Pact(provider="SecomV2Service", consumer="SecomV2ServiceClient")
+    @Pact(provider="SecomV2S125Service", consumer="SecomV2S125ServiceClient")
     public V4Pact createGetSummaryPactWithParamsPageNumberInvalid(PactBuilder builder) {
         return builder
                 .given("Test SECOM POST Get Summary Interface")
@@ -154,8 +155,7 @@ public class S125ServiceClientSecomV2PostGetSummaryTest {
      */
     @BeforeEach
     void setup() {
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        this.objectMapper = TestingConfiguration.testObjectMapper();
     }
 
     /**
@@ -171,7 +171,7 @@ public class S125ServiceClientSecomV2PostGetSummaryTest {
         EnvelopeGetSummaryFilterObject envelopeGetSummaryFilterObject = new EnvelopeGetSummaryFilterObject();
         envelopeGetSummaryFilterObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetSummaryFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the get summary filter object
         GetSummaryFilterObject getSummaryFilterObject = new GetSummaryFilterObject();
@@ -202,7 +202,7 @@ public class S125ServiceClientSecomV2PostGetSummaryTest {
         envelopeGetSummaryFilterObject.setDataProductType(SECOM_DataProductType.S125);
         envelopeGetSummaryFilterObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetSummaryFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the get summary filter object
         GetSummaryFilterObject getSummaryFilterObject = new GetSummaryFilterObject();
@@ -233,7 +233,7 @@ public class S125ServiceClientSecomV2PostGetSummaryTest {
         envelopeGetSummaryFilterObject.setDataProductType(SECOM_DataProductType.S125);
         envelopeGetSummaryFilterObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetSummaryFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the get summary filter object
         GetSummaryFilterObject getSummaryFilterObject = new GetSummaryFilterObject();
@@ -266,7 +266,7 @@ public class S125ServiceClientSecomV2PostGetSummaryTest {
         envelopeGetSummaryFilterObject.setPage(0);
         envelopeGetSummaryFilterObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetSummaryFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the get summary filter object
         GetSummaryFilterObject getSummaryFilterObject = new GetSummaryFilterObject();

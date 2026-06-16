@@ -20,10 +20,10 @@ import org.grad.eNav.atonServiceClient.config.keycloak.KeycloakGrantedAuthoritie
 import org.grad.eNav.atonServiceClient.config.keycloak.KeycloakJwtAuthenticationConverter;
 import org.grad.eNav.atonServiceClient.config.keycloak.KeycloakLogoutHandler;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
-import org.springframework.boot.actuate.health.HealthEndpoint;
 import org.springframework.boot.actuate.info.InfoEndpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.health.actuate.endpoint.HealthEndpoint;
+import org.springframework.boot.security.autoconfigure.actuate.web.servlet.EndpointRequest;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,7 +47,6 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.ForwardedHeaderFilter;
 
@@ -103,7 +102,7 @@ class SpringSecurityConfig {
     }
 
     /**
-     * Forwarded header filter filter registration bean.
+     * Forwarded header filter registration bean.
      * <p>
      * This corrects the urls produced by the microservice when accessed from a proxy server.
      * E.g. Api gateway:

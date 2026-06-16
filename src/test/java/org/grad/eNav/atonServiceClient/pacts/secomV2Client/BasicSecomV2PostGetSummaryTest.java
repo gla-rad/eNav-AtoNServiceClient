@@ -21,8 +21,8 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTest;
 import au.com.dius.pact.consumer.junit5.PactTestFor;
 import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.grad.eNav.atonServiceClient.TestingConfiguration;
+import tools.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
 import org.apache.hc.core5.http.ContentType;
@@ -36,6 +36,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -91,7 +92,7 @@ public class BasicSecomV2PostGetSummaryTest {
         return builder
                 .given("Test SECOM POST Get Summary Interface")
                 .expectsToReceiveHttpInteraction(
-                        "A valid get summary request",
+                        "A valid get summary request with query",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
                                         .path(POST_GET_SUMMARY_PATH)
@@ -154,8 +155,7 @@ public class BasicSecomV2PostGetSummaryTest {
      */
     @BeforeEach
     void setup() {
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        this.objectMapper = TestingConfiguration.testObjectMapper();
     }
 
     /**
@@ -171,7 +171,7 @@ public class BasicSecomV2PostGetSummaryTest {
         EnvelopeGetSummaryFilterObject envelopeGetSummaryFilterObject = new EnvelopeGetSummaryFilterObject();
         envelopeGetSummaryFilterObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetSummaryFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the get summary filter object
         GetSummaryFilterObject getSummaryFilterObject = new GetSummaryFilterObject();
@@ -198,11 +198,10 @@ public class BasicSecomV2PostGetSummaryTest {
         // Create the envelope get summary filter object
         EnvelopeGetSummaryFilterObject envelopeGetSummaryFilterObject = new EnvelopeGetSummaryFilterObject();
         envelopeGetSummaryFilterObject.setContainerType(ContainerTypeEnum.S100_DataSet);
-        envelopeGetSummaryFilterObject.setDataProductType(SECOM_DataProductType.S101);
         envelopeGetSummaryFilterObject.setUnlocode("GBHRW");
         envelopeGetSummaryFilterObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetSummaryFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the get summary filter object
         GetSummaryFilterObject getSummaryFilterObject = new GetSummaryFilterObject();
@@ -233,7 +232,7 @@ public class BasicSecomV2PostGetSummaryTest {
         envelopeGetSummaryFilterObject.setDataProductType(SECOM_DataProductType.S124);
         envelopeGetSummaryFilterObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetSummaryFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the get summary filter object
         GetSummaryFilterObject getSummaryFilterObject = new GetSummaryFilterObject();
@@ -266,7 +265,7 @@ public class BasicSecomV2PostGetSummaryTest {
         envelopeGetSummaryFilterObject.setPage(0);
         envelopeGetSummaryFilterObject.setEnvelopeSignatureCertificate(new String[]{"ZGlnaXRhbFNpZ25hdHVyZQ=="});
         envelopeGetSummaryFilterObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
-        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now());
+        envelopeGetSummaryFilterObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
 
         // Create the get summary filter object
         GetSummaryFilterObject getSummaryFilterObject = new GetSummaryFilterObject();

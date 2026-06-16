@@ -17,8 +17,10 @@ package org.grad.eNav.atonServiceClient.pacts.secomV2Client;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
+import org.grad.secomv2.core.models.enums.SECOM_DataProductType;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.TimeZone;
 
 import static org.grad.secomv2.core.base.SecomConstants.SECOM_DATE_TIME_FORMAT;
@@ -84,9 +86,8 @@ public class SecomV2PactDslDefinitions {
      */
     static final DslPart getSummaryFilterObjectWithCriteriaDsl = new PactDslJsonBody()
             .object("envelope")
-                .integerMatching("containerType", "^[0-2]", 1)
+                .integerMatching("containerType", "^[0-2]", 0)
                 .stringValue("unlocode", "GBHRW")
-                .stringMatcher("dataProductType", "S-(?:[1|2|4])?[\\d][\\d]|(RTZ)|(EPC)|(ASM)", "S-125")
                 .array("envelopeSignatureCertificate")
                     .stringMatcher("^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==")
                 .closeArray().asBody()
@@ -159,8 +160,7 @@ public class SecomV2PactDslDefinitions {
      * SECOM GetSummary Response Error Pact Body
      */
     static final DslPart getSummaryResponseErrorDsl = new PactDslJsonBody()
-            .nullValue("summaryObject")
-            .nullValue("pagination");
+            .stringType("message", "Bad request");
 
     /**
      * SECOM GetFilter Object
@@ -181,9 +181,7 @@ public class SecomV2PactDslDefinitions {
      */
     static final DslPart getFilterObjectWithCriteriaDsl = new PactDslJsonBody()
             .object("envelope")
-                .integerMatching("containerType", "^[0-2]", 1)
-                .stringValue("unlocode", "GBHRW")
-                .stringMatcher("dataProductType", "S-(?:[1|2|4])?[\\d][\\d]|(RTZ)|(EPC)|(ASM)", "S-125")
+                .integerMatching("containerType", "^[0-2]", 0)
                 .array("envelopeSignatureCertificate")
                     .stringMatcher("^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==")
                 .closeArray().asBody()
@@ -255,8 +253,7 @@ public class SecomV2PactDslDefinitions {
      * SECOM Get Response Error Pact Body
      */
     static final DslPart getResponseErrorDsl = new PactDslJsonBody()
-            .nullValue("dataResponseObject")
-            .nullValue("pagination");
+            .stringType("message", "Bad request");
 
     /**
      * SECOM Acknowledgement Object Pact Body
@@ -315,8 +312,8 @@ public class SecomV2PactDslDefinitions {
     static final DslPart subscriptionRequestObjectDsl = new PactDslJsonBody()
             .object("envelope")
                 .integerMatching("containerType", "[0|1|2]", 1)
-                .stringMatcher("dataProductType", "S-(?:[1|2|4])?[\\d][\\d]|(RTZ)|(EPC)|(ASM)", "S-125")
                 .stringMatcher("dataReference",  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "7f000101-8ad6-1ee7-818a-d7332b920002")
+                .stringMatcher("dataProductType", "S-(?:[1|2|4])?[\\d][\\d]|(RTZ)|(EPC)|(ASM)", "S-125")
                 .stringType("productVersion", "0.0.1")
                 .stringMatcher("geometry", "^([A-Z]+\\s*\\(\\(?\\s*(-?\\d+(\\.\\d+)?)\\s+-?\\d+(\\.\\d+)?(?:\\s+-?\\d+(\\.\\d+)?)?\\s*(,\\s*(-?\\d+(\\.\\d+)?)\\s+-?\\d+(\\.\\d+)?(?:\\s+-?\\d+(\\.\\d+)?)?\\s*)*\\)\\)?\\s*)+$", "POLYGON ((-180 -90, -180 90, 180 90, 180 -90, -180 -90))")
                 .stringMatcher("unlocode",  "[A-Z]{5}", "GBHRW")
@@ -327,7 +324,6 @@ public class SecomV2PactDslDefinitions {
                 .array("envelopeSignatureCertificate")
                     .stringMatcher("^[-A-Za-z0-9+/]*={0,3}$", "ZGlnaXRhbFNpZ25hdHVyZQ==")
                 .closeArray().asBody()
-                .nullValue("envelopeSignatureReference")
                 .stringMatcher("envelopeRootCertificateThumbprint",  "^[-A-Za-z0-9+/]*$", "714fead3e2e4f0a01051bc4e26c30a306c456ef1")
                 .datetime("envelopeSignatureTime", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
             .closeObject()
@@ -345,7 +341,7 @@ public class SecomV2PactDslDefinitions {
      * SECOM Subscription Response Error Pact Body
      */
     static final DslPart subscriptionResponseObjectErrorDsl = new PactDslJsonBody()
-            .stringType("message", "Subscription identifier not found");
+            .stringType("message", "Bad Request");
 
     /**
      * SECOM Remove Subscription Object Pact Body

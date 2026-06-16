@@ -16,16 +16,17 @@
 package org.grad.eNav.atonServiceClient.services;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.ws.rs.NotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import lombok.extern.slf4j.Slf4j;
 import org.grad.eNav.atonServiceClient.models.domain.Subscription;
 import org.grad.eNav.atonServiceClient.repos.SubscriptionRepo;
-import org.grad.secom.core.exceptions.SecomNotFoundException;
-import org.grad.secom.core.models.RemoveSubscriptionObject;
-import org.grad.secom.core.models.RemoveSubscriptionResponseObject;
-import org.grad.secom.core.models.SubscriptionRequestObject;
-import org.grad.secom.core.models.SubscriptionResponseObject;
-import org.grad.secom.springboot3.components.SecomClient;
+import org.grad.secomv2.core.exceptions.SecomNotFoundException;
+import org.grad.secomv2.core.models.RemoveSubscriptionObject;
+import org.grad.secomv2.core.models.RemoveSubscriptionResponseObject;
+import org.grad.secomv2.core.models.SubscriptionRequestObject;
+import org.grad.secomv2.core.models.SubscriptionResponseObject;
+import org.grad.secomv2.springboot4.components.SecomClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -82,7 +83,7 @@ public class SubscriptionService {
      */
     public Subscription getSubscription(UUID identifier) {
         return this.subscriptionRepo.findByIdentifier(identifier)
-                .orElseThrow(NotFoundException::new);
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     /**
@@ -105,7 +106,7 @@ public class SubscriptionService {
             return subscription;
         }
         // Don't worry if it's not there, then we don't need to do anything
-        catch (NotFoundException ex) {
+        catch (ResponseStatusException ex) {
             return null;
         }
     }

@@ -17,9 +17,9 @@ package org.grad.eNav.atonServiceClient.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.grad.eNav.atonServiceClient.services.SubscriptionService;
-import org.grad.secom.core.models.RemoveSubscriptionResponseObject;
-import org.grad.secom.core.models.SubscriptionRequestObject;
-import org.grad.secom.core.models.SubscriptionResponseObject;
+import org.grad.secomv2.core.models.RemoveSubscriptionResponseObject;
+import org.grad.secomv2.core.models.SubscriptionRequestObject;
+import org.grad.secomv2.core.models.SubscriptionResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

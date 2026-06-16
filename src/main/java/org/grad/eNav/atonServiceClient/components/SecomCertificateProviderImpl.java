@@ -16,20 +16,18 @@
 package org.grad.eNav.atonServiceClient.components;
 
 import lombok.extern.slf4j.Slf4j;
-import org.grad.secom.core.base.DigitalSignatureCertificate;
-import org.grad.secom.core.base.SecomCertificateProvider;
-import org.grad.secom.core.utils.KeyStoreUtils;
-import org.grad.secom.springboot3.components.SecomConfigProperties;
+import org.grad.eNav.atonServiceClient.feign.CKeeperClient;
+import org.grad.eNav.atonServiceClient.models.domain.ServiceInformationConfig;
+import org.grad.eNav.atonServiceClient.models.dtos.McpEntityType;
+import org.grad.eNav.atonServiceClient.models.dtos.SignatureCertificateDto;
+import org.grad.secomv2.core.base.DigitalSignatureCertificate;
+import org.grad.secomv2.core.base.SecomCertificateProvider;
+import org.grad.secomv2.core.utils.SecomPemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 
 /**
  * The SECOM Certificate Provider Implementation.
@@ -45,28 +43,17 @@ import java.security.cert.X509Certificate;
 public class SecomCertificateProviderImpl implements SecomCertificateProvider {
 
     /**
-     * The Application Name.
-     */
-    @Value("${spring.application.name:aton-service}")
-    String appName;
-
-    /**
-     * The X.509 Certificate Alias.
-     */
-    @Value("${gla.rad.aton-service-client.secom.certificateAlias:certificate}")
-    String certificateAlias;
-
-    /**
-     * The X.509 Root Certificate Alias.
-     */
-    @Value("${gla.rad.aton-service-client.secom.rootCertificateAlias:rootCertificate}")
-    String rootCertificateAlias;
-
-    /**
-     * The SECOM Configuration properties.
+     * The Service Information Config.
      */
     @Autowired
-    SecomConfigProperties secomConfigProperties;
+    ServiceInformationConfig serviceInformationConfig;
+
+    /**
+     * The cKeeper Feign Client.
+     */
+    @Autowired
+    @Lazy
+    CKeeperClient cKeeperClient;
 
     /**
      * This function overrides the interface definition to link the SECOM
@@ -78,33 +65,26 @@ public class SecomCertificateProviderImpl implements SecomCertificateProvider {
      */
     @Override
     public DigitalSignatureCertificate getDigitalSignatureCertificate() {
-        // Get the certificate from the trust store
-        final KeyStore keyStore;
-        final X509Certificate certificate;
-        try {
-            keyStore = KeyStoreUtils.getKeyStore(this.secomConfigProperties.getKeystore(), this.secomConfigProperties.getKeystorePassword(), this.secomConfigProperties.getKeystoreType());
-            certificate = (X509Certificate) keyStore.getCertificate(this.certificateAlias);
-        } catch (KeyStoreException | NoSuchAlgorithmException | IOException | CertificateException ex) {
-            throw new RuntimeException(ex);
-        }
+        // Initialise SECOM the digital signature certificate
+        final DigitalSignatureCertificate digitalSignatureCertificate = new DigitalSignatureCertificate();
 
-        // Get the root CA certificate from the trust store
-        final KeyStore trustStore;
-        final X509Certificate rootCertificate;
-        try {
-            trustStore = KeyStoreUtils.getKeyStore(this.secomConfigProperties.getTruststore(), this.secomConfigProperties.getTruststorePassword(), this.secomConfigProperties.getTruststoreType());
-            rootCertificate = (X509Certificate) trustStore.getCertificate(this.rootCertificateAlias);
-        } catch (KeyStoreException | NoSuchAlgorithmException | IOException | CertificateException ex) {
-            throw new RuntimeException(ex);
-        }
-
+        // Get the signature certificate from cKeeper
+        final SignatureCertificateDto response = this.cKeeperClient.getSignatureCertificate(
+                this.serviceInformationConfig.getName(),
+                this.serviceInformationConfig.getVersion(),
+                null,
+                McpEntityType.SERVICE.getValue());
 
         // Build the SECOM digital certificate object
-        final DigitalSignatureCertificate digitalSignatureCertificate = new DigitalSignatureCertificate();
-        digitalSignatureCertificate.setCertificateAlias(this.appName);
-        digitalSignatureCertificate.setCertificate(certificate);
-        digitalSignatureCertificate.setPublicKey(certificate.getPublicKey());
-        digitalSignatureCertificate.setRootCertificate(rootCertificate);
+        try {
+            digitalSignatureCertificate.setCertificateAlias(new String[]{String.format("%d", response.getCertificateId())});
+            digitalSignatureCertificate.setCertificate(SecomPemUtils.getCertsFromPem(new String[]{response.getCertificate()}));
+            digitalSignatureCertificate.setPublicKey(digitalSignatureCertificate.getCertificate()[0].getPublicKey());
+            digitalSignatureCertificate.setRootCertificate(SecomPemUtils.getCertFromPem(response.getRootCertificate()));
+        } catch (CertificateException ex) {
+            log.error(ex.getMessage());
+            return null;
+        }
 
         // Return the output
         return digitalSignatureCertificate;

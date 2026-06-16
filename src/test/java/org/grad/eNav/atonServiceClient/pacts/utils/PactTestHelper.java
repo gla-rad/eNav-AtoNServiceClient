@@ -16,13 +16,12 @@
 package org.grad.eNav.atonServiceClient.pacts.utils;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.grad.eNav.atonServiceClient.TestingConfiguration;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 /**
@@ -40,16 +39,13 @@ public class PactTestHelper {
      * @throws IOException the IO exception the occurred
      */
     public static void testPactDtoMapping(DslPart dslPart, Class<?> dtoClass) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        ObjectMapper mapper = TestingConfiguration.testObjectMapper();
 
         //If there are any mapping issues, appropriate module could be the solution
-        mapper.registerModule(new JavaTimeModule());
         String pactJson = dslPart.getBody().toString();
         String dtoJson = mapper.writeValueAsString(mapper.readValue(pactJson, dtoClass));
         assertEquals(mapper.readTree(dtoJson), mapper.readTree(pactJson));
     }
-
 
 }
 

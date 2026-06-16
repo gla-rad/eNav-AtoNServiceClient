@@ -143,7 +143,7 @@ class S125ServiceClientSecomV2GetTest {
                         "A get request with query parameters but an invalid page number",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v1/object")
+                                        .path("/v2/object")
                                         .method("GET")
                                         .queryParameters(this.updateMapValue(this.queryParamsMap, "page", "0")))
                                 .willRespondWith(responseBuilder -> responseBuilder
@@ -337,7 +337,7 @@ class S125ServiceClientSecomV2GetTest {
         final Map<String, String> queryParams = this.updateMapValue(this.queryParamsMap, "page", "0");
         // Perform the SECOM request
         Response response = Request.get(
-                        new URIBuilder(mockServer.getUrl() + "/v1/object")
+                        new URIBuilder(mockServer.getUrl() + "/v2/object")
                                 .addParameters(this.mapToNameValueParams(queryParams))
                                 .build())
                 .execute();
