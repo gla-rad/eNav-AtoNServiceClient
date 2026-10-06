@@ -159,8 +159,7 @@ public class SecomV2PactDslDefinitions {
     /**
      * SECOM GetSummary Response Error Pact Body
      */
-    static final DslPart getSummaryResponseErrorDsl = new PactDslJsonBody()
-            .stringType("message", "Bad request");
+    static final DslPart getSummaryResponseErrorDsl = new PactDslJsonBody();
 
     /**
      * SECOM GetFilter Object
