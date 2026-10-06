@@ -338,8 +338,7 @@ public class SecomV2PactDslDefinitions {
     /**
      * SECOM Subscription Response Object Error Pact Body
      */
-    static final DslPart subscriptionResponseObjectErrorDsl = new PactDslJsonBody()
-            .stringType("message", "Bad Request");
+    static final DslPart subscriptionResponseObjectErrorDsl = new PactDslJsonBody();
 
     /**
      * SECOM Remove Subscription Object Pact Body
@@ -356,8 +355,7 @@ public class SecomV2PactDslDefinitions {
     /**
      * SECOM Remove Subscription Response Object Error Pact Body
      */
-    static final DslPart removeSubscriptionResponseObjectErrorDsl = new PactDslJsonBody()
-            .stringType("message", "Bad Request");
+    static final DslPart removeSubscriptionResponseObjectErrorDsl = new PactDslJsonBody();
 
     /**
      * SECOM Remove Subscription Response Object Error Pact Body
