@@ -252,8 +252,7 @@ public class SecomV2PactDslDefinitions {
     /**
      * SECOM Get Response Error Pact Body
      */
-    static final DslPart getResponseErrorDsl = new PactDslJsonBody()
-            .stringType("message", "Bad request");
+    static final DslPart getResponseErrorDsl = new PactDslJsonBody();
 
     /**
      * SECOM Acknowledgement Object Pact Body

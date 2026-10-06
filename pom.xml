@@ -41,7 +41,7 @@
         <bootstrap.version>5.3.8</bootstrap.version>
         <jquery.version>3.7.1</jquery.version>
         <fa.version>7.2.0</fa.version>
-        <pact-version>4.7.1</pact-version>
+        <pact-version>4.7.5</pact-version>
         <secomv2lib-version>0.1.4</secomv2lib-version>
     </properties>
 
