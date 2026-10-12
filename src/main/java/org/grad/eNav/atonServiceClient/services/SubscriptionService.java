@@ -16,16 +16,13 @@
 package org.grad.eNav.atonServiceClient.services;
 
 import jakarta.validation.constraints.NotNull;
+import org.grad.secomv2.core.models.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import lombok.extern.slf4j.Slf4j;
 import org.grad.eNav.atonServiceClient.models.domain.Subscription;
 import org.grad.eNav.atonServiceClient.repos.SubscriptionRepo;
 import org.grad.secomv2.core.exceptions.SecomNotFoundException;
-import org.grad.secomv2.core.models.RemoveSubscriptionObject;
-import org.grad.secomv2.core.models.RemoveSubscriptionResponseObject;
-import org.grad.secomv2.core.models.SubscriptionRequestObject;
-import org.grad.secomv2.core.models.SubscriptionResponseObject;
 import org.grad.secomv2.springboot4.components.SecomClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -163,7 +160,11 @@ public class SubscriptionService {
 
         // Terminate the subscription
         final RemoveSubscriptionObject removeSubscriptionObject = new RemoveSubscriptionObject();
-        removeSubscriptionObject.setSubscriptionIdentifier(subscription.getIdentifier());
+        final EnvelopeRemoveSubscriptionObject envelopeRemoveSubscriptionObject =  new EnvelopeRemoveSubscriptionObject();
+        envelopeRemoveSubscriptionObject.setSubscriptionIdentifier(subscription.getIdentifier());
+        removeSubscriptionObject.setEnvelope(envelopeRemoveSubscriptionObject);
+
+        // Pass the object onto the SECOM client
         final RemoveSubscriptionResponseObject removeSubscriptionResponseObject = secomClient.removeSubscription(removeSubscriptionObject)
                 .orElseThrow(() -> new SecomNotFoundException("The client for removing the subscription was not found in the service registry."));
 
