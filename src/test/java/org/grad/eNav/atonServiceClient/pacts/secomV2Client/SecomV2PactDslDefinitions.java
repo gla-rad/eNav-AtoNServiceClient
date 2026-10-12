@@ -17,10 +17,8 @@ package org.grad.eNav.atonServiceClient.pacts.secomV2Client;
 
 import au.com.dius.pact.consumer.dsl.DslPart;
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody;
-import org.grad.secomv2.core.models.enums.SECOM_DataProductType;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.TimeZone;
 
 import static org.grad.secomv2.core.base.SecomConstants.SECOM_DATE_TIME_FORMAT;
@@ -348,7 +346,37 @@ public class SecomV2PactDslDefinitions {
      * SECOM Remove Subscription Object Pact Body
      */
     static final DslPart removeSubscriptionObjectDsl = new PactDslJsonBody()
-            .stringMatcher("subscriptionIdentifier",  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "7f000101-8ad6-1ee7-818a-d7332b920002");
+            .object("envelope")
+                .stringMatcher("subscriptionIdentifier",  "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", "7f000101-8ad6-1ee7-818a-d7332b920002")
+                .stringMatcher("envelopeRootCertificateThumbprint",  "^[-A-Za-z0-9+/]*$", "714fead3e2e4f0a01051bc4e26c30a306c456ef1")
+                .datetime("envelopeSignatureTime", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
+            .closeObject()
+            .asBody()
+            .stringMatcher("envelopeSignature","^[-A-Za-z0-9+/]*={0,3}$", "ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ==");
+
+    /**
+     * SECOM Remove Subscription Object Pact Body
+     */
+    static final DslPart removeSubscriptionObjectWithBadSSubscriptionIdentifierDsl = new PactDslJsonBody()
+            .object("envelope")
+                .stringType("subscriptionIdentifier",  "invalid")
+                .stringMatcher("envelopeRootCertificateThumbprint",  "^[-A-Za-z0-9+/]*$", "714fead3e2e4f0a01051bc4e26c30a306c456ef1")
+                .datetime("envelopeSignatureTime", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
+            .closeObject()
+            .asBody()
+            .stringMatcher("envelopeSignature","^[-A-Za-z0-9+/]*={0,3}$", "ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ==");
+
+    /**
+     * SECOM Remove Subscription Object Pact Body
+     */
+    static final DslPart removeSubscriptionObjectInvalidSubscriptionIdentifierDsl = new PactDslJsonBody()
+            .object("envelope")
+                .stringType("subscriptionIdentifier",  "00000000-0000-0000-0000-000000000000")
+                .stringMatcher("envelopeRootCertificateThumbprint",  "^[-A-Za-z0-9+/]*$", "714fead3e2e4f0a01051bc4e26c30a306c456ef1")
+                .datetime("envelopeSignatureTime", SECOM_DATE_TIME_FORMAT + "XXX", Instant.now(), TimeZone.getDefault())
+            .closeObject()
+            .asBody()
+            .stringMatcher("envelopeSignature","^[-A-Za-z0-9+/]*={0,3}$", "ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ==");
 
     /**
      * SECOM Remove Subscription Response Object Pact Body

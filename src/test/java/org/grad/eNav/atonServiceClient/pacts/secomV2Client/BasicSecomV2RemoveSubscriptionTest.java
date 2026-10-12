@@ -23,15 +23,19 @@ import au.com.dius.pact.core.model.V4Pact;
 import au.com.dius.pact.core.model.annotations.Pact;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.fluent.Response;
-import org.apache.hc.core5.http.NameValuePair;
-import org.apache.hc.core5.http.message.BasicNameValuePair;
+import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.net.URIBuilder;
+import org.grad.eNav.atonServiceClient.TestingConfiguration;
+import org.grad.secomv2.core.models.EnvelopeRemoveSubscriptionObject;
+import org.grad.secomv2.core.models.RemoveSubscriptionObject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Map;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -54,20 +58,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class BasicSecomV2RemoveSubscriptionTest {
 
     /**
-     * Define a map of query parameters for the removeSubscriptionPact
-     * pacts. This can also be reused in the testing.
+     * The test object mapper.
      */
-    final Map<String, String> queryParamsMap = Map.of(
-            "subscriptionIdentifier", "7f000101-8ad6-1ee7-818a-d7332b920002"
-    );
-
-    /**
-     * Define a map of query parameters for the testRemoveSubscriptionPactWithBadBody
-     * pacts. This can also be reused in the testing.
-     */
-    final Map<String, String> badQueryParamsMap = Map.of(
-            "field1", "field1"
-    );
+    ObjectMapper objectMapper;
 
     /**
      * Define a randomUuid for use in the testRemoveSubscriptionPactNotFound
@@ -87,9 +80,9 @@ public class BasicSecomV2RemoveSubscriptionTest {
                         "A valid remove subscription request",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v2/subscription")
-                                        .method("DELETE")
-                                        .queryParameters(this.queryParamsMap))
+                                        .path("/v2/subscription/delete")
+                                        .method("POST")
+                                        .body(SecomV2PactDslDefinitions.removeSubscriptionObjectDsl))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(200)
                                         .body(SecomV2PactDslDefinitions.removeSubscriptionObjectResponseDsl))
@@ -109,11 +102,11 @@ public class BasicSecomV2RemoveSubscriptionTest {
                         "A remove subscription request with a badly formed body",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v2/subscription")
-                                        .method("DELETE")
-                                        .queryParameters(this.badQueryParamsMap))
+                                        .path("/v2/subscription/delete")
+                                        .method("POST")
+                                        .body(SecomV2PactDslDefinitions.removeSubscriptionObjectWithBadSSubscriptionIdentifierDsl))
                                 .willRespondWith(responseBuilder -> responseBuilder
-                                        .status(404)
+                                        .status(400)
                                         .body(SecomV2PactDslDefinitions.subscriptionResponseObjectErrorDsl))
                 )
                 .toPact();
@@ -131,14 +124,22 @@ public class BasicSecomV2RemoveSubscriptionTest {
                         "A remove subscription request for a subscription identifier that does not exist",
                         httpBuilder -> httpBuilder
                                 .withRequest(requestBuilder -> requestBuilder
-                                        .path("/v2/subscription")
-                                        .method("DELETE")
-                                        .queryParameter("subscriptionIdentifier", randomUuid))
+                                        .path("/v2/subscription/delete")
+                                        .method("POST")
+                                        .body(SecomV2PactDslDefinitions.removeSubscriptionObjectInvalidSubscriptionIdentifierDsl))
                                 .willRespondWith(responseBuilder -> responseBuilder
                                         .status(404)
                                         .body(SecomV2PactDslDefinitions.removeSubscriptionResponseObjectNotFoundDsl))
                 )
                 .toPact();
+    }
+
+    /**
+     * Common setup for all the tests.
+     */
+    @BeforeEach
+    void setup() {
+        this.objectMapper = TestingConfiguration.testObjectMapper();
     }
 
     /**
@@ -149,11 +150,18 @@ public class BasicSecomV2RemoveSubscriptionTest {
     @Test
     @PactTestFor(pactMethods = "removeSubscriptionPact")
     void testRemoveSubscription(MockServer mockServer) throws IOException, URISyntaxException {
+        // Create the body object
+        final RemoveSubscriptionObject removeSubscriptionObject = new RemoveSubscriptionObject();
+        EnvelopeRemoveSubscriptionObject  envelopeRemoveSubscriptionObject = new EnvelopeRemoveSubscriptionObject();
+        envelopeRemoveSubscriptionObject.setSubscriptionIdentifier(UUID.fromString("7f000101-8ad6-1ee7-818a-d7332b920002"));
+        envelopeRemoveSubscriptionObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
+        envelopeRemoveSubscriptionObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
+        removeSubscriptionObject.setEnvelope(envelopeRemoveSubscriptionObject);
+        removeSubscriptionObject.setEnvelopeSignature("ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ==");
+
         // And perform the SECOM request
-        Response httpResponse = Request.delete(
-                new URIBuilder(mockServer.getUrl() + "/v2/subscription")
-                    .addParameters(this.mapToNameValueParams(this.queryParamsMap))
-                    .build())
+        Response httpResponse = Request.post(new URIBuilder(mockServer.getUrl() + "/v2/subscription/delete").build())
+                .bodyString(this.objectMapper.writeValueAsString(removeSubscriptionObject), ContentType.APPLICATION_JSON)
                 .execute();
         assertEquals(200, httpResponse.returnResponse().getCode());
     }
@@ -167,13 +175,20 @@ public class BasicSecomV2RemoveSubscriptionTest {
     @Test
     @PactTestFor(pactMethods = "removeSubscriptionPactWithBadBody")
     void testRemoveSubscriptionPactWithBadBody(MockServer mockServer) throws IOException, URISyntaxException {
+        // Create the body object
+        final RemoveSubscriptionObject removeSubscriptionObject = new RemoveSubscriptionObject();
+        EnvelopeRemoveSubscriptionObject  envelopeRemoveSubscriptionObject = new EnvelopeRemoveSubscriptionObject();
+        envelopeRemoveSubscriptionObject.setSubscriptionIdentifier(UUID.fromString("7f000101-8ad6-1ee7-818a-d7332b920002"));
+        envelopeRemoveSubscriptionObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
+        envelopeRemoveSubscriptionObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
+        removeSubscriptionObject.setEnvelope(envelopeRemoveSubscriptionObject);
+        removeSubscriptionObject.setEnvelopeSignature("ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ==");
+
         // Perform the SECOM request with query string
-        Response httpResponse = Request.delete(
-                        new URIBuilder(mockServer.getUrl() + "/v2/subscription")
-                                .addParameters(this.mapToNameValueParams(this.badQueryParamsMap))
-                                .build())
+        Response httpResponse = Request.post(new URIBuilder(mockServer.getUrl() + "/v2/subscription/delete").build())
+                .bodyString(this.objectMapper.writeValueAsString(removeSubscriptionObject).replace("7f000101-8ad6-1ee7-818a-d7332b920002", "invalid"), ContentType.APPLICATION_JSON)
                 .execute();
-        assertEquals(404, httpResponse.returnResponse().getCode());
+        assertEquals(400, httpResponse.returnResponse().getCode());
     }
 
     /**
@@ -185,27 +200,20 @@ public class BasicSecomV2RemoveSubscriptionTest {
     @Test
     @PactTestFor(pactMethods = "removeSubscriptionPactNotFound")
     void testRemoveSubscriptionPactNotFound(MockServer mockServer) throws IOException, URISyntaxException {
+        // Create the body object
+        final RemoveSubscriptionObject removeSubscriptionObject = new RemoveSubscriptionObject();
+        EnvelopeRemoveSubscriptionObject envelopeRemoveSubscriptionObject = new EnvelopeRemoveSubscriptionObject();
+        envelopeRemoveSubscriptionObject.setSubscriptionIdentifier(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+        envelopeRemoveSubscriptionObject.setEnvelopeSignatureTime(Instant.now().truncatedTo(ChronoUnit.SECONDS));
+        envelopeRemoveSubscriptionObject.setEnvelopeRootCertificateThumbprint("714fead3e2e4f0a01051bc4e26c30a306c456ef1");
+        removeSubscriptionObject.setEnvelope(envelopeRemoveSubscriptionObject);
+        removeSubscriptionObject.setEnvelopeSignature("ZW52ZWxvcGVDZXJ0aWZpY2F0ZQ==");
+
         // Perform the SECOM request with query string
-        Response httpResponse = Request.delete(
-                        new URIBuilder(mockServer.getUrl() + "/v2/subscription")
-                                .addParameter("subscriptionIdentifier", randomUuid)
-                                .build())
+        Response httpResponse = Request.post(new URIBuilder(mockServer.getUrl() + "/v2/subscription/delete").build())
+                .bodyString(this.objectMapper.writeValueAsString(removeSubscriptionObject), ContentType.APPLICATION_JSON)
                 .execute();
         assertEquals(404, httpResponse.returnResponse().getCode());
     }
 
-    /**
-     * A helper function that transforms all the entries of the provided string
-     * map to name-value pairs.
-     *
-     * @param map the map with the header string values
-     * @return the generated name-value pairs
-     */
-    private List<NameValuePair> mapToNameValueParams(Map<String, String> map) {
-        return map.entrySet()
-                .stream()
-                .map(e -> new BasicNameValuePair(e.getKey(), e.getValue()))
-                .map(NameValuePair.class::cast)
-                .toList();
-    }
 }
