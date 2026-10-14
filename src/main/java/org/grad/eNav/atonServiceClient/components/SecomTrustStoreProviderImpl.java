@@ -43,12 +43,6 @@ import java.security.cert.CertificateException;
 public class SecomTrustStoreProviderImpl implements SecomTrustStoreProvider {
 
     /**
-     * The X.509 Root Certificate Alias.
-     */
-    @Value("${gla.rad.aton-service-client.secom.rootCertificateAlias:rootCertificate}")
-    String rootCertificateAlias;
-
-    /**
      * The SECOM Configuration properties.
      */
     @Autowired
@@ -63,7 +57,7 @@ public class SecomTrustStoreProviderImpl implements SecomTrustStoreProvider {
      */
     @Override
     public String getCARootCertificateAlias() {
-        return this.rootCertificateAlias;
+        return this.secomConfigProperties.getRootCertAlias();
     }
 
     /**
@@ -76,7 +70,10 @@ public class SecomTrustStoreProviderImpl implements SecomTrustStoreProvider {
     @Override
     public KeyStore getTrustStore() {
         try {
-            return KeyStoreUtils.getKeyStore(this.secomConfigProperties.getTruststore(), this.secomConfigProperties.getTruststorePassword(), this.secomConfigProperties.getTruststoreType());
+            return KeyStoreUtils.getKeyStore(
+                    this.secomConfigProperties.getTruststore(),
+                    this.secomConfigProperties.getTruststorePassword(),
+                    this.secomConfigProperties.getTruststoreType());
         } catch (KeyStoreException | NoSuchAlgorithmException | IOException | CertificateException ex) {
             return null;
         }
